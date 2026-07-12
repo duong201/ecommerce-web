@@ -1,0 +1,148 @@
+/* =====Category===== */
+.category{
+  width: 100%;
+  box-shadow: var(--primary-box-shadow);
+  height: 44rem;
+  background: var(--white-color);
+  border-radius: .5rem;
+  overflow-y: scroll;
+}
+
+.category::-webkit-scrollbar {
+  width: .1rem;
+}
+
+.category .box{
+  width: 100%;
+  height: 4rem;
+  padding: .5rem 2rem;
+  border-bottom: 1px solid var(--background-color);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.category .box:first-child{
+  border-radius: .5rem .5rem 0 0;
+}
+
+.category .box:last-child{
+  border-radius: 0 0 .5rem .5rem;
+}
+
+.category .box:hover{
+  cursor: pointer;
+  background: var(--background-color);
+}
+
+.category .box span{
+  text-transform: capitalize;
+  font-size: 1.4rem;
+  color: var(--text-color);
+  font-weight: 400;
+}
+
+.category .box:hover span{
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.homeSlide h1{
+  font-size: 3.2rem;
+}
+
+.homeSlide p{
+  margin: 2rem 0;
+  font-size: 1.4rem;
+}
+
+.homeSlide ul{
+  position: absolute;
+  bottom: 1rem;
+}
+
+.homeSlide ul li button{
+  color: transparent !important;
+  background: transparent !important;
+}
+
+.homeSlide ul li button::before{
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+
+.slide-card{
+  background: var(--white-color);
+  width: calc(100% - 1rem);
+  height: 44rem;
+  box-shadow: var(--primary-box-shadow);
+  border-radius: .5rem;
+  margin-left: 1rem;
+}
+
+.slide-card .box{
+  display: flex !important;
+  align-items: center;
+  padding: 1rem;
+  height: 44rem;
+}
+
+.slide-card .box .left{
+  width: 30%;
+}
+
+.slide-card .box .right{
+  width: 70%;
+}
+
+.slide-card .box img{
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+}
+
+/* =====Responsive===== */
+@media (max-width: 1112px) {
+  .category{
+    height: auto;
+    max-height: 24rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .slide-card{
+    height: auto;
+    margin-left: 0;
+  }
+
+  .slide-card .box{
+    flex-direction: column;
+    height: auto;
+    padding: 1.6rem;
+  }
+
+  .slide-card .box .left,
+  .slide-card .box .right{
+    width: 100%;
+  }
+
+  .slide-card .box img{
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .homeSlide h1{
+    font-size: 2.2rem;
+    text-align: center;
+  }
+
+  .homeSlide p{
+    text-align: center;
+  }
+
+  .slide-card .box .right{
+    text-align: center;
+  }
+}

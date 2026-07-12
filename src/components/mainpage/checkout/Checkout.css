@@ -1,0 +1,144 @@
+.checkout-section {
+  background: var(--white-color);
+  border-radius: .5rem;
+  padding: 1.6rem;
+  margin-bottom: 1.6rem;
+}
+
+.checkout-section h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+}
+
+.checkout-field {
+  display: block;
+  font-size: 1.3rem;
+  color: var(--text-color);
+  margin-bottom: 1.2rem;
+}
+
+.checkout-field input {
+  display: block;
+  width: 100%;
+  margin-top: .4rem;
+  padding: 1rem;
+  border: .1rem solid #eee;
+  border-radius: .4rem;
+  font-family: inherit;
+  font-size: 1.4rem;
+}
+
+.checkout-radio {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  font-size: 1.4rem;
+  padding: .6rem 0;
+  cursor: pointer;
+}
+
+.checkout-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1rem 0;
+  border-top: .1rem solid #eee;
+}
+
+.checkout-item:first-of-type {
+  border-top: none;
+}
+
+.checkout-item img {
+  width: 6rem;
+  height: 6rem;
+  object-fit: contain;
+}
+
+.checkout-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  font-size: 1.3rem;
+}
+
+.checkout-item-variant,
+.checkout-item-qty {
+  color: #999;
+  font-size: 1.2rem;
+}
+
+.checkout-item-price {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.checkout-summary {
+  background: var(--white-color);
+  border-radius: .5rem;
+  padding: 1.6rem;
+}
+
+.checkout-summary h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+}
+
+.checkout-coupon {
+  display: flex;
+  gap: .8rem;
+  margin-bottom: .8rem;
+}
+
+.checkout-coupon input {
+  flex: 1;
+  padding: 1rem;
+  border: .1rem solid #eee;
+  border-radius: .4rem;
+  font-family: inherit;
+}
+
+.checkout-coupon .btn {
+  position: static;
+  padding: 0 1.4rem;
+}
+
+.checkout-error {
+  color: var(--red-color);
+  font-size: 1.3rem;
+  margin-bottom: .8rem;
+}
+
+.checkout-success {
+  color: var(--primary-color);
+  font-size: 1.3rem;
+  margin-bottom: .8rem;
+}
+
+.checkout-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.4rem;
+  padding: .6rem 0;
+  border-top: .1rem solid #eee;
+}
+
+.checkout-summary-row:first-of-type {
+  border-top: none;
+}
+
+.checkout-total {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.checkout-summary > .btn {
+  position: static;
+  width: 100%;
+  padding: 1.2rem;
+  margin-top: 1.2rem;
+}

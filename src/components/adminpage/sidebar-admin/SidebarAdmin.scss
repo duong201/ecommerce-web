@@ -1,0 +1,108 @@
+.sidebar-admin {
+  height: calc(100vh - 5.4rem);
+  width: 26rem;
+  padding: 2rem 1rem;
+  margin-top: 5.4rem;
+  border-right: .1rem solid #ccc;
+  background: var(--white-color);
+  flex-shrink: 0;
+
+  .sidebar-list {
+    list-style-type: none;
+
+    .sidebar-item {
+      color: #999;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      padding: .8rem 0;
+      height: 3.6rem;
+      display: flex;
+      align-items: center;
+
+      .sidebar-link {
+        padding: .8rem 2rem;
+        font-size: 1.6rem;
+        color: var(--text-color);
+        text-decoration: none;
+        text-transform: capitalize;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          color: var(--primary-color);
+          font-weight: 600;
+          transform: translateY(-.1rem);
+        }
+
+        .sidebar-icon {
+          width: 2.6rem;
+          height: 2.2rem;
+          padding-right: .4rem;
+          color: var(--primary-color);
+        }
+      }
+
+      .color-option {
+        display: flex;
+        align-items: center;
+        margin-left: 2rem;
+        width: 3rem;
+        height: 3rem;
+        border: .1rem solid var(--primary-color);
+        border-radius: .5rem;
+
+        &:nth-child(1) {
+          background: #fff;
+        }
+
+        &:nth-child(2) {
+          background: #000;
+        }
+
+        &:hover {
+          transform: translateY(-.1rem);
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+/* =====Responsive===== */
+@media (max-width: 1024px) {
+  .sidebar-admin {
+    position: fixed;
+    top: 5.4rem;
+    left: 0;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    box-shadow: .2rem 0 1rem rgba(0, 0, 0, .15);
+
+    &.open {
+      transform: translateX(0);
+    }
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 5.4rem 0 0 26rem;
+    background: rgba(0, 0, 0, .4);
+    z-index: 150;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-admin {
+    width: 22rem;
+  }
+
+  .sidebar-backdrop {
+    left: 22rem;
+  }
+}

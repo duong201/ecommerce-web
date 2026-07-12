@@ -1,0 +1,239 @@
+.header {
+  height: var(--header-height);
+  background: var(--primary-color);
+}
+
+.header__navbar {
+  display: flex;
+  justify-content: space-between;
+  height: var(--navbar-height);
+  align-items: center;
+}
+
+.header__navbar-item,
+.header__navbar-link {
+  display: inline-block;
+  font-size: 1.4rem;
+  color: var(--white-color);
+  text-decoration: none;
+  font-weight: 300;
+}
+
+button.header__navbar-link {
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.header__navbar-item {
+  margin: .4rem .8rem;
+  position: relative;
+}
+
+.header__navbar-item .header__navbar-link {
+  text-decoration: none;
+  font-size: 1.4rem;
+  color: var(--white-color);
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.header__navbar-item .header__navbar-link:hover {
+  color: var(--background-color);
+  transition: .2s;
+  text-decoration: underline;
+}
+
+.header__navbar-item.separate::after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-right: .1rem solid var(--white-color);
+  height: 1.4rem;
+  right: -0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.header__navbar-item.bold {
+  font-weight: 400;
+}
+
+.header-with-search {
+  height: var(--header-with-search-height);
+  display: flex;
+  align-items: center;
+  margin: .8rem;
+}
+
+.header__logo a {
+  display: block;
+  width: 15rem;
+  color: var(--white-color);
+  font-size: 4rem;
+  font-weight: 800;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+}
+
+
+.header__search {
+  height: 4rem;
+  flex: 1;
+  background-color: var(--white-color);
+  /* border: 1px solid var(--orange); */
+  border-radius: .2rem;
+  box-shadow: var(--box-shadow);
+  padding: .2rem;
+  display: flex;
+}
+
+.header__search-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 1.4rem;
+  color: var(--text-color);
+  background-color: transparent;
+  padding: 0 1.6rem;
+}
+
+.header__search-btn {
+  border: none;
+  background-color: var(--primary-color);
+  height: 100%;
+  border-radius: .2rem;
+  width: 8rem;
+  cursor: pointer;
+}
+
+.header__search-btn-icon {
+  color: var(--white-color);
+  font-size: 2rem;
+}
+
+.header__cart {
+  width: 15rem;
+  color: var(--white-color);
+  font-size: 2.5rem;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.header__cart span {
+  display: block;
+  position: absolute;
+  top: -.9rem;
+  right: 5rem;
+  text-align: center;
+  color: var(--primary-color);
+  width: 1.8rem;
+  height: 1.8rem;
+  background: var(--white-color);
+  font-size: 1rem;
+  line-height: 1.8rem;
+  font-weight: 600;
+  border-radius: 50%;
+}
+
+/* =====Responsive===== */
+@media (max-width: 1023px) {
+  :root {
+    --header-height: 9rem;
+    --navbar-height: 2.4rem;
+  }
+
+  .header__navbar-list--secondary,
+  .header__navbar-item--optional {
+    display: none;
+  }
+
+  .header__navbar {
+    justify-content: flex-end;
+  }
+
+  .header-with-search {
+    margin: .6rem;
+  }
+
+  .header__logo a {
+    width: auto;
+    font-size: 2.6rem;
+  }
+
+  .header__cart {
+    width: auto;
+    padding: 0 .8rem 0 1.6rem;
+  }
+
+  .header__cart span {
+    right: .4rem;
+  }
+}
+
+@media (max-width: 599px) {
+  :root {
+    --header-height: 8rem;
+    --navbar-height: 2.2rem;
+  }
+
+  .header__search-btn {
+    width: 4.4rem;
+  }
+
+  .optionInfo {
+    right: -1rem;
+  }
+}
+
+.boxInfo:hover .optionInfo {
+  display: block;
+}
+
+.header-info {
+  position: relative;
+}
+
+.optionInfo {
+  position: absolute;
+  width: 12rem;
+  height: 6.4rem;
+  right: -13.2rem;
+  top: .2rem;
+  background: var(--white-color);
+  padding: .5rem;
+  display: none;
+  border-radius: 1rem;
+  box-shadow: var(--box-shadow);
+  z-index: 100;
+}
+
+.optionInfo::before {
+  content: '';
+  display: block;
+  position: absolute;
+  background: transparent;
+  top: -1rem;
+  left: -4rem;
+  width: 4.25rem;
+  height: 6rem;
+  z-index: 10;
+}
+
+.optionInfo .optionInfo-item {
+  display: block;
+  color: var(--text-color);
+  text-decoration: none;
+  padding: .5rem;
+  display: flex;
+  align-items: center;
+  z-index: 100;
+}
+
+.optionInfo .optionInfo-item:hover {
+  font-weight: 500;
+  cursor: pointer;
+}

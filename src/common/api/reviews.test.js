@@ -1,0 +1,33 @@
+jest.mock('./client', () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(),
+    post: jest.fn(),
+    delete: jest.fn(),
+  },
+}))
+
+import apiClient from './client'
+import { getProductReviews, addReview, deleteReview } from './reviews'
+
+describe('reviews api', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('getProductReviews hits GET /reviews with the idproduct param', () => {
+    getProductReviews(1)
+    expect(apiClient.get).toHaveBeenCalledWith('/reviews', { params: { idproduct: 1 } })
+  })
+
+  it('addReview hits POST /reviews with the payload', () => {
+    const payload = { idproduct: 1, iduser: '2', rating: 5 }
+    addReview(payload)
+    expect(apiClient.post).toHaveBeenCalledWith('/reviews', payload)
+  })
+
+  it('deleteReview hits DELETE /review/:id', () => {
+    deleteReview(1)
+    expect(apiClient.delete).toHaveBeenCalledWith('/review/1')
+  })
+})
