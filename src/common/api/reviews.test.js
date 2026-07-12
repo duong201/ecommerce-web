@@ -23,7 +23,13 @@ describe('reviews api', () => {
   it('addReview hits POST /reviews with the payload', () => {
     const payload = { idproduct: 1, iduser: '2', rating: 5 }
     addReview(payload)
-    expect(apiClient.post).toHaveBeenCalledWith('/reviews', payload)
+    expect(apiClient.post).toHaveBeenCalledWith('/reviews', payload, undefined)
+  })
+
+  it('addReview forwards an optional axios config (e.g. silentError)', () => {
+    const payload = { idproduct: 1, iduser: '2', rating: 5 }
+    addReview(payload, { silentError: true })
+    expect(apiClient.post).toHaveBeenCalledWith('/reviews', payload, { silentError: true })
   })
 
   it('deleteReview hits DELETE /review/:id', () => {

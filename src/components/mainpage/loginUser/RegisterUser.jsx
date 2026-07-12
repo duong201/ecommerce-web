@@ -3,6 +3,13 @@ import { Link, useHistory } from 'react-router-dom'
 import './LoginUserForm.scss'
 import { registerUser } from '../../../common/api'
 import { USER_LEVEL } from '../../../common/constants'
+import { getErrorMessage, getErrorMessageFromCode } from '../../../common/utils/errorMessage'
+
+const FIELD_BY_ERROR_CODE = {
+  USERNAME_EXISTS: 'username',
+  EMAIL_EXISTS: 'email',
+  PHONE_EXISTS: 'phone',
+}
 
 const RegisterUser = () => {
   const initialValue = {
@@ -20,9 +27,10 @@ const RegisterUser = () => {
   const [email, setEmail] = useState("")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
+  const [fieldErrors, setFieldErrors] = useState({})
 
   const register = () => {
+    setFieldErrors({})
     registerUser({
       fullname,
       phone,
@@ -30,14 +38,17 @@ const RegisterUser = () => {
       username,
       password,
       level: USER_LEVEL.CUSTOMER,
-    }).then((response) => {
+    }, { silentError: true }).then((response) => {
       if (response.data.status === 'success') {
         history.push('/user/login')
       } else {
-        setError(response.data.message || 'Đăng ký thất bại, vui lòng thử lại.')
+        const { code, message } = response.data
+        const field = FIELD_BY_ERROR_CODE[code] || 'general'
+        setFieldErrors({ [field]: getErrorMessageFromCode(code, message) })
       }
-    }).catch(() => {
-      setError('Đăng ký thất bại, vui lòng thử lại.')
+    }).catch((error) => {
+      const field = FIELD_BY_ERROR_CODE[error.response?.data?.code] || 'general'
+      setFieldErrors({ [field]: getErrorMessage(error) })
     })
   }
 
@@ -54,6 +65,7 @@ const RegisterUser = () => {
                 setFullname(e.target.value)
               }}
             />
+            {fieldErrors.fullname && <p className="status active">{fieldErrors.fullname}</p>}
             <input
               type="text"
               placeholder={initialValue.phone}
@@ -62,6 +74,7 @@ const RegisterUser = () => {
                 setPhone(e.target.value)
               }}
             />
+            {fieldErrors.phone && <p className="status active">{fieldErrors.phone}</p>}
             <input
               type="email"
               placeholder={initialValue.email}
@@ -70,6 +83,7 @@ const RegisterUser = () => {
                 setEmail(e.target.value)
               }}
             />
+            {fieldErrors.email && <p className="status active">{fieldErrors.email}</p>}
             <input
               type="text"
               placeholder={initialValue.username}
@@ -78,6 +92,7 @@ const RegisterUser = () => {
                 setUsername(e.target.value)
               }}
             />
+            {fieldErrors.username && <p className="status active">{fieldErrors.username}</p>}
             <input
               type="password"
               placeholder={initialValue.password}
@@ -86,7 +101,8 @@ const RegisterUser = () => {
                 setPassword(e.target.value)
               }}
             />
-            {error && <p className="status active">{error}</p>}
+            {fieldErrors.password && <p className="status active">{fieldErrors.password}</p>}
+            {fieldErrors.general && <p className="status active">{fieldErrors.general}</p>}
             <button onClick={register}>Đăng ký</button>
             <p className="message">Đã có tài khoản, đăng nhập <Link to={`/user/login`} className="register-to-login">tại đây.</Link></p>
           </div>

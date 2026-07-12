@@ -4,6 +4,7 @@ import './LoginUserForm.scss'
 import { loginUser } from '../../../common/api'
 import { setUserSession, setAdminSession } from '../../../common/utils/session'
 import { USER_LEVEL } from '../../../common/constants'
+import { getErrorMessage, getErrorMessageFromCode } from '../../../common/utils/errorMessage'
 
 const LoginUserForm = () => {
   const initialValue = {
@@ -18,17 +19,18 @@ const LoginUserForm = () => {
   const [loginStatus, setLoginStatus] = useState({})
 
   const login = () => {
-    loginUser({ username, password }).then((response) => {
-      const { message, status, result } = response.data
-      setLoginStatus({ message, status })
+    loginUser({ username, password }, { silentError: true }).then((response) => {
+      const { message, status, code, result } = response.data
 
       if (status !== 'success') {
+        setLoginStatus({ message: getErrorMessageFromCode(code, message) })
         document.querySelector('.status').classList.add('active')
         return
       }
 
       const account = result && result[0]
       if (!account) {
+        setLoginStatus({ message: getErrorMessageFromCode(code, message) })
         document.querySelector('.status').classList.add('active')
         return
       }
@@ -40,8 +42,8 @@ const LoginUserForm = () => {
         setUserSession(account.id, account.username)
         history.push("/")
       }
-    }).catch(() => {
-      setLoginStatus({ message: 'Đăng nhập thất bại, vui lòng thử lại.' })
+    }).catch((error) => {
+      setLoginStatus({ message: getErrorMessage(error) })
       document.querySelector('.status').classList.add('active')
     })
   }

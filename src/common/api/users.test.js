@@ -29,7 +29,7 @@ describe('users api', () => {
   it('updateUser hits PUT /user/:id with the payload', () => {
     const payload = { fullname: 'Nguyen Van A' }
     updateUser(2, payload)
-    expect(apiClient.put).toHaveBeenCalledWith('/user/2', payload)
+    expect(apiClient.put).toHaveBeenCalledWith('/user/2', payload, undefined)
   })
 
   it('deleteUser hits DELETE /user/:id', () => {
@@ -40,12 +40,23 @@ describe('users api', () => {
   it('loginUser hits POST /user/login with credentials', () => {
     const credentials = { username: 'customer', password: 'customer123' }
     loginUser(credentials)
-    expect(apiClient.post).toHaveBeenCalledWith('/user/login', credentials)
+    expect(apiClient.post).toHaveBeenCalledWith('/user/login', credentials, undefined)
   })
 
   it('registerUser hits POST /user/register with the payload', () => {
     const payload = { username: 'new', password: 'pw', level: 1 }
     registerUser(payload)
-    expect(apiClient.post).toHaveBeenCalledWith('/user/register', payload)
+    expect(apiClient.post).toHaveBeenCalledWith('/user/register', payload, undefined)
+  })
+
+  it('forwards an optional axios config (e.g. silentError) for login/register/update', () => {
+    loginUser({ username: 'a', password: 'b' }, { silentError: true })
+    expect(apiClient.post).toHaveBeenCalledWith('/user/login', { username: 'a', password: 'b' }, { silentError: true })
+
+    registerUser({ username: 'a' }, { silentError: true })
+    expect(apiClient.post).toHaveBeenCalledWith('/user/register', { username: 'a' }, { silentError: true })
+
+    updateUser(2, { fullname: 'A' }, { silentError: true })
+    expect(apiClient.put).toHaveBeenCalledWith('/user/2', { fullname: 'A' }, { silentError: true })
   })
 })

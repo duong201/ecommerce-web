@@ -36,7 +36,7 @@ describe('LoginUserForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Đăng nhập' }))
 
     await waitFor(() => expect(screen.getByText('Main Home')).toBeInTheDocument())
-    expect(loginUser).toHaveBeenCalledWith({ username: 'customer', password: 'customer123' })
+    expect(loginUser).toHaveBeenCalledWith({ username: 'customer', password: 'customer123' }, { silentError: true })
     expect(sessionStorage.getItem('id')).toBe('2')
     expect(sessionStorage.getItem('name')).toBe('customer')
   })
@@ -84,7 +84,7 @@ describe('LoginUserForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Đăng nhập' }))
 
     await waitFor(() =>
-      expect(screen.getByText('Đăng nhập thất bại, vui lòng thử lại.')).toBeInTheDocument()
+      expect(screen.getByText('Đã có lỗi xảy ra, vui lòng thử lại.')).toBeInTheDocument()
     )
   })
 

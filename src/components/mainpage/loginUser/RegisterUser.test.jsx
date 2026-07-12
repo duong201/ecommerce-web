@@ -45,7 +45,7 @@ describe('RegisterUser', () => {
       username: 'newuser',
       password: 'password123',
       level: USER_LEVEL.CUSTOMER,
-    })
+    }, { silentError: true })
   })
 
   it('shows the server error message when registration fails (e.g. duplicate username)', async () => {
@@ -68,7 +68,7 @@ describe('RegisterUser', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Đăng ký' }))
 
     await waitFor(() =>
-      expect(screen.getByText('Đăng ký thất bại, vui lòng thử lại.')).toBeInTheDocument()
+      expect(screen.getByText('Đã có lỗi xảy ra, vui lòng thử lại.')).toBeInTheDocument()
     )
   })
 

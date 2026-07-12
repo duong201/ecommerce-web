@@ -5,6 +5,7 @@ import { useFetch } from '../../../common/hooks/useFetch'
 import { getCarts, getUser, addOrder, clearUserCart, applyCoupon } from '../../../common/api'
 import { formatCurrency, getDiscountedPrice } from '../../../common/utils/format'
 import { getCurrentUserId } from '../../../common/utils/session'
+import { getErrorMessage } from '../../../common/utils/errorMessage'
 
 const PAYMENT_METHODS = [
   'Thanh toán khi nhận hàng',
@@ -49,11 +50,11 @@ const Checkout = () => {
   const handleApplyCoupon = () => {
     setCouponError('')
     if (!couponCode.trim()) return
-    applyCoupon({ code: couponCode.trim(), subtotal }).then((response) => {
+    applyCoupon({ code: couponCode.trim(), subtotal }, { silentError: true }).then((response) => {
       setAppliedCoupon({ code: response.data.coupon.code, discount: response.data.discount })
     }).catch((error) => {
       setAppliedCoupon(null)
-      setCouponError(error.response?.data?.message || 'Mã giảm giá không hợp lệ')
+      setCouponError(getErrorMessage(error))
     })
   }
 
@@ -89,7 +90,7 @@ const Checkout = () => {
         amount: item.amount,
         couponCode: appliedCoupon ? appliedCoupon.code : '',
         discountAmount: itemDiscount,
-      })
+      }, { silentError: true })
     })
 
     Promise.all(orderRequests).then((responses) => {
@@ -102,8 +103,8 @@ const Checkout = () => {
       return clearUserCart(idUser).then(() => {
         history.push('/order-success', { orderCount: cartItem.length, total })
       })
-    }).catch(() => {
-      setFormError('Đặt hàng thất bại, vui lòng thử lại')
+    }).catch((error) => {
+      setFormError(getErrorMessage(error))
       setSubmitting(false)
     })
   }

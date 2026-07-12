@@ -5,6 +5,13 @@ import AdminLayout from '../../../common/components/AdminLayout';
 import { useFetch } from '../../../common/hooks/useFetch';
 import { getUser, updateUser } from '../../../common/api';
 import { NO_IMAGE_URL } from '../../../common/constants';
+import { getErrorMessage, getErrorMessageFromCode } from '../../../common/utils/errorMessage';
+
+const FIELD_BY_ERROR_CODE = {
+  USERNAME_EXISTS: 'username',
+  EMAIL_EXISTS: 'email',
+  PHONE_EXISTS: 'phone',
+}
 
 const EditingUser = () => (
   <AdminLayout>
@@ -19,6 +26,7 @@ const EditInfoUser = () => {
   const [file, setFile] = useState("")
   const { data: infoUser } = useFetch(() => getUser(id), [id], {})
   const [form, setForm] = useState({ fullname: '', phone: '', address: '', username: '', email: '', password: '', country: '' })
+  const [fieldErrors, setFieldErrors] = useState({})
 
   useEffect(() => {
     setForm({
@@ -38,8 +46,18 @@ const EditInfoUser = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    updateUser(id, form).then(() => {
+    setFieldErrors({})
+    updateUser(id, form, { silentError: true }).then((response) => {
+      if (response.data.status === 'error') {
+        const { code, message } = response.data
+        const field = FIELD_BY_ERROR_CODE[code] || 'general'
+        setFieldErrors({ [field]: getErrorMessageFromCode(code, message) })
+        return
+      }
       history.push(`/admin/list-user/user/${id}`)
+    }).catch((error) => {
+      const field = FIELD_BY_ERROR_CODE[error.response?.data?.code] || 'general'
+      setFieldErrors({ [field]: getErrorMessage(error) })
     })
   }
 
@@ -83,6 +101,7 @@ const EditInfoUser = () => {
                             value={form.fullname}
                             onChange={handleChange('fullname')}
                           />
+                          {fieldErrors.fullname && <p className="form-error">{fieldErrors.fullname}</p>}
                         </div>
                         <div className="form-input">
                           <label htmlFor="">Số điện thoại</label>
@@ -92,10 +111,12 @@ const EditInfoUser = () => {
                             value={form.phone}
                             onChange={handleChange('phone')}
                           />
+                          {fieldErrors.phone && <p className="form-error">{fieldErrors.phone}</p>}
                         </div>
                         <div className="form-input">
                           <label htmlFor="">Adress</label>
                           <input type="text" placeholder='Address' value={form.address} onChange={handleChange('address')} />
+                          {fieldErrors.address && <p className="form-error">{fieldErrors.address}</p>}
                         </div>
                       </div>
                     </div>
@@ -104,22 +125,27 @@ const EditInfoUser = () => {
                         <div className="form-input">
                           <label htmlFor="">UserName</label>
                           <input type="text" placeholder='duong2010' value={form.username} onChange={handleChange('username')} />
+                          {fieldErrors.username && <p className="form-error">{fieldErrors.username}</p>}
                         </div>
                         <div className="form-input">
                           <label htmlFor="">Email</label>
                           <input type="email" placeholder='duong@gmail.com' value={form.email} onChange={handleChange('email')} />
+                          {fieldErrors.email && <p className="form-error">{fieldErrors.email}</p>}
                         </div>
                         <div className="form-input">
                           <label htmlFor="">Passwork</label>
                           <input type="text" placeholder='duong@gmail.com' value={form.password} onChange={handleChange('password')} />
+                          {fieldErrors.password && <p className="form-error">{fieldErrors.password}</p>}
                         </div>
                         <div className="form-input">
                           <label htmlFor="">Country</label>
                           <input type="text" placeholder='VIE' value={form.country} onChange={handleChange('country')} />
+                          {fieldErrors.country && <p className="form-error">{fieldErrors.country}</p>}
                         </div>
                       </div>
                     </div>
                   </div>
+                  {fieldErrors.general && <p className="form-error">{fieldErrors.general}</p>}
                   <button className='btn' type="submit">Send</button>
                 </form>
               </div>

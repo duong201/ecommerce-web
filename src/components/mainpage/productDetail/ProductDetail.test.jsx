@@ -180,7 +180,8 @@ describe('ProductDetail', () => {
 
     await waitFor(() =>
       expect(addReview).toHaveBeenCalledWith(
-        expect.objectContaining({ idproduct: 2, iduser: '2', rating: 5, comment: 'Tuyệt vời' })
+        expect.objectContaining({ idproduct: 2, iduser: '2', rating: 5, comment: 'Tuyệt vời' }),
+        { silentError: true }
       )
     )
     expect(await screen.findByText('Tuyệt vời')).toBeInTheDocument()

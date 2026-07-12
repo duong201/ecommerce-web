@@ -16,6 +16,7 @@ import {
 } from '../../../common/api'
 import { getCurrentUserId, getCurrentUserName } from '../../../common/utils/session'
 import { formatCurrency, getDiscountedPrice } from '../../../common/utils/format'
+import { getErrorMessage } from '../../../common/utils/errorMessage'
 import ProductGridCard from '../../../common/components/ProductGridCard'
 
 const COLORS = ['Đen', 'Trắng', 'Xám']
@@ -124,7 +125,7 @@ const Product = () => {
       userName: userName || 'Khách hàng',
       rating,
       comment,
-    }).then((response) => {
+    }, { silentError: true }).then((response) => {
       setReviews((current) => [...current, response.data.review])
     })
   }
@@ -283,6 +284,7 @@ const ReviewsSection = ({ reviews, canReview, onSubmit }) => {
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     setRating(5)
@@ -290,11 +292,18 @@ const ReviewsSection = ({ reviews, canReview, onSubmit }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    setError('')
     setSubmitting(true)
-    onSubmit({ rating, comment }).finally(() => {
-      setSubmitting(false)
-      setComment('')
-    })
+    onSubmit({ rating, comment })
+      .then(() => {
+        setComment('')
+      })
+      .catch((err) => {
+        setError(getErrorMessage(err))
+      })
+      .finally(() => {
+        setSubmitting(false)
+      })
   }
 
   return (
@@ -324,6 +333,7 @@ const ReviewsSection = ({ reviews, canReview, onSubmit }) => {
                 value={comment}
                 onChange={(event) => setComment(event.target.value)}
               />
+              {error && <p className="form-error">{error}</p>}
               <button type="submit" className="btn" disabled={submitting}>Gửi đánh giá</button>
             </form>
           ) : (

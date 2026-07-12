@@ -54,7 +54,11 @@ describe('EditingUser', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Send' }))
 
     await waitFor(() =>
-      expect(updateUser).toHaveBeenCalledWith('2', expect.objectContaining({ fullname: 'Nguyễn Văn A' }))
+      expect(updateUser).toHaveBeenCalledWith(
+        '2',
+        expect.objectContaining({ fullname: 'Nguyễn Văn A' }),
+        { silentError: true }
+      )
     )
   })
 })

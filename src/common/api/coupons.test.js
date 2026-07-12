@@ -22,6 +22,12 @@ describe('coupons api', () => {
   it('applyCoupon hits POST /coupons/apply with the payload', () => {
     const payload = { code: 'GIAM10', subtotal: 100000 }
     applyCoupon(payload)
-    expect(apiClient.post).toHaveBeenCalledWith('/coupons/apply', payload)
+    expect(apiClient.post).toHaveBeenCalledWith('/coupons/apply', payload, undefined)
+  })
+
+  it('applyCoupon forwards an optional axios config (e.g. silentError)', () => {
+    const payload = { code: 'GIAM10', subtotal: 100000 }
+    applyCoupon(payload, { silentError: true })
+    expect(apiClient.post).toHaveBeenCalledWith('/coupons/apply', payload, { silentError: true })
   })
 })

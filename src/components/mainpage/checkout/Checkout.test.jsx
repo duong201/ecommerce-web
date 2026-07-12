@@ -102,7 +102,8 @@ describe('Checkout', () => {
 
     await waitFor(() => expect(addOrder).toHaveBeenCalledTimes(1))
     expect(addOrder).toHaveBeenCalledWith(
-      expect.objectContaining({ iduser: '2', name: 'Áo thun nữ basic', amount: 2, description: 'Đen, size 28' })
+      expect.objectContaining({ iduser: '2', name: 'Áo thun nữ basic', amount: 2, description: 'Đen, size 28' }),
+      { silentError: true }
     )
     await waitFor(() => expect(clearUserCart).toHaveBeenCalledWith('2'))
     expect(await screen.findByText('Order success page')).toBeInTheDocument()
