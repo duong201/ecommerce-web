@@ -8,7 +8,7 @@ describe('Home', () => {
     render(
       <MemoryRouter>
         <Home />
-      </MemoryRouter>
+      </MemoryRouter>,
     )
     expect(screen.getByText('Thời trang nữ')).toBeInTheDocument()
     expect(screen.getAllByText('50% Off For Your First Shopping').length).toBeGreaterThan(0)

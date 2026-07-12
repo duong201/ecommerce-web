@@ -4,8 +4,16 @@ import userEvent from '@testing-library/user-event'
 import { renderWithRouter } from '../../../test-utils/renderWithRouter'
 import { mockApiResponse } from '../../../test-utils/mockApiResponse'
 import {
-  getProduct, getProducts, getCarts, addToCart, updateCartAmount,
-  getProductReviews, addReview, getUserWishlist, addToWishlist, removeFromWishlist,
+  getProduct,
+  getProducts,
+  getCarts,
+  addToCart,
+  updateCartAmount,
+  getProductReviews,
+  addReview,
+  getUserWishlist,
+  addToWishlist,
+  removeFromWishlist,
 } from '../../../common/api'
 import ProductDetail from './ProductDetail'
 
@@ -37,7 +45,7 @@ describe('ProductDetail', () => {
 
   it('renders the product name, price and discount', async () => {
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đầm suông nữ dạo phố')).toBeInTheDocument())
+    await screen.findByText('Đầm suông nữ dạo phố')
     expect(screen.getByText(Intl.NumberFormat().format(320000))).toBeInTheDocument()
     expect(screen.getByText('15% Giảm')).toBeInTheDocument()
   })
@@ -49,11 +57,11 @@ describe('ProductDetail', () => {
 
   it('shows the login prompt instead of adding to cart when logged out', async () => {
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đầm suông nữ dạo phố')).toBeInTheDocument())
+    await screen.findByText('Đầm suông nữ dạo phố')
 
     await userEvent.click(screen.getByRole('button', { name: /Thêm vào giỏ hàng/ }))
 
-    expect(document.getElementById('notiCart')).toHaveClass('active')
+    expect(screen.getByText('Bạn cần đăng nhập để thực hiện thao tác này.')).toHaveClass('active')
     expect(addToCart).not.toHaveBeenCalled()
   })
 
@@ -62,44 +70,40 @@ describe('ProductDetail', () => {
     addToCart.mockReturnValue(mockApiResponse({ status: 'success', cart: { id: 9 } }))
 
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đầm suông nữ dạo phố')).toBeInTheDocument())
+    await screen.findByText('Đầm suông nữ dạo phố')
 
     await userEvent.click(screen.getByRole('button', { name: /Thêm vào giỏ hàng/ }))
 
     await waitFor(() =>
       expect(addToCart).toHaveBeenCalledWith(
-        expect.objectContaining({ iduser: '2', idproduct: 2, amount: 1 })
-      )
+        expect.objectContaining({ iduser: '2', idproduct: 2, amount: 1 }),
+      ),
     )
   })
 
   it('increments the existing cart row instead of duplicating it', async () => {
     sessionStorage.setItem('id', '2')
     getCarts.mockReturnValue(
-      mockApiResponse([{ id: 9, iduser: '2', idproduct: 2, amount: 1, color: 'Đen', size: '28' }])
+      mockApiResponse([{ id: 9, iduser: '2', idproduct: 2, amount: 1, color: 'Đen', size: '28' }]),
     )
     updateCartAmount.mockReturnValue(mockApiResponse({}))
 
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đầm suông nữ dạo phố')).toBeInTheDocument())
+    await screen.findByText('Đầm suông nữ dạo phố')
 
     await userEvent.click(screen.getByRole('button', { name: /Thêm vào giỏ hàng/ }))
 
-    await waitFor(() =>
-      expect(updateCartAmount).toHaveBeenCalledWith({ amount: 2, id: 9 })
-    )
+    await waitFor(() => expect(updateCartAmount).toHaveBeenCalledWith({ amount: 2, id: 9 }))
     expect(addToCart).not.toHaveBeenCalled()
   })
 
   it('only matches an existing cart row for the current user', async () => {
     sessionStorage.setItem('id', '2')
-    getCarts.mockReturnValue(
-      mockApiResponse([{ id: 9, iduser: '999', idproduct: 2, amount: 1 }])
-    )
+    getCarts.mockReturnValue(mockApiResponse([{ id: 9, iduser: '999', idproduct: 2, amount: 1 }]))
     addToCart.mockReturnValue(mockApiResponse({ status: 'success', cart: {} }))
 
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đầm suông nữ dạo phố')).toBeInTheDocument())
+    await screen.findByText('Đầm suông nữ dạo phố')
 
     await userEvent.click(screen.getByRole('button', { name: /Thêm vào giỏ hàng/ }))
 
@@ -112,7 +116,7 @@ describe('ProductDetail', () => {
     addToCart.mockReturnValue(mockApiResponse({ status: 'success', cart: { id: 9 } }))
 
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đầm suông nữ dạo phố')).toBeInTheDocument())
+    await screen.findByText('Đầm suông nữ dạo phố')
 
     await userEvent.click(screen.getByText('Trắng'))
     await userEvent.click(screen.getByText('29'))
@@ -120,22 +124,28 @@ describe('ProductDetail', () => {
 
     await waitFor(() =>
       expect(addToCart).toHaveBeenCalledWith(
-        expect.objectContaining({ color: 'Trắng', size: '29' })
-      )
+        expect.objectContaining({ color: 'Trắng', size: '29' }),
+      ),
     )
   })
 
   it('toggles the product in and out of the wishlist', async () => {
     sessionStorage.setItem('id', '2')
-    addToWishlist.mockReturnValue(mockApiResponse({ status: 'success', wishlistItem: { id: 1, iduser: '2', idproduct: 2 } }))
+    addToWishlist.mockReturnValue(
+      mockApiResponse({ status: 'success', wishlistItem: { id: 1, iduser: '2', idproduct: 2 } }),
+    )
     removeFromWishlist.mockReturnValue(mockApiResponse({ status: 'success' }))
 
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đầm suông nữ dạo phố')).toBeInTheDocument())
+    await screen.findByText('Đầm suông nữ dạo phố')
 
-    const wishlistButton = document.querySelector('.wishlist-toggle')
+    const wishlistButton = screen.getByRole('button', { name: 'Yêu thích' })
     await userEvent.click(wishlistButton)
-    await waitFor(() => expect(addToWishlist).toHaveBeenCalledWith(expect.objectContaining({ iduser: '2', idproduct: 2 })))
+    await waitFor(() =>
+      expect(addToWishlist).toHaveBeenCalledWith(
+        expect.objectContaining({ iduser: '2', idproduct: 2 }),
+      ),
+    )
     await waitFor(() => expect(wishlistButton).toHaveClass('active'))
 
     await userEvent.click(wishlistButton)
@@ -144,22 +154,40 @@ describe('ProductDetail', () => {
 
   it('shows the login prompt instead of toggling wishlist when logged out', async () => {
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đầm suông nữ dạo phố')).toBeInTheDocument())
+    await screen.findByText('Đầm suông nữ dạo phố')
 
-    await userEvent.click(document.querySelector('.wishlist-toggle'))
+    await userEvent.click(screen.getByRole('button', { name: 'Yêu thích' }))
 
-    expect(document.getElementById('notiCart')).toHaveClass('active')
+    expect(screen.getByText('Bạn cần đăng nhập để thực hiện thao tác này.')).toHaveClass('active')
     expect(addToWishlist).not.toHaveBeenCalled()
   })
 
   it('lists existing reviews and their average rating', async () => {
-    getProductReviews.mockReturnValue(mockApiResponse([
-      { id: 1, idproduct: 2, iduser: '2', userName: 'Nguyễn Văn A', rating: 4, comment: 'Đẹp', createdAt: '2024-04-01T00:00:00.000Z' },
-      { id: 2, idproduct: 2, iduser: '3', userName: 'Trần Thị B', rating: 5, comment: 'Rất ưng', createdAt: '2024-04-02T00:00:00.000Z' },
-    ]))
+    getProductReviews.mockReturnValue(
+      mockApiResponse([
+        {
+          id: 1,
+          idproduct: 2,
+          iduser: '2',
+          userName: 'Nguyễn Văn A',
+          rating: 4,
+          comment: 'Đẹp',
+          createdAt: '2024-04-01T00:00:00.000Z',
+        },
+        {
+          id: 2,
+          idproduct: 2,
+          iduser: '3',
+          userName: 'Trần Thị B',
+          rating: 5,
+          comment: 'Rất ưng',
+          createdAt: '2024-04-02T00:00:00.000Z',
+        },
+      ]),
+    )
 
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đánh giá sản phẩm (2)')).toBeInTheDocument())
+    await screen.findByText('Đánh giá sản phẩm (2)')
     expect(screen.getByText('4.5')).toBeInTheDocument()
     expect(screen.getByText('Rất ưng')).toBeInTheDocument()
   })
@@ -167,13 +195,23 @@ describe('ProductDetail', () => {
   it('lets a logged-in user submit a review', async () => {
     sessionStorage.setItem('id', '2')
     sessionStorage.setItem('name', 'Nguyễn Văn A')
-    addReview.mockReturnValue(mockApiResponse({
-      status: 'success',
-      review: { id: 1, idproduct: 2, iduser: '2', userName: 'Nguyễn Văn A', rating: 5, comment: 'Tuyệt vời', createdAt: '2024-04-03T00:00:00.000Z' },
-    }))
+    addReview.mockReturnValue(
+      mockApiResponse({
+        status: 'success',
+        review: {
+          id: 1,
+          idproduct: 2,
+          iduser: '2',
+          userName: 'Nguyễn Văn A',
+          rating: 5,
+          comment: 'Tuyệt vời',
+          createdAt: '2024-04-03T00:00:00.000Z',
+        },
+      }),
+    )
 
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đầm suông nữ dạo phố')).toBeInTheDocument())
+    await screen.findByText('Đầm suông nữ dạo phố')
 
     await userEvent.type(screen.getByPlaceholderText(/Chia sẻ cảm nhận/), 'Tuyệt vời')
     await userEvent.click(screen.getByRole('button', { name: 'Gửi đánh giá' }))
@@ -181,15 +219,15 @@ describe('ProductDetail', () => {
     await waitFor(() =>
       expect(addReview).toHaveBeenCalledWith(
         expect.objectContaining({ idproduct: 2, iduser: '2', rating: 5, comment: 'Tuyệt vời' }),
-        { silentError: true }
-      )
+        { silentError: true },
+      ),
     )
     expect(await screen.findByText('Tuyệt vời')).toBeInTheDocument()
   })
 
   it('shows a login hint instead of the review form when logged out', async () => {
     renderPage()
-    await waitFor(() => expect(screen.getByText('Đầm suông nữ dạo phố')).toBeInTheDocument())
+    await screen.findByText('Đầm suông nữ dạo phố')
     expect(screen.getByText('Đăng nhập để đánh giá sản phẩm này.')).toBeInTheDocument()
   })
 })

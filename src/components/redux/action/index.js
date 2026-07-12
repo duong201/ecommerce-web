@@ -4,7 +4,7 @@ import { ADD_PRODUCT, DELETE_PRODUCT } from './actionTypes'
 export const ADDCART = (product) => {
   return {
     type: ADD_PRODUCT,
-    payload: product
+    payload: product,
   }
 }
 
@@ -12,6 +12,6 @@ export const ADDCART = (product) => {
 export const DELETECART = (product) => {
   return {
     type: DELETE_PRODUCT,
-    payload: product
+    payload: product,
   }
 }

@@ -8,8 +8,8 @@ const Header = ({ cartItem }) => {
     <>
       <header className="header">
         <div className="grid wide">
-          <Navbar/>
-          <Search cartItem={cartItem}/>
+          <Navbar />
+          <Search cartItem={cartItem} />
         </div>
       </header>
     </>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route } from 'react-router-dom'
 import RegisterUser from './RegisterUser'
@@ -12,9 +12,13 @@ jest.mock('../../../common/api')
 const renderRegisterForm = () =>
   render(
     <MemoryRouter initialEntries={['/user/register']}>
-      <Route path="/user/register" exact><RegisterUser /></Route>
-      <Route path="/user/login" exact><div>Login Page</div></Route>
-    </MemoryRouter>
+      <Route path="/user/register" exact>
+        <RegisterUser />
+      </Route>
+      <Route path="/user/login" exact>
+        <div>Login Page</div>
+      </Route>
+    </MemoryRouter>,
   )
 
 const fillForm = async () => {
@@ -37,27 +41,30 @@ describe('RegisterUser', () => {
     await fillForm()
     await userEvent.click(screen.getByRole('button', { name: 'Đăng ký' }))
 
-    await waitFor(() => expect(screen.getByText('Login Page')).toBeInTheDocument())
-    expect(registerUser).toHaveBeenCalledWith({
-      fullname: 'Nguyễn Văn A',
-      phone: '912345678',
-      email: 'a@b.com',
-      username: 'newuser',
-      password: 'password123',
-      level: USER_LEVEL.CUSTOMER,
-    }, { silentError: true })
+    await screen.findByText('Login Page')
+    expect(registerUser).toHaveBeenCalledWith(
+      {
+        fullname: 'Nguyễn Văn A',
+        phone: '912345678',
+        email: 'a@b.com',
+        username: 'newuser',
+        password: 'password123',
+        level: USER_LEVEL.CUSTOMER,
+      },
+      { silentError: true },
+    )
   })
 
   it('shows the server error message when registration fails (e.g. duplicate username)', async () => {
     registerUser.mockReturnValue(
-      mockApiResponse({ status: 'error', message: 'Username đã tồn tại' })
+      mockApiResponse({ status: 'error', message: 'Username đã tồn tại' }),
     )
 
     renderRegisterForm()
     await fillForm()
     await userEvent.click(screen.getByRole('button', { name: 'Đăng ký' }))
 
-    await waitFor(() => expect(screen.getByText('Username đã tồn tại')).toBeInTheDocument())
+    await screen.findByText('Username đã tồn tại')
   })
 
   it('shows a generic error message when the request itself fails', async () => {
@@ -67,9 +74,7 @@ describe('RegisterUser', () => {
     await fillForm()
     await userEvent.click(screen.getByRole('button', { name: 'Đăng ký' }))
 
-    await waitFor(() =>
-      expect(screen.getByText('Đã có lỗi xảy ra, vui lòng thử lại.')).toBeInTheDocument()
-    )
+    await screen.findByText('Đã có lỗi xảy ra, vui lòng thử lại.')
   })
 
   it('links back to the login page', () => {

@@ -23,13 +23,13 @@ describe('UserOrdersTable', () => {
 
   it('renders only the orders belonging to the given userId', async () => {
     renderWithRouter(<UserOrdersTable userId="2" />)
-    await waitFor(() => expect(screen.getByText('Giày sneaker unisex')).toBeInTheDocument())
+    await screen.findByText('Giày sneaker unisex')
     expect(screen.queryByText('Áo thun nữ basic')).not.toBeInTheDocument()
   })
 
   it('compares iduser loosely (string vs number) so route params still match', async () => {
     renderWithRouter(<UserOrdersTable userId={3} />)
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
   })
 
   it('renders no rows for a user with no orders', async () => {

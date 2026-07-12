@@ -1,5 +1,5 @@
 import React from 'react'
-import { screen, waitFor } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { renderWithRouter } from '../../../test-utils/renderWithRouter'
 import { mockApiResponse } from '../../../test-utils/mockApiResponse'
 import { getOrders } from '../../../common/api'
@@ -10,9 +10,18 @@ jest.mock('../../../common/api')
 describe('ListOrder', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    getOrders.mockReturnValue(mockApiResponse([
-      { id: 1, iduser: '2', idorder: 100001, name: 'Giày sneaker unisex', amount: 1, price: 572000 },
-    ]))
+    getOrders.mockReturnValue(
+      mockApiResponse([
+        {
+          id: 1,
+          iduser: '2',
+          idorder: 100001,
+          name: 'Giày sneaker unisex',
+          amount: 1,
+          price: 572000,
+        },
+      ]),
+    )
   })
 
   it('renders the page title and the admin layout chrome', () => {
@@ -23,7 +32,7 @@ describe('ListOrder', () => {
 
   it('renders a row per order, unfiltered by user', async () => {
     renderWithRouter(<ListOrder />)
-    await waitFor(() => expect(screen.getByText('Giày sneaker unisex')).toBeInTheDocument())
+    await screen.findByText('Giày sneaker unisex')
     expect(screen.getByText('100001')).toBeInTheDocument()
   })
 })

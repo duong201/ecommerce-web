@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route } from 'react-router-dom'
 import LoginUserForm from './LoginUserForm'
@@ -11,10 +11,16 @@ jest.mock('../../../common/api')
 const renderLoginForm = () =>
   render(
     <MemoryRouter initialEntries={['/user/login']}>
-      <Route path="/user/login" exact><LoginUserForm /></Route>
-      <Route path="/admin" exact><div>Admin Home</div></Route>
-      <Route path="/" exact><div>Main Home</div></Route>
-    </MemoryRouter>
+      <Route path="/user/login" exact>
+        <LoginUserForm />
+      </Route>
+      <Route path="/admin" exact>
+        <div>Admin Home</div>
+      </Route>
+      <Route path="/" exact>
+        <div>Main Home</div>
+      </Route>
+    </MemoryRouter>,
   )
 
 describe('LoginUserForm', () => {
@@ -24,53 +30,62 @@ describe('LoginUserForm', () => {
   })
 
   it('logs a customer (level 1) in and redirects to the home page', async () => {
-    loginUser.mockReturnValue(mockApiResponse({
-      status: 'success',
-      message: 'Đăng nhập thành công',
-      result: [{ id: 2, username: 'customer', level: 1 }],
-    }))
+    loginUser.mockReturnValue(
+      mockApiResponse({
+        status: 'success',
+        message: 'Đăng nhập thành công',
+        result: [{ id: 2, username: 'customer', level: 1 }],
+      }),
+    )
 
     renderLoginForm()
     await userEvent.type(screen.getByPlaceholderText('Tài khoản'), 'customer')
     await userEvent.type(screen.getByPlaceholderText('Mật khẩu'), 'customer123')
     await userEvent.click(screen.getByRole('button', { name: 'Đăng nhập' }))
 
-    await waitFor(() => expect(screen.getByText('Main Home')).toBeInTheDocument())
-    expect(loginUser).toHaveBeenCalledWith({ username: 'customer', password: 'customer123' }, { silentError: true })
+    await screen.findByText('Main Home')
+    expect(loginUser).toHaveBeenCalledWith(
+      { username: 'customer', password: 'customer123' },
+      { silentError: true },
+    )
     expect(sessionStorage.getItem('id')).toBe('2')
     expect(sessionStorage.getItem('name')).toBe('customer')
   })
 
   it('logs an admin (level 0) in and redirects to /admin', async () => {
-    loginUser.mockReturnValue(mockApiResponse({
-      status: 'success',
-      message: 'Đăng nhập thành công',
-      result: [{ id: 1, username: 'admin', level: 0 }],
-    }))
+    loginUser.mockReturnValue(
+      mockApiResponse({
+        status: 'success',
+        message: 'Đăng nhập thành công',
+        result: [{ id: 1, username: 'admin', level: 0 }],
+      }),
+    )
 
     renderLoginForm()
     await userEvent.type(screen.getByPlaceholderText('Tài khoản'), 'admin')
     await userEvent.type(screen.getByPlaceholderText('Mật khẩu'), 'admin123')
     await userEvent.click(screen.getByRole('button', { name: 'Đăng nhập' }))
 
-    await waitFor(() => expect(screen.getByText('Admin Home')).toBeInTheDocument())
+    await screen.findByText('Admin Home')
     expect(sessionStorage.getItem('idAdmin')).toBe('1')
     expect(sessionStorage.getItem('adminName')).toBe('admin')
   })
 
   it('shows the error message and stays on the page for wrong credentials', async () => {
-    loginUser.mockReturnValue(mockApiResponse({
-      status: 'error',
-      message: 'Sai tài khoản hoặc mật khẩu',
-      result: [],
-    }))
+    loginUser.mockReturnValue(
+      mockApiResponse({
+        status: 'error',
+        message: 'Sai tài khoản hoặc mật khẩu',
+        result: [],
+      }),
+    )
 
     renderLoginForm()
     await userEvent.type(screen.getByPlaceholderText('Tài khoản'), 'admin')
     await userEvent.type(screen.getByPlaceholderText('Mật khẩu'), 'wrong')
     await userEvent.click(screen.getByRole('button', { name: 'Đăng nhập' }))
 
-    await waitFor(() => expect(screen.getByText('Sai tài khoản hoặc mật khẩu')).toBeInTheDocument())
+    await screen.findByText('Sai tài khoản hoặc mật khẩu')
     expect(screen.getByText('Sai tài khoản hoặc mật khẩu')).toHaveClass('active')
     expect(sessionStorage.getItem('id')).toBeNull()
   })
@@ -83,9 +98,7 @@ describe('LoginUserForm', () => {
     await userEvent.type(screen.getByPlaceholderText('Mật khẩu'), 'admin123')
     await userEvent.click(screen.getByRole('button', { name: 'Đăng nhập' }))
 
-    await waitFor(() =>
-      expect(screen.getByText('Đã có lỗi xảy ra, vui lòng thử lại.')).toBeInTheDocument()
-    )
+    await screen.findByText('Đã có lỗi xảy ra, vui lòng thử lại.')
   })
 
   it('has links to register and the home page', () => {

@@ -21,10 +21,8 @@ import ListOrder from './components/adminpage/list-order/ListOrder'
 import UserInfo from './components/mainpage/header/UserInfo'
 
 function App() {
-
   return (
     <Router>
-
       <Switch>
         <Route path="/" exact>
           <Header />
@@ -105,10 +103,9 @@ function App() {
         <Route path={`/admin/list-order`} exact>
           <ListOrder />
         </Route>
-
       </Switch>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App

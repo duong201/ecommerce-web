@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
-import { useHistory, useParams } from 'react-router-dom';
-import AdminLayout from '../../../common/components/AdminLayout';
-import { useFetch } from '../../../common/hooks/useFetch';
-import { getUser, updateUser } from '../../../common/api';
-import { NO_IMAGE_URL } from '../../../common/constants';
-import { getErrorMessage, getErrorMessageFromCode } from '../../../common/utils/errorMessage';
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
+import { useHistory, useParams } from 'react-router-dom'
+import AdminLayout from '../../../common/components/AdminLayout'
+import { useFetch } from '../../../common/hooks/useFetch'
+import { getUser, updateUser } from '../../../common/api'
+import { NO_IMAGE_URL } from '../../../common/constants'
+import { getErrorMessage, getErrorMessageFromCode } from '../../../common/utils/errorMessage'
 
 const FIELD_BY_ERROR_CODE = {
   USERNAME_EXISTS: 'username',
@@ -23,9 +23,17 @@ const EditInfoUser = () => {
   const { id } = useParams()
   const history = useHistory()
 
-  const [file, setFile] = useState("")
+  const [file, setFile] = useState('')
   const { data: infoUser } = useFetch(() => getUser(id), [id], {})
-  const [form, setForm] = useState({ fullname: '', phone: '', address: '', username: '', email: '', password: '', country: '' })
+  const [form, setForm] = useState({
+    fullname: '',
+    phone: '',
+    address: '',
+    username: '',
+    email: '',
+    password: '',
+    country: '',
+  })
   const [fieldErrors, setFieldErrors] = useState({})
 
   useEffect(() => {
@@ -47,18 +55,20 @@ const EditInfoUser = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     setFieldErrors({})
-    updateUser(id, form, { silentError: true }).then((response) => {
-      if (response.data.status === 'error') {
-        const { code, message } = response.data
-        const field = FIELD_BY_ERROR_CODE[code] || 'general'
-        setFieldErrors({ [field]: getErrorMessageFromCode(code, message) })
-        return
-      }
-      history.push(`/admin/list-user/user/${id}`)
-    }).catch((error) => {
-      const field = FIELD_BY_ERROR_CODE[error.response?.data?.code] || 'general'
-      setFieldErrors({ [field]: getErrorMessage(error) })
-    })
+    updateUser(id, form, { silentError: true })
+      .then((response) => {
+        if (response.data.status === 'error') {
+          const { code, message } = response.data
+          const field = FIELD_BY_ERROR_CODE[code] || 'general'
+          setFieldErrors({ [field]: getErrorMessageFromCode(code, message) })
+          return
+        }
+        history.push(`/admin/list-user/user/${id}`)
+      })
+      .catch((error) => {
+        const field = FIELD_BY_ERROR_CODE[error.response?.data?.code] || 'general'
+        setFieldErrors({ [field]: getErrorMessage(error) })
+      })
   }
 
   return (
@@ -84,7 +94,7 @@ const EditInfoUser = () => {
                       <div>
                         <div className="form-input">
                           <label htmlFor="file">
-                            Image: <DriveFolderUploadIcon className='form-icon' />
+                            Image: <DriveFolderUploadIcon className="form-icon" />
                           </label>
                           <input
                             type="file"
@@ -97,17 +107,19 @@ const EditInfoUser = () => {
                           <label htmlFor="">Họ và tên</label>
                           <input
                             type="text"
-                            placeholder='Họ và tên'
+                            placeholder="Họ và tên"
                             value={form.fullname}
                             onChange={handleChange('fullname')}
                           />
-                          {fieldErrors.fullname && <p className="form-error">{fieldErrors.fullname}</p>}
+                          {fieldErrors.fullname && (
+                            <p className="form-error">{fieldErrors.fullname}</p>
+                          )}
                         </div>
                         <div className="form-input">
                           <label htmlFor="">Số điện thoại</label>
                           <input
                             type="text"
-                            placeholder='Số điện thoại'
+                            placeholder="Số điện thoại"
                             value={form.phone}
                             onChange={handleChange('phone')}
                           />
@@ -115,8 +127,15 @@ const EditInfoUser = () => {
                         </div>
                         <div className="form-input">
                           <label htmlFor="">Adress</label>
-                          <input type="text" placeholder='Address' value={form.address} onChange={handleChange('address')} />
-                          {fieldErrors.address && <p className="form-error">{fieldErrors.address}</p>}
+                          <input
+                            type="text"
+                            placeholder="Address"
+                            value={form.address}
+                            onChange={handleChange('address')}
+                          />
+                          {fieldErrors.address && (
+                            <p className="form-error">{fieldErrors.address}</p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -124,29 +143,57 @@ const EditInfoUser = () => {
                       <div>
                         <div className="form-input">
                           <label htmlFor="">UserName</label>
-                          <input type="text" placeholder='duong2010' value={form.username} onChange={handleChange('username')} />
-                          {fieldErrors.username && <p className="form-error">{fieldErrors.username}</p>}
+                          <input
+                            type="text"
+                            placeholder="duong2010"
+                            value={form.username}
+                            onChange={handleChange('username')}
+                          />
+                          {fieldErrors.username && (
+                            <p className="form-error">{fieldErrors.username}</p>
+                          )}
                         </div>
                         <div className="form-input">
                           <label htmlFor="">Email</label>
-                          <input type="email" placeholder='duong@gmail.com' value={form.email} onChange={handleChange('email')} />
+                          <input
+                            type="email"
+                            placeholder="duong@gmail.com"
+                            value={form.email}
+                            onChange={handleChange('email')}
+                          />
                           {fieldErrors.email && <p className="form-error">{fieldErrors.email}</p>}
                         </div>
                         <div className="form-input">
                           <label htmlFor="">Passwork</label>
-                          <input type="text" placeholder='duong@gmail.com' value={form.password} onChange={handleChange('password')} />
-                          {fieldErrors.password && <p className="form-error">{fieldErrors.password}</p>}
+                          <input
+                            type="text"
+                            placeholder="Mật khẩu"
+                            value={form.password}
+                            onChange={handleChange('password')}
+                          />
+                          {fieldErrors.password && (
+                            <p className="form-error">{fieldErrors.password}</p>
+                          )}
                         </div>
                         <div className="form-input">
                           <label htmlFor="">Country</label>
-                          <input type="text" placeholder='VIE' value={form.country} onChange={handleChange('country')} />
-                          {fieldErrors.country && <p className="form-error">{fieldErrors.country}</p>}
+                          <input
+                            type="text"
+                            placeholder="VIE"
+                            value={form.country}
+                            onChange={handleChange('country')}
+                          />
+                          {fieldErrors.country && (
+                            <p className="form-error">{fieldErrors.country}</p>
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
                   {fieldErrors.general && <p className="form-error">{fieldErrors.general}</p>}
-                  <button className='btn' type="submit">Send</button>
+                  <button className="btn" type="submit">
+                    Send
+                  </button>
                 </form>
               </div>
             </div>

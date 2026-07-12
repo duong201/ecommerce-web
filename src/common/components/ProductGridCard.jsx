@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { formatCurrency, getDiscountedPrice } from '../utils/format'
 
 const ProductGridCard = ({ product, cardClassName = 'c-6 m-4 l-2 card-product', onClick }) => (
-  <div className={cardClassName}>
+  <div className={cardClassName} data-testid="product-grid-card">
     <Link className="product" to={`/product-detail/${product.id}`} onClick={onClick}>
       <div className="img" style={{ backgroundImage: `url(${product.imgPrimary})` }} />
       <div className="product-details">

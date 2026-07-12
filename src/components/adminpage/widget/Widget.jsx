@@ -1,13 +1,13 @@
 import React from 'react'
 import './Widget.scss'
-import PermIdentityIcon from '@mui/icons-material/PermIdentity';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import { Link } from 'react-router-dom';
-import { useFetch } from '../../../common/hooks/useFetch';
-import { getUsers, getProducts, getOrders } from '../../../common/api';
-import { formatCurrency } from '../../../common/utils/format';
+import PermIdentityIcon from '@mui/icons-material/PermIdentity'
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
+import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined'
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
+import { Link } from 'react-router-dom'
+import { useFetch } from '../../../common/hooks/useFetch'
+import { getUsers, getProducts, getOrders } from '../../../common/api'
+import { formatCurrency } from '../../../common/utils/format'
 
 const WIDGET_CONFIG = {
   user: {
@@ -64,13 +64,13 @@ const Widget = ({ type }) => {
           <span>{config.title}</span>
         </div>
         <div className="row widget-count" style={{ margin: '0' }}>
-          <span>{config.isMoney && '$'} {amount}</span>
+          <span>
+            {config.isMoney && '$'} {amount}
+          </span>
         </div>
         <div className="row widget-footer" style={{ margin: '0' }}>
           {config.link ? <Link to={config.link}>{config.link_title}</Link> : <span />}
-          <span>
-            {config.icon}
-          </span>
+          <span>{config.icon}</span>
         </div>
       </div>
     </>

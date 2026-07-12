@@ -27,15 +27,15 @@ describe('ProductGridCard', () => {
   })
 
   it('applies the default grid class when none is supplied', () => {
-    const { container } = renderWithRouter(<ProductGridCard product={product} />)
-    expect(container.firstChild).toHaveClass('c-6', 'm-4', 'l-2', 'card-product')
+    renderWithRouter(<ProductGridCard product={product} />)
+    expect(screen.getByTestId('product-grid-card')).toHaveClass('c-6', 'm-4', 'l-2', 'card-product')
   })
 
   it('applies a custom cardClassName when supplied', () => {
-    const { container } = renderWithRouter(
-      <ProductGridCard product={product} cardClassName="c-6 m-4 l-2-4 box-list-products" />
+    renderWithRouter(
+      <ProductGridCard product={product} cardClassName="c-6 m-4 l-2-4 box-list-products" />,
     )
-    expect(container.firstChild).toHaveClass('box-list-products')
+    expect(screen.getByTestId('product-grid-card')).toHaveClass('box-list-products')
   })
 
   it('fires onClick when the card is clicked', async () => {

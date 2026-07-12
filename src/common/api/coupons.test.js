@@ -1,3 +1,6 @@
+import apiClient from './client'
+import { getCoupons, applyCoupon } from './coupons'
+
 jest.mock('./client', () => ({
   __esModule: true,
   default: {
@@ -5,9 +8,6 @@ jest.mock('./client', () => ({
     post: jest.fn(),
   },
 }))
-
-import apiClient from './client'
-import { getCoupons, applyCoupon } from './coupons'
 
 describe('coupons api', () => {
   beforeEach(() => {

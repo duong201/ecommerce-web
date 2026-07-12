@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import App from './App'
 import * as mockedApi from './common/api'
 
@@ -58,25 +58,25 @@ describe('App routing', () => {
   it('renders the home page at /', async () => {
     navigateTo('/')
     render(<App />)
-    await waitFor(() => expect(screen.getByText('Flash Deals')).toBeInTheDocument())
+    await screen.findByText('Flash Deals')
   })
 
   it('renders the cart page at /cart', async () => {
     navigateTo('/cart')
     render(<App />)
-    await waitFor(() => expect(screen.getByText('Giỏ hàng trống')).toBeInTheDocument())
+    await screen.findByText('Giỏ hàng trống')
   })
 
   it('renders the products page at /products', async () => {
     navigateTo('/products')
     render(<App />)
-    await waitFor(() => expect(screen.getByText('Tất cả danh mục')).toBeInTheDocument())
+    await screen.findByText('Tất cả danh mục')
   })
 
   it('renders the product detail page at /product-detail/:id', async () => {
     navigateTo('/product-detail/1')
     render(<App />)
-    await waitFor(() => expect(screen.getByText('Thêm vào giỏ hàng')).toBeInTheDocument())
+    await screen.findByText('Thêm vào giỏ hàng')
   })
 
   it('renders the login page at /user/login', () => {
@@ -94,31 +94,31 @@ describe('App routing', () => {
   it('redirects /admin to login when no admin session exists', async () => {
     navigateTo('/admin')
     render(<App />)
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Đăng nhập' })).toBeInTheDocument())
+    await screen.findByRole('button', { name: 'Đăng nhập' })
   })
 
   it('renders the admin dashboard at /admin when logged in as admin', async () => {
     sessionStorage.setItem('idAdmin', '1')
     navigateTo('/admin')
     render(<App />)
-    await waitFor(() => expect(screen.getByText('Top 10 bán chạy')).toBeInTheDocument())
+    await screen.findByText('Top 10 bán chạy')
   })
 
   it('renders the admin user list at /admin/list-user', async () => {
     navigateTo('/admin/list-user')
     render(<App />)
-    await waitFor(() => expect(screen.getByText('Danh sách User')).toBeInTheDocument())
+    await screen.findByText('Danh sách User')
   })
 
   it('renders the admin product list at /admin/list-product', async () => {
     navigateTo('/admin/list-product')
     render(<App />)
-    await waitFor(() => expect(screen.getByText('Danh sách Product')).toBeInTheDocument())
+    await screen.findByText('Danh sách Product')
   })
 
   it('renders the admin order list at /admin/list-order', async () => {
     navigateTo('/admin/list-order')
     render(<App />)
-    await waitFor(() => expect(screen.getByText('Danh sách Order')).toBeInTheDocument())
+    await screen.findByText('Danh sách Order')
   })
 })

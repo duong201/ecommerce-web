@@ -3,7 +3,9 @@ import { ERROR_CODE_MESSAGES, DEFAULT_ERROR_MESSAGE } from '../constants/errorCo
 
 describe('getErrorMessageFromCode', () => {
   it('maps a known code to its Vietnamese text', () => {
-    expect(getErrorMessageFromCode('INVALID_CREDENTIALS')).toBe(ERROR_CODE_MESSAGES.INVALID_CREDENTIALS)
+    expect(getErrorMessageFromCode('INVALID_CREDENTIALS')).toBe(
+      ERROR_CODE_MESSAGES.INVALID_CREDENTIALS,
+    )
   })
 
   it('falls back to the given message when the code is unknown', () => {
@@ -17,12 +19,16 @@ describe('getErrorMessageFromCode', () => {
 
 describe('getErrorMessage', () => {
   it('prefers a known error code from the response body', () => {
-    const error = { response: { status: 400, data: { code: 'INVALID_COUPON', message: 'raw message' } } }
+    const error = {
+      response: { status: 400, data: { code: 'INVALID_COUPON', message: 'raw message' } },
+    }
     expect(getErrorMessage(error)).toBe(ERROR_CODE_MESSAGES.INVALID_COUPON)
   })
 
   it('falls back to the raw response message when the code is unknown', () => {
-    const error = { response: { status: 400, data: { code: 'NOT_A_REAL_CODE', message: 'Địa chỉ không hợp lệ' } } }
+    const error = {
+      response: { status: 400, data: { code: 'NOT_A_REAL_CODE', message: 'Địa chỉ không hợp lệ' } },
+    }
     expect(getErrorMessage(error)).toBe('Địa chỉ không hợp lệ')
   })
 

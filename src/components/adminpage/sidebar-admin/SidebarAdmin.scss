@@ -3,7 +3,7 @@
   width: 26rem;
   padding: 2rem 1rem;
   margin-top: 5.4rem;
-  border-right: .1rem solid #ccc;
+  border-right: 0.1rem solid #ccc;
   background: var(--white-color);
   flex-shrink: 0;
 
@@ -14,13 +14,13 @@
       color: #999;
       font-size: 1.2rem;
       text-transform: uppercase;
-      padding: .8rem 0;
+      padding: 0.8rem 0;
       height: 3.6rem;
       display: flex;
       align-items: center;
 
       .sidebar-link {
-        padding: .8rem 2rem;
+        padding: 0.8rem 2rem;
         font-size: 1.6rem;
         color: var(--text-color);
         text-decoration: none;
@@ -31,13 +31,13 @@
         &:hover {
           color: var(--primary-color);
           font-weight: 600;
-          transform: translateY(-.1rem);
+          transform: translateY(-0.1rem);
         }
 
         .sidebar-icon {
           width: 2.6rem;
           height: 2.2rem;
-          padding-right: .4rem;
+          padding-right: 0.4rem;
           color: var(--primary-color);
         }
       }
@@ -48,8 +48,8 @@
         margin-left: 2rem;
         width: 3rem;
         height: 3rem;
-        border: .1rem solid var(--primary-color);
-        border-radius: .5rem;
+        border: 0.1rem solid var(--primary-color);
+        border-radius: 0.5rem;
 
         &:nth-child(1) {
           background: #fff;
@@ -60,7 +60,7 @@
         }
 
         &:hover {
-          transform: translateY(-.1rem);
+          transform: translateY(-0.1rem);
           cursor: pointer;
         }
       }
@@ -80,8 +80,8 @@
     left: 0;
     z-index: 200;
     transform: translateX(-100%);
-    transition: transform .25s ease;
-    box-shadow: .2rem 0 1rem rgba(0, 0, 0, .15);
+    transition: transform 0.25s ease;
+    box-shadow: 0.2rem 0 1rem rgba(0, 0, 0, 0.15);
 
     &.open {
       transform: translateX(0);
@@ -92,7 +92,7 @@
     display: block;
     position: fixed;
     inset: 5.4rem 0 0 26rem;
-    background: rgba(0, 0, 0, .4);
+    background: rgba(0, 0, 0, 0.4);
     z-index: 150;
   }
 }

@@ -27,7 +27,7 @@ describe('UserProfileCard', () => {
     renderWithRouter(<UserProfileCard user={user} editHref="/admin/list-user/user/2/edit" />)
     expect(screen.getByRole('link', { name: 'Edit' })).toHaveAttribute(
       'href',
-      '/admin/list-user/user/2/edit'
+      '/admin/list-user/user/2/edit',
     )
   })
 

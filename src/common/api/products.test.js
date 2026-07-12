@@ -1,13 +1,3 @@
-jest.mock('./client', () => ({
-  __esModule: true,
-  default: {
-    get: jest.fn(),
-    post: jest.fn(),
-    put: jest.fn(),
-    delete: jest.fn(),
-  },
-}))
-
 import apiClient from './client'
 import {
   getProducts,
@@ -17,6 +7,16 @@ import {
   deleteProduct,
   getCategories,
 } from './products'
+
+jest.mock('./client', () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(),
+    post: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+  },
+}))
 
 describe('products api', () => {
   beforeEach(() => {

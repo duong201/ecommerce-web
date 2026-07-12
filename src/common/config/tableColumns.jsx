@@ -21,7 +21,12 @@ export const buildProductColumns = () => [
     className: 'date',
     render: (row) => (row.createdAt ? new Date(row.createdAt).toLocaleDateString('vi-VN') : ''),
   },
-  { key: 'price', header: 'Giá bán', className: 'price', render: (row) => formatCurrency(row.price) },
+  {
+    key: 'price',
+    header: 'Giá bán',
+    className: 'price',
+    render: (row) => formatCurrency(row.price),
+  },
   { key: 'discount', header: 'Discount', className: 'discount' },
   { key: 'sold', header: 'Đã bán', className: 'sold' },
   { key: 'amount', header: 'Số lượng còn', className: 'amount' },
@@ -47,7 +52,12 @@ export const buildOrderColumns = () => [
     ),
   },
   { key: 'amount', header: 'Số lượng', className: 'amount' },
-  { key: 'price', header: 'Tổng tiền', className: 'price', render: (row) => formatCurrency(row.price) },
+  {
+    key: 'price',
+    header: 'Tổng tiền',
+    className: 'price',
+    render: (row) => formatCurrency(row.price),
+  },
   { key: 'description', header: 'Mô tả', className: 'description' },
   { key: 'idorder', header: 'Mã order', className: 'idorder' },
   { key: 'iduser', header: 'Mã người order', className: 'iduser' },
@@ -69,7 +79,12 @@ export const buildUserColumns = ({ onDelete }) => [
       </div>
     ),
   },
-  { key: 'phone', header: 'Số điện thoại', className: 'phone', render: (row) => (row.phone ? `0${row.phone}` : '') },
+  {
+    key: 'phone',
+    header: 'Số điện thoại',
+    className: 'phone',
+    render: (row) => (row.phone ? `0${row.phone}` : ''),
+  },
   { key: 'email', header: 'Email', className: 'email' },
   { key: 'username', header: 'Username', className: 'username' },
   {
@@ -78,8 +93,12 @@ export const buildUserColumns = ({ onDelete }) => [
     className: 'action',
     render: (row) => (
       <div className="userAction">
-        <Link to={`/admin/list-user/user/${row.id}`} className="viewBtn">Xem</Link>
-        <span className="deleteBtn" onClick={() => onDelete(row.id)}>Xóa</span>
+        <Link to={`/admin/list-user/user/${row.id}`} className="viewBtn">
+          Xem
+        </Link>
+        <span className="deleteBtn" onClick={() => onDelete(row.id)}>
+          Xóa
+        </span>
       </div>
     ),
   },

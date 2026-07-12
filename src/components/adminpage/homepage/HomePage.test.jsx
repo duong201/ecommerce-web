@@ -1,5 +1,5 @@
 import React from 'react'
-import { screen, waitFor } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { renderWithRouter } from '../../../test-utils/renderWithRouter'
 import { mockApiResponse } from '../../../test-utils/mockApiResponse'
 import { getUsers, getProducts, getOrders } from '../../../common/api'
@@ -11,10 +11,12 @@ describe('HomePage (admin dashboard)', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     getUsers.mockReturnValue(mockApiResponse([{ id: 1 }]))
-    getProducts.mockReturnValue(mockApiResponse([
-      { id: 1, name: 'Áo thun nữ basic', sold: 320, price: 150000, discount: 10, amount: 80 },
-      { id: 2, name: 'Giày sneaker unisex', sold: 410, price: 650000, discount: 12, amount: 25 },
-    ]))
+    getProducts.mockReturnValue(
+      mockApiResponse([
+        { id: 1, name: 'Áo thun nữ basic', sold: 320, price: 150000, discount: 10, amount: 80 },
+        { id: 2, name: 'Giày sneaker unisex', sold: 410, price: 650000, discount: 12, amount: 25 },
+      ]),
+    )
     getOrders.mockReturnValue(mockApiResponse([]))
   })
 
@@ -26,13 +28,13 @@ describe('HomePage (admin dashboard)', () => {
     expect(screen.getByText('orders')).toBeInTheDocument()
     expect(screen.getByText('My balance')).toBeInTheDocument()
 
-    await waitFor(() => expect(screen.getByText('Giày sneaker unisex')).toBeInTheDocument())
+    await screen.findByText('Giày sneaker unisex')
     expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument()
   })
 
   it('sorts the top-selling table by sold descending', async () => {
     renderWithRouter(<HomePage />)
-    await waitFor(() => expect(screen.getByText('Giày sneaker unisex')).toBeInTheDocument())
+    await screen.findByText('Giày sneaker unisex')
 
     const rows = screen.getAllByRole('row').slice(1) // skip header row
     expect(rows[0]).toHaveTextContent('Giày sneaker unisex')

@@ -4,7 +4,9 @@
   height: 37rem;
   border-radius: 1rem;
   padding: 1rem 2rem;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  box-shadow:
+    rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 
   .featured-header {
     width: 100%;
@@ -19,7 +21,6 @@
     .featured-icon {
       font-size: 2.2rem;
     }
-
   }
 
   .featured-content {
@@ -48,11 +49,11 @@
       color: var(--text-color);
 
       &.positive {
-        color: #3D8361;
+        color: #3d8361;
       }
 
       &.negative {
-        color: #DD5353;
+        color: #dd5353;
       }
     }
 
@@ -63,7 +64,6 @@
       color: #999;
       text-align: center;
     }
-
   }
 
   .featured-sumary {
@@ -88,11 +88,11 @@
         padding-top: 1rem;
 
         &.positive {
-          color: #3D8361;
+          color: #3d8361;
         }
 
         &.negative {
-          color: #DD5353;
+          color: #dd5353;
         }
 
         .icon {

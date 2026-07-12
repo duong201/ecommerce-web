@@ -1,6 +1,6 @@
 .order-success {
   background: var(--white-color);
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   padding: 4rem 2rem;
   text-align: center;
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { mockApiResponse } from '../test-utils/mockApiResponse'
 import { getProducts } from '../common/api'
@@ -10,10 +10,14 @@ jest.mock('../common/api')
 describe('MainPages', () => {
   it('renders the homepage sections: hero, flash deals, and suggestions', async () => {
     getProducts.mockReturnValue(mockApiResponse([]))
-    render(<MemoryRouter><Pages /></MemoryRouter>)
+    render(
+      <MemoryRouter>
+        <Pages />
+      </MemoryRouter>,
+    )
 
     expect(screen.getAllByText('50% Off For Your First Shopping').length).toBeGreaterThan(0)
     expect(screen.getByText('Flash Deals')).toBeInTheDocument()
-    await waitFor(() => expect(screen.getByText('Gợi ý hôm nay')).toBeInTheDocument())
+    await screen.findByText('Gợi ý hôm nay')
   })
 })

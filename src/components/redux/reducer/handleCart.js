@@ -9,9 +9,7 @@ const handleCart = (state = cart, action) => {
     case ADD_PRODUCT: {
       const exist = state.find((key) => key.id === product.id)
       if (exist) {
-        return state.map((key) =>
-          key.id === product.id ? { ...key, qty: key.qty + 1 } : key
-        )
+        return state.map((key) => (key.id === product.id ? { ...key, qty: key.qty + 1 } : key))
       }
       return [...state, { ...product, qty: 1 }]
     }
@@ -24,9 +22,7 @@ const handleCart = (state = cart, action) => {
       if (exist.qty === 1) {
         return state.filter((key) => key.id !== exist.id)
       }
-      return state.map((key) =>
-        key.id === product.id ? { ...key, qty: key.qty - 1 } : key
-      )
+      return state.map((key) => (key.id === product.id ? { ...key, qty: key.qty - 1 } : key))
     }
 
     default:

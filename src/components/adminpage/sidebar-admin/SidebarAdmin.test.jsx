@@ -7,9 +7,13 @@ import SidebarAdmin from './SidebarAdmin'
 const renderSidebar = (props) =>
   render(
     <MemoryRouter initialEntries={['/admin']}>
-      <Route path="/admin" exact><SidebarAdmin {...props} /></Route>
-      <Route path="/user/login" exact><div>Login Page</div></Route>
-    </MemoryRouter>
+      <Route path="/admin" exact>
+        <SidebarAdmin {...props} />
+      </Route>
+      <Route path="/user/login" exact>
+        <div>Login Page</div>
+      </Route>
+    </MemoryRouter>,
   )
 
 describe('SidebarAdmin', () => {
@@ -20,19 +24,28 @@ describe('SidebarAdmin', () => {
   it('renders links to every admin section', () => {
     renderSidebar()
     expect(screen.getByRole('link', { name: /Trang chủ/ })).toHaveAttribute('href', '/admin')
-    expect(screen.getByRole('link', { name: /Người dùng/ })).toHaveAttribute('href', '/admin/list-user')
-    expect(screen.getByRole('link', { name: /Sản phẩm/ })).toHaveAttribute('href', '/admin/list-product')
-    expect(screen.getByRole('link', { name: /Đặt hàng/ })).toHaveAttribute('href', '/admin/list-order')
+    expect(screen.getByRole('link', { name: /Người dùng/ })).toHaveAttribute(
+      'href',
+      '/admin/list-user',
+    )
+    expect(screen.getByRole('link', { name: /Sản phẩm/ })).toHaveAttribute(
+      'href',
+      '/admin/list-product',
+    )
+    expect(screen.getByRole('link', { name: /Đặt hàng/ })).toHaveAttribute(
+      'href',
+      '/admin/list-order',
+    )
   })
 
   it('is closed by default', () => {
-    const { container } = renderSidebar()
-    expect(container.querySelector('.sidebar-admin')).not.toHaveClass('open')
+    renderSidebar()
+    expect(screen.getByTestId('sidebar-admin')).not.toHaveClass('open')
   })
 
   it('applies the open class when isOpen is true', () => {
-    const { container } = renderSidebar({ isOpen: true })
-    expect(container.querySelector('.sidebar-admin')).toHaveClass('open')
+    renderSidebar({ isOpen: true })
+    expect(screen.getByTestId('sidebar-admin')).toHaveClass('open')
   })
 
   it('logout clears the admin session and redirects to login', async () => {

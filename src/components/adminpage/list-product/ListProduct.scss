@@ -18,7 +18,7 @@
     }
 
     .btn {
-      border: .1rem solid var(--primary-color);
+      border: 0.1rem solid var(--primary-color);
       background: var(--white-color);
       color: var(--primary-color);
       display: flex;
@@ -36,7 +36,6 @@
 
   .table-user {
     .table {
-
       .tableCell {
         font-size: 1.4rem;
         font-weight: 500;
@@ -63,13 +62,13 @@
         &.id {
           width: 2%;
           text-align: center;
-          border-right: .05rem solid #f0f0f0;
+          border-right: 0.05rem solid #f0f0f0;
         }
 
         &.country {
           width: 3%;
           text-align: center;
-          border-right: .05rem solid #f0f0f0;
+          border-right: 0.05rem solid #f0f0f0;
           text-transform: uppercase;
           font-size: 1.2rem;
           font-weight: 500;
@@ -78,37 +77,37 @@
         &.fullname {
           width: 22%;
           text-align: left;
-          border-right: .05rem solid #f0f0f0;
+          border-right: 0.05rem solid #f0f0f0;
         }
 
         &.phone {
           width: 6%;
           text-align: center !important;
-          border-right: .05rem solid #f0f0f0;
+          border-right: 0.05rem solid #f0f0f0;
         }
 
         &.email {
           width: 13%;
           text-align: left;
-          border-right: .05rem solid #f0f0f0;
+          border-right: 0.05rem solid #f0f0f0;
         }
 
         &.username {
           width: 11%;
           text-align: left;
-          border-right: .05rem solid #f0f0f0;
+          border-right: 0.05rem solid #f0f0f0;
         }
 
         &.password {
           width: 11%;
           text-align: left;
-          border-right: .05rem solid #f0f0f0;
+          border-right: 0.05rem solid #f0f0f0;
         }
 
         &.action {
           width: 10%;
           text-align: center;
-          border-left: .05rem solid #f0f0f0;
+          border-left: 0.05rem solid #f0f0f0;
         }
       }
     }
@@ -121,32 +120,32 @@
 
     .viewBtn {
       font-weight: 500;
-      padding: .2rem .5rem;
-      border-radius: .5rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.5rem;
       color: var(--primary-color);
-      border: .1rem solid rgba(28, 103, 88, 0.2);
+      border: 0.1rem solid rgba(28, 103, 88, 0.2);
       text-decoration: none;
 
       &:hover {
         color: var(--white-color);
         background: var(--primary-color);
         cursor: pointer;
-        border: .1rem solid var(--primary-color);
+        border: 0.1rem solid var(--primary-color);
       }
     }
 
     .deleteBtn {
       font-weight: 500;
-      padding: .2rem .5rem;
-      border-radius: .5rem;
-      color: #FF1E1E;
-      border: .1rem solid rgba(255, 30, 30, 0.2);
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.5rem;
+      color: #ff1e1e;
+      border: 0.1rem solid rgba(255, 30, 30, 0.2);
 
       &:hover {
         color: var(--white-color);
-        background: #FF1E1E;
+        background: #ff1e1e;
         cursor: pointer;
-        border: .1rem solid #FF1E1E;
+        border: 0.1rem solid #ff1e1e;
       }
     }
   }
@@ -163,7 +162,9 @@
     width: 100%;
     height: 25rem;
     background: var(--white-color);
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    box-shadow:
+      rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+      rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     border-radius: 1rem;
     padding: 1rem;
     position: relative;
@@ -173,20 +174,20 @@
       position: absolute;
       top: 0;
       right: 0;
-      padding: .4rem .8rem;
+      padding: 0.4rem 0.8rem;
       font-size: 1.2rem;
       font-weight: 500;
       text-decoration: none;
-      color: #1C6758;
+      color: #1c6758;
       background: rgba(28, 103, 88, 0.2);
-      border-bottom-left-radius: .5rem;
+      border-bottom-left-radius: 0.5rem;
 
       &:hover {
         font-weight: 600;
         color: var(--white-color);
         background: var(--primary-color);
         cursor: pointer;
-        transition: .2s;
+        transition: 0.2s;
       }
     }
 
@@ -252,7 +253,9 @@
       width: 100%;
       height: 100%;
       background: var(--white-color);
-      box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+      box-shadow:
+        rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+        rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
       border-radius: 1rem;
       padding: 1rem;
     }
@@ -274,15 +277,19 @@
     font-size: 2rem;
     font-weight: 600;
     color: #ccc;
-    border-radius: .5rem;
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    border-radius: 0.5rem;
+    box-shadow:
+      rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+      rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   }
 
   .editing-user-body {
     background: var(--white-color);
     padding: 1rem;
-    border-radius: .5rem;
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    border-radius: 0.5rem;
+    box-shadow:
+      rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+      rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 
     .body-Img {
       height: 40rem;
@@ -293,14 +300,18 @@
       img {
         width: 20rem;
         height: 20rem;
-        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+        box-shadow:
+          rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+          rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
         border-radius: 10rem;
         object-fit: cover;
 
         &:hover {
           cursor: pointer;
-          transition: .2s;
-          box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+          transition: 0.2s;
+          box-shadow:
+            rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+            rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
         }
       }
     }
@@ -339,7 +350,7 @@
             padding: 1rem 0;
             border: none;
             outline: none;
-            border-bottom: .1rem solid #ccc;
+            border-bottom: 0.1rem solid #ccc;
           }
         }
       }
@@ -393,6 +404,6 @@
 @media (max-width: 600px) {
   .list-user-page .list-user-header {
     flex-wrap: wrap;
-    gap: .8rem;
+    gap: 0.8rem;
   }
 }

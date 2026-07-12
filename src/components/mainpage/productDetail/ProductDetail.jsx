@@ -29,8 +29,8 @@ const showLoginPrompt = () => {
 
 const Product = () => {
   const { id } = useParams()
-  const idUser = getCurrentUserId();
-  const userName = getCurrentUserName();
+  const idUser = getCurrentUserId()
+  const userName = getCurrentUserName()
 
   const { data: product } = useFetch(() => getProduct(id), [id], {})
   const { data: products } = useFetch(getProducts, [])
@@ -38,7 +38,7 @@ const Product = () => {
   const { data: reviews, setData: setReviews } = useFetch(() => getProductReviews(id), [id])
   const { data: wishlist, setData: setWishlist } = useFetch(
     () => (idUser ? getUserWishlist(idUser) : Promise.resolve({ data: [] })),
-    [id, idUser]
+    [id, idUser],
   )
 
   const [selectedColor, setSelectedColor] = useState(COLORS[0])
@@ -46,7 +46,7 @@ const Product = () => {
 
   const isWishlisted = useMemo(
     () => wishlist.some((item) => String(item.idproduct) === String(product.id)),
-    [wishlist, product.id]
+    [wishlist, product.id],
   )
 
   const averageRating = useMemo(() => {
@@ -65,13 +65,15 @@ const Product = () => {
         data.idproduct === product.id &&
         String(data.iduser) === String(idUser) &&
         (data.color || '') === selectedColor &&
-        (data.size || '') === selectedSize
+        (data.size || '') === selectedSize,
     )
 
     if (findCart) {
       const nextAmount = findCart.amount + 1
       updateCartAmount({ amount: nextAmount, id: findCart.id }).then(() => {
-        setCartItem((current) => current.map((data) => (data.id === findCart.id ? { ...data, amount: nextAmount } : data)))
+        setCartItem((current) =>
+          current.map((data) => (data.id === findCart.id ? { ...data, amount: nextAmount } : data)),
+        )
       })
     } else {
       postAddToCart({
@@ -100,7 +102,9 @@ const Product = () => {
 
     if (isWishlisted) {
       removeFromWishlist(idUser, product.id).then(() => {
-        setWishlist((current) => current.filter((item) => String(item.idproduct) !== String(product.id)))
+        setWishlist((current) =>
+          current.filter((item) => String(item.idproduct) !== String(product.id)),
+        )
       })
     } else {
       addToWishlist({
@@ -119,13 +123,16 @@ const Product = () => {
   }
 
   const submitReview = ({ rating, comment }) => {
-    return addReview({
-      idproduct: product.id,
-      iduser: idUser,
-      userName: userName || 'Khách hàng',
-      rating,
-      comment,
-    }, { silentError: true }).then((response) => {
+    return addReview(
+      {
+        idproduct: product.id,
+        iduser: idUser,
+        userName: userName || 'Khách hàng',
+        rating,
+        comment,
+      },
+      { silentError: true },
+    ).then((response) => {
       setReviews((current) => [...current, response.data.review])
     })
   }
@@ -150,25 +157,19 @@ const Product = () => {
           />
         </div>
 
-        <ReviewsSection
-          reviews={reviews}
-          canReview={Boolean(idUser)}
-          onSubmit={submitReview}
-        />
+        <ReviewsSection reviews={reviews} canReview={Boolean(idUser)} onSubmit={submitReview} />
 
         <div className="grid wide">
           <div className="row">
             <div className="l-12 suggest-header mgt-32 ">
-              <span className='l-2 active'>Gợi ý hôm nay</span>
+              <span className="l-2 active">Gợi ý hôm nay</span>
             </div>
           </div>
 
           <div className="row box-product">
-            {
-              products.map((item) => (
-                <ProductGridCard key={item.id} product={item} />
-              ))
-            }
+            {products.map((item) => (
+              <ProductGridCard key={item.id} product={item} />
+            ))}
           </div>
         </div>
       </div>
@@ -180,37 +181,64 @@ const Stars = ({ value }) => {
   const rounded = Math.round(value)
   return (
     <div className="rate">
-      {
-        [1, 2, 3, 4, 5].map((star) => (
-          <i key={star} className={star <= rounded ? 'fa-solid fa-star' : 'fa-regular fa-star'}></i>
-        ))
-      }
+      {[1, 2, 3, 4, 5].map((star) => (
+        <i key={star} className={star <= rounded ? 'fa-solid fa-star' : 'fa-regular fa-star'}></i>
+      ))}
     </div>
   )
 }
 
 const ShowProduct = ({
-  product, addToCart, colors, sizes,
-  selectedColor, setSelectedColor, selectedSize, setSelectedSize,
-  isWishlisted, toggleWishlist, averageRating, reviewCount,
+  product,
+  addToCart,
+  colors,
+  sizes,
+  selectedColor,
+  setSelectedColor,
+  selectedSize,
+  setSelectedSize,
+  isWishlisted,
+  toggleWishlist,
+  averageRating,
+  reviewCount,
 }) => {
   return (
     <>
-      <div className='row box-details'>
+      <div className="row box-details">
         <div className="c-12 m-12 l-5">
           <div className="img-main" style={{ backgroundImage: `url(${product.imgPrimary})` }}></div>
           <div className="img-list">
-            <div className="l-2 img-item" style={{ backgroundImage: `url(${product.productImage})` }}></div>
-            <div className="l-2 img-item" style={{ backgroundImage: `url(${product.productImage})` }}></div>
-            <div className="l-2 img-item" style={{ backgroundImage: `url(${product.productImage})` }}></div>
-            <div className="l-2 img-item" style={{ backgroundImage: `url(${product.productImage})` }}></div>
-            <div className="l-2 img-item" style={{ backgroundImage: `url(${product.productImage})` }}></div>
+            <div
+              className="l-2 img-item"
+              style={{ backgroundImage: `url(${product.productImage})` }}
+            ></div>
+            <div
+              className="l-2 img-item"
+              style={{ backgroundImage: `url(${product.productImage})` }}
+            ></div>
+            <div
+              className="l-2 img-item"
+              style={{ backgroundImage: `url(${product.productImage})` }}
+            ></div>
+            <div
+              className="l-2 img-item"
+              style={{ backgroundImage: `url(${product.productImage})` }}
+            ></div>
+            <div
+              className="l-2 img-item"
+              style={{ backgroundImage: `url(${product.productImage})` }}
+            ></div>
           </div>
         </div>
 
         <div className="c-12 m-12 l-7 describe">
           <span className="name">{product.name}</span>
-          <button type="button" className={`wishlist-toggle ${isWishlisted ? 'active' : ''}`} onClick={toggleWishlist}>
+          <button
+            type="button"
+            className={`wishlist-toggle ${isWishlisted ? 'active' : ''}`}
+            aria-label="Yêu thích"
+            onClick={toggleWishlist}
+          >
             <i className={isWishlisted ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}></i>
           </button>
 
@@ -235,45 +263,43 @@ const ShowProduct = ({
               {formatCurrency(getDiscountedPrice(product.price, product.discount))}
               <i>đ</i>
             </span>
-            <span className='discountPrice'>{product.discount}% Giảm</span>
+            <span className="discountPrice">{product.discount}% Giảm</span>
           </div>
 
           <div className="clotherColor">
-            <div className='clotherColor-item'>Màu:</div>
-            {
-              colors.map((color) => (
-                <div
-                  key={color}
-                  className={`clotherColor-item ${selectedColor === color ? 'active' : ''}`}
-                  onClick={() => setSelectedColor(color)}
-                >
-                  {color}
-                </div>
-              ))
-            }
+            <div className="clotherColor-item">Màu:</div>
+            {colors.map((color) => (
+              <div
+                key={color}
+                className={`clotherColor-item ${selectedColor === color ? 'active' : ''}`}
+                onClick={() => setSelectedColor(color)}
+              >
+                {color}
+              </div>
+            ))}
           </div>
 
           <div className="clotherSize">
-            <div className='clotherSize-item'>Size:</div>
-            {
-              sizes.map((size) => (
-                <div
-                  key={size}
-                  className={`clotherSize-item ${selectedSize === size ? 'active' : ''}`}
-                  onClick={() => setSelectedSize(size)}
-                >
-                  {size}
-                </div>
-              ))
-            }
+            <div className="clotherSize-item">Size:</div>
+            {sizes.map((size) => (
+              <div
+                key={size}
+                className={`clotherSize-item ${selectedSize === size ? 'active' : ''}`}
+                onClick={() => setSelectedSize(size)}
+              >
+                {size}
+              </div>
+            ))}
           </div>
 
-          <button className='btn' onClick={() => addToCart(product)}>
+          <button className="btn" onClick={() => addToCart(product)}>
             <i className="fa-solid fa-cart-plus"></i>
             Thêm vào giỏ hàng
           </button>
 
-          <span id='notiCart' className='notiCart'>Bạn cần đăng nhập để thực hiện thao tác này.</span>
+          <span id="notiCart" className="notiCart">
+            Bạn cần đăng nhập để thực hiện thao tác này.
+          </span>
         </div>
       </div>
     </>
@@ -311,52 +337,50 @@ const ReviewsSection = ({ reviews, canReview, onSubmit }) => {
       <div className="l-12">
         <h3>Đánh giá sản phẩm ({reviews.length})</h3>
 
-        {
-          canReview ? (
-            <form className="review-form" onSubmit={handleSubmit}>
-              <div className="review-form-rating">
-                {
-                  [1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      type="button"
-                      key={star}
-                      aria-label={`${star} sao`}
-                      onClick={() => setRating(star)}
-                    >
-                      <i className={star <= rating ? 'fa-solid fa-star' : 'fa-regular fa-star'}></i>
-                    </button>
-                  ))
-                }
-              </div>
-              <textarea
-                placeholder="Chia sẻ cảm nhận của bạn về sản phẩm này"
-                value={comment}
-                onChange={(event) => setComment(event.target.value)}
-              />
-              {error && <p className="form-error">{error}</p>}
-              <button type="submit" className="btn" disabled={submitting}>Gửi đánh giá</button>
-            </form>
-          ) : (
-            <p className="review-login-hint">Đăng nhập để đánh giá sản phẩm này.</p>
-          )
-        }
+        {canReview ? (
+          <form className="review-form" onSubmit={handleSubmit}>
+            <div className="review-form-rating">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  type="button"
+                  key={star}
+                  aria-label={`${star} sao`}
+                  onClick={() => setRating(star)}
+                >
+                  <i className={star <= rating ? 'fa-solid fa-star' : 'fa-regular fa-star'}></i>
+                </button>
+              ))}
+            </div>
+            <textarea
+              placeholder="Chia sẻ cảm nhận của bạn về sản phẩm này"
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
+            />
+            {error && <p className="form-error">{error}</p>}
+            <button type="submit" className="btn" disabled={submitting}>
+              Gửi đánh giá
+            </button>
+          </form>
+        ) : (
+          <p className="review-login-hint">Đăng nhập để đánh giá sản phẩm này.</p>
+        )}
 
         <ul className="review-list">
-          {
-            reviews.length === 0 && <li className="no-items">Chưa có đánh giá nào cho sản phẩm này.</li>
-          }
-          {
-            reviews.map((review) => (
-              <li key={review.id} className="review-item">
-                <div className="review-item-header">
-                  <strong>{review.userName}</strong>
-                  <Stars value={review.rating} />
-                  <span className="review-date">{new Date(review.createdAt).toLocaleDateString('vi-VN')}</span>
-                </div>
-                {review.comment && <p>{review.comment}</p>}
-              </li>
-            ))
-          }
+          {reviews.length === 0 && (
+            <li className="no-items">Chưa có đánh giá nào cho sản phẩm này.</li>
+          )}
+          {reviews.map((review) => (
+            <li key={review.id} className="review-item">
+              <div className="review-item-header">
+                <strong>{review.userName}</strong>
+                <Stars value={review.rating} />
+                <span className="review-date">
+                  {new Date(review.createdAt).toLocaleDateString('vi-VN')}
+                </span>
+              </div>
+              {review.comment && <p>{review.comment}</p>}
+            </li>
+          ))}
         </ul>
       </div>
     </div>

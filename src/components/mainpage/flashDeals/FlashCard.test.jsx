@@ -13,9 +13,11 @@ describe('FlashCard', () => {
   })
 
   it('renders the discount badge and prices for each fetched product', async () => {
-    getProducts.mockReturnValue(mockApiResponse([
-      { id: 1, name: 'Tai nghe bluetooth', price: 550000, discount: 25, sold: 530 },
-    ]))
+    getProducts.mockReturnValue(
+      mockApiResponse([
+        { id: 1, name: 'Tai nghe bluetooth', price: 550000, discount: 25, sold: 530 },
+      ]),
+    )
 
     renderWithRouter(<FlashCard />)
 

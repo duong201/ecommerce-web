@@ -1,3 +1,6 @@
+import apiClient from './client'
+import { getUsers, getUser, updateUser, deleteUser, loginUser, registerUser } from './users'
+
 jest.mock('./client', () => ({
   __esModule: true,
   default: {
@@ -7,9 +10,6 @@ jest.mock('./client', () => ({
     delete: jest.fn(),
   },
 }))
-
-import apiClient from './client'
-import { getUsers, getUser, updateUser, deleteUser, loginUser, registerUser } from './users'
 
 describe('users api', () => {
   beforeEach(() => {
@@ -51,10 +51,18 @@ describe('users api', () => {
 
   it('forwards an optional axios config (e.g. silentError) for login/register/update', () => {
     loginUser({ username: 'a', password: 'b' }, { silentError: true })
-    expect(apiClient.post).toHaveBeenCalledWith('/user/login', { username: 'a', password: 'b' }, { silentError: true })
+    expect(apiClient.post).toHaveBeenCalledWith(
+      '/user/login',
+      { username: 'a', password: 'b' },
+      { silentError: true },
+    )
 
     registerUser({ username: 'a' }, { silentError: true })
-    expect(apiClient.post).toHaveBeenCalledWith('/user/register', { username: 'a' }, { silentError: true })
+    expect(apiClient.post).toHaveBeenCalledWith(
+      '/user/register',
+      { username: 'a' },
+      { silentError: true },
+    )
 
     updateUser(2, { fullname: 'A' }, { silentError: true })
     expect(apiClient.put).toHaveBeenCalledWith('/user/2', { fullname: 'A' }, { silentError: true })

@@ -7,14 +7,14 @@ const NavbarAdmin = () => {
     <>
       <div className="wrapper">
         <div className="search">
-          <input type="text" placeholder='Tìm kiếm...' name="" id="" />
+          <input type="text" placeholder="Tìm kiếm..." name="" id="" />
           <i className="fa-solid fa-magnifying-glass"></i>
         </div>
         <ul className="list">
           <li className="item">
             <Link to="/admin" className="link">
               <FontAwesomeIcon name="fa-light fa-globe" />
-              <span className='language'>VIE</span>
+              <span className="language">VIE</span>
             </Link>
           </li>
           <li className="item">
@@ -54,7 +54,6 @@ const NavbarAdmin = () => {
               <FontAwesomeIcon name="fa-regular fa-gear" />
             </Link>
           </li>
-
         </ul>
       </div>
     </>

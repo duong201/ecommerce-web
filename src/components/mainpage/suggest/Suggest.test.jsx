@@ -13,14 +13,16 @@ describe('Suggest', () => {
   })
 
   it('renders a card for every fetched product', async () => {
-    getProducts.mockReturnValue(mockApiResponse([
-      { id: 1, name: 'Áo thun nữ basic', price: 150000, discount: 10, sold: 320 },
-      { id: 2, name: 'Giày sneaker unisex', price: 650000, discount: 12, sold: 410 },
-    ]))
+    getProducts.mockReturnValue(
+      mockApiResponse([
+        { id: 1, name: 'Áo thun nữ basic', price: 150000, discount: 10, sold: 320 },
+        { id: 2, name: 'Giày sneaker unisex', price: 650000, discount: 12, sold: 410 },
+      ]),
+    )
 
     renderWithRouter(<Suggest />)
 
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
     expect(screen.getByText('Giày sneaker unisex')).toBeInTheDocument()
   })
 

@@ -24,6 +24,6 @@ describe('AdminPage', () => {
   it('renders the dashboard when an admin session exists', async () => {
     sessionStorage.setItem('idAdmin', '1')
     renderWithRouter(<AdminPage />)
-    await waitFor(() => expect(screen.getByText('Top 10 bán chạy')).toBeInTheDocument())
+    await screen.findByText('Top 10 bán chạy')
   })
 })

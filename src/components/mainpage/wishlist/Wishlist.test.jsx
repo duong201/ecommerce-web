@@ -9,7 +9,15 @@ import Wishlist from './Wishlist'
 jest.mock('../../../common/api')
 
 const wishlist = [
-  { id: 1, iduser: '2', idproduct: 1, name: 'Áo thun nữ basic', imgPrimary: 'img1.jpg', price: 150000, discount: 10 },
+  {
+    id: 1,
+    iduser: '2',
+    idproduct: 1,
+    name: 'Áo thun nữ basic',
+    imgPrimary: 'img1.jpg',
+    price: 150000,
+    discount: 10,
+  },
 ]
 
 describe('Wishlist', () => {
@@ -21,27 +29,27 @@ describe('Wishlist', () => {
 
   it('prompts to log in when logged out', async () => {
     renderWithRouter(<Wishlist />)
-    await waitFor(() => expect(screen.getByText('Đăng nhập để xem danh sách yêu thích')).toBeInTheDocument())
+    await screen.findByText('Đăng nhập để xem danh sách yêu thích')
   })
 
-  it('lists the current user\'s saved products', async () => {
+  it("lists the current user's saved products", async () => {
     sessionStorage.setItem('id', '2')
     renderWithRouter(<Wishlist />)
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
   })
 
   it('shows an empty state when the wishlist has no items', async () => {
     sessionStorage.setItem('id', '2')
     getUserWishlist.mockReturnValue(mockApiResponse([]))
     renderWithRouter(<Wishlist />)
-    await waitFor(() => expect(screen.getByText('Danh sách yêu thích trống')).toBeInTheDocument())
+    await screen.findByText('Danh sách yêu thích trống')
   })
 
   it('removes an item from the wishlist', async () => {
     sessionStorage.setItem('id', '2')
     removeFromWishlist.mockReturnValue(mockApiResponse({ status: 'success' }))
     renderWithRouter(<Wishlist />)
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
 
     await userEvent.click(screen.getByRole('button', { name: 'Xóa' }))
 
@@ -53,11 +61,15 @@ describe('Wishlist', () => {
     addToCart.mockReturnValue(mockApiResponse({ status: 'success', cart: { id: 9 } }))
     removeFromWishlist.mockReturnValue(mockApiResponse({ status: 'success' }))
     renderWithRouter(<Wishlist />)
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
 
     await userEvent.click(screen.getByRole('button', { name: /Thêm vào giỏ/ }))
 
-    await waitFor(() => expect(addToCart).toHaveBeenCalledWith(expect.objectContaining({ iduser: '2', idproduct: 1 })))
+    await waitFor(() =>
+      expect(addToCart).toHaveBeenCalledWith(
+        expect.objectContaining({ iduser: '2', idproduct: 1 }),
+      ),
+    )
     await waitFor(() => expect(removeFromWishlist).toHaveBeenCalledWith('2', 1))
   })
 })

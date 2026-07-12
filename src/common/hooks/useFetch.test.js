@@ -33,10 +33,9 @@ describe('useFetch', () => {
 
   it('re-runs the fetcher when deps change', async () => {
     const fetcher = jest.fn((id) => mockApiResponse({ id }))
-    const { result, rerender } = renderHook(
-      ({ id }) => useFetch(() => fetcher(id), [id], {}),
-      { initialProps: { id: 1 } }
-    )
+    const { result, rerender } = renderHook(({ id }) => useFetch(() => fetcher(id), [id], {}), {
+      initialProps: { id: 1 },
+    })
 
     await waitFor(() => expect(result.current.data).toEqual({ id: 1 }))
 
@@ -46,7 +45,8 @@ describe('useFetch', () => {
   })
 
   it('refetch triggers the fetcher again and updates data', async () => {
-    const fetcher = jest.fn()
+    const fetcher = jest
+      .fn()
       .mockReturnValueOnce(mockApiResponse([1]))
       .mockReturnValueOnce(mockApiResponse([1, 2]))
     const { result } = renderHook(() => useFetch(fetcher, []))

@@ -9,8 +9,20 @@ import ListUser from './ListUser'
 jest.mock('../../../common/api')
 
 const users = [
-  { id: 1, fullname: 'Trương Thế Dương', username: 'admin', phone: '385572171', email: 'admin@tipee.vn' },
-  { id: 2, fullname: 'Nguyễn Văn A', username: 'customer', phone: '912345678', email: 'customer@tipee.vn' },
+  {
+    id: 1,
+    fullname: 'Trương Thế Dương',
+    username: 'admin',
+    phone: '385572171',
+    email: 'admin@tipee.vn',
+  },
+  {
+    id: 2,
+    fullname: 'Nguyễn Văn A',
+    username: 'customer',
+    phone: '912345678',
+    email: 'customer@tipee.vn',
+  },
 ]
 
 describe('ListUser', () => {
@@ -21,20 +33,20 @@ describe('ListUser', () => {
 
   it('renders a row per user', async () => {
     renderWithRouter(<ListUser />)
-    await waitFor(() => expect(screen.getByText('Trương Thế Dương')).toBeInTheDocument())
+    await screen.findByText('Trương Thế Dương')
     expect(screen.getByText('Nguyễn Văn A')).toBeInTheDocument()
   })
 
   it('never renders a password column', async () => {
     renderWithRouter(<ListUser />)
-    await waitFor(() => expect(screen.getByText('Trương Thế Dương')).toBeInTheDocument())
+    await screen.findByText('Trương Thế Dương')
     expect(screen.queryByText('Password')).not.toBeInTheDocument()
   })
 
   it('deleting a user calls the API and removes the row optimistically', async () => {
     deleteUser.mockReturnValue(mockApiResponse({ status: 'success' }))
     renderWithRouter(<ListUser />)
-    await waitFor(() => expect(screen.getByText('Nguyễn Văn A')).toBeInTheDocument())
+    await screen.findByText('Nguyễn Văn A')
 
     await userEvent.click(screen.getAllByText('Xóa')[1])
 
@@ -46,7 +58,7 @@ describe('ListUser', () => {
   it('keeps the row when the delete request fails', async () => {
     deleteUser.mockReturnValue(mockApiResponse({ status: 'error' }))
     renderWithRouter(<ListUser />)
-    await waitFor(() => expect(screen.getByText('Nguyễn Văn A')).toBeInTheDocument())
+    await screen.findByText('Nguyễn Văn A')
 
     await userEvent.click(screen.getAllByText('Xóa')[1])
 

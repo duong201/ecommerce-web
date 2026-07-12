@@ -68,14 +68,23 @@ describe('buildOrderColumns', () => {
     const columns = buildOrderColumns()
     const keys = columns.map((c) => c.key)
     expect(keys).toEqual([
-      'id', 'name', 'amount', 'price', 'description', 'idorder', 'iduser', 'address', 'payment', 'status',
+      'id',
+      'name',
+      'amount',
+      'price',
+      'description',
+      'idorder',
+      'iduser',
+      'address',
+      'payment',
+      'status',
     ])
   })
 
   it('formats price as currency and renders name+image together', () => {
     const columns = buildOrderColumns()
     expect(columns.find((c) => c.key === 'price').render(order)).toBe(
-      Intl.NumberFormat().format(572000)
+      Intl.NumberFormat().format(572000),
     )
     const nameCol = columns.find((c) => c.key === 'name')
     render(<>{nameCol.render(order)}</>)
@@ -84,7 +93,13 @@ describe('buildOrderColumns', () => {
 })
 
 describe('buildUserColumns', () => {
-  const user = { id: 2, fullname: 'Nguyễn Văn A', phone: '912345678', email: 'a@b.com', username: 'a' }
+  const user = {
+    id: 2,
+    fullname: 'Nguyễn Văn A',
+    phone: '912345678',
+    email: 'a@b.com',
+    username: 'a',
+  }
 
   it('prefixes the phone number with a leading 0', () => {
     const columns = buildUserColumns({ onDelete: jest.fn() })
@@ -107,7 +122,7 @@ describe('buildUserColumns', () => {
     render(<MemoryRouter>{actionCol.render(user)}</MemoryRouter>)
     expect(screen.getByRole('link', { name: 'Xem' })).toHaveAttribute(
       'href',
-      '/admin/list-user/user/2'
+      '/admin/list-user/user/2',
     )
   })
 

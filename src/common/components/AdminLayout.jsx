@@ -14,7 +14,11 @@ const AdminLayout = ({ children }) => {
         <div className="row" style={{ margin: '0', width: '100%' }}>
           <SidebarAdmin isOpen={sidebarOpen} onNavigate={() => setSidebarOpen(false)} />
           {sidebarOpen && (
-            <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
+            <div
+              className="sidebar-backdrop"
+              data-testid="sidebar-backdrop"
+              onClick={() => setSidebarOpen(false)}
+            />
           )}
           {children}
         </div>

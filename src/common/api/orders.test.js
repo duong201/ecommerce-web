@@ -1,3 +1,6 @@
+import apiClient from './client'
+import { getOrders, addOrder } from './orders'
+
 jest.mock('./client', () => ({
   __esModule: true,
   default: {
@@ -5,9 +8,6 @@ jest.mock('./client', () => ({
     post: jest.fn(),
   },
 }))
-
-import apiClient from './client'
-import { getOrders, addOrder } from './orders'
 
 describe('orders api', () => {
   beforeEach(() => {

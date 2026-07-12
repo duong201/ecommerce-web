@@ -10,7 +10,7 @@ const AdminPage = () => {
 
   useEffect(() => {
     if (!idAdmin) {
-      history.push("/user/login")
+      history.push('/user/login')
     }
   }, [idAdmin, history])
 

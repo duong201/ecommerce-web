@@ -4,19 +4,32 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Switch } from 'react-router-dom'
 import { renderWithRouter } from '../../../test-utils/renderWithRouter'
 import { mockApiResponse } from '../../../test-utils/mockApiResponse'
-import {
-  getCarts,
-  deleteCartItem,
-  changeCartAmount,
-  getProducts,
-} from '../../../common/api'
+import { getCarts, deleteCartItem, changeCartAmount, getProducts } from '../../../common/api'
 import Cart from './Cart'
 
 jest.mock('../../../common/api')
 
 const carts = [
-  { id: 1, iduser: '2', idproduct: 1, name: 'Áo thun nữ basic', imgPrimary: 'img1.jpg', price: 150000, discount: 10, amount: 2 },
-  { id: 2, iduser: '9', idproduct: 5, name: 'Not mine', imgPrimary: 'img2.jpg', price: 500000, discount: 0, amount: 1 },
+  {
+    id: 1,
+    iduser: '2',
+    idproduct: 1,
+    name: 'Áo thun nữ basic',
+    imgPrimary: 'img1.jpg',
+    price: 150000,
+    discount: 10,
+    amount: 2,
+  },
+  {
+    id: 2,
+    iduser: '9',
+    idproduct: 5,
+    name: 'Not mine',
+    imgPrimary: 'img2.jpg',
+    price: 500000,
+    discount: 0,
+    amount: 1,
+  },
 ]
 
 describe('Cart', () => {
@@ -33,19 +46,19 @@ describe('Cart', () => {
 
   it('only shows cart items belonging to the logged-in user', async () => {
     renderWithRouter(<Cart />)
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
     expect(screen.queryByText('Not mine')).not.toBeInTheDocument()
   })
 
   it('shows an empty-cart message when the user has no items', async () => {
     sessionStorage.setItem('id', '404')
     renderWithRouter(<Cart />)
-    await waitFor(() => expect(screen.getByText('Giỏ hàng trống')).toBeInTheDocument())
+    await screen.findByText('Giỏ hàng trống')
   })
 
   it('computes the discounted line total and grand total', async () => {
     renderWithRouter(<Cart />)
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
     // 150000 * 0.9 * 2 = 270000
     expect(screen.getByText(Intl.NumberFormat().format(270000))).toBeInTheDocument()
   })
@@ -53,25 +66,19 @@ describe('Cart', () => {
   it('increments the amount and calls the API with the new absolute amount', async () => {
     changeCartAmount.mockReturnValue(mockApiResponse({ status: 'success' }))
     renderWithRouter(<Cart />)
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
 
-    await userEvent.click(screen.getAllByRole('button', { name: '' }).find((btn) =>
-      btn.querySelector('.fa-plus')
-    ))
+    await userEvent.click(screen.getByRole('button', { name: 'Tăng số lượng' }))
 
-    await waitFor(() =>
-      expect(changeCartAmount).toHaveBeenCalledWith({ id: 1, amount: 3 })
-    )
+    await waitFor(() => expect(changeCartAmount).toHaveBeenCalledWith({ id: 1, amount: 3 }))
   })
 
   it('does not let amount drop below 1', async () => {
     getCarts.mockReturnValue(mockApiResponse([{ ...carts[0], amount: 1 }]))
     renderWithRouter(<Cart />)
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
 
-    await userEvent.click(screen.getAllByRole('button', { name: '' }).find((btn) =>
-      btn.querySelector('.fa-minus')
-    ))
+    await userEvent.click(screen.getByRole('button', { name: 'Giảm số lượng' }))
 
     expect(changeCartAmount).not.toHaveBeenCalled()
   })
@@ -79,7 +86,7 @@ describe('Cart', () => {
   it('removes an item and calls deleteCartItem', async () => {
     deleteCartItem.mockReturnValue(mockApiResponse({ status: 'success' }))
     renderWithRouter(<Cart />)
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
 
     await userEvent.click(screen.getByRole('button', { name: 'Xóa' }))
 
@@ -97,9 +104,9 @@ describe('Cart', () => {
             <Cart />
           </Route>
         </Switch>
-      </MemoryRouter>
+      </MemoryRouter>,
     )
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
 
     await userEvent.click(screen.getByRole('button', { name: 'Thanh toán' }))
 

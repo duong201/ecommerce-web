@@ -31,7 +31,7 @@ describe('Search', () => {
   it('shows the cart badge count for only the current user', async () => {
     sessionStorage.setItem('id', '2')
     renderWithRouter(<Search />)
-    await waitFor(() => expect(screen.getByText('2')).toBeInTheDocument())
+    await screen.findByText('2')
   })
 
   it('shows 0 when the user has no cart items', async () => {
@@ -70,7 +70,7 @@ describe('Search', () => {
             <Search />
           </Route>
         </Switch>
-      </MemoryRouter>
+      </MemoryRouter>,
     )
     const input = screen.getByPlaceholderText('Nhập để tìm kiếm')
 

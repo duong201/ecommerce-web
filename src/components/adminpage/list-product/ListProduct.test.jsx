@@ -1,5 +1,5 @@
 import React from 'react'
-import { screen, waitFor } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { renderWithRouter } from '../../../test-utils/renderWithRouter'
 import { mockApiResponse } from '../../../test-utils/mockApiResponse'
 import { getProducts } from '../../../common/api'
@@ -10,9 +10,11 @@ jest.mock('../../../common/api')
 describe('ListProduct', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    getProducts.mockReturnValue(mockApiResponse([
-      { id: 1, name: 'Áo thun nữ basic', price: 150000, discount: 10, sold: 320, amount: 80 },
-    ]))
+    getProducts.mockReturnValue(
+      mockApiResponse([
+        { id: 1, name: 'Áo thun nữ basic', price: 150000, discount: 10, sold: 320, amount: 80 },
+      ]),
+    )
   })
 
   it('renders the page title and the admin layout chrome', async () => {
@@ -23,6 +25,6 @@ describe('ListProduct', () => {
 
   it('renders a row per product', async () => {
     renderWithRouter(<ListProduct />)
-    await waitFor(() => expect(screen.getByText('Áo thun nữ basic')).toBeInTheDocument())
+    await screen.findByText('Áo thun nữ basic')
   })
 })

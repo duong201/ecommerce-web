@@ -7,9 +7,13 @@ import Navbar from './Navbar'
 const renderNavbar = (route = '/') =>
   render(
     <MemoryRouter initialEntries={[route]}>
-      <Route path="/" exact><Navbar /></Route>
-      <Route path="/user/login" exact><div>Login Page</div></Route>
-    </MemoryRouter>
+      <Route path="/" exact>
+        <Navbar />
+      </Route>
+      <Route path="/user/login" exact>
+        <div>Login Page</div>
+      </Route>
+    </MemoryRouter>,
   )
 
 describe('Navbar', () => {
@@ -27,7 +31,10 @@ describe('Navbar', () => {
     sessionStorage.setItem('name', 'customer')
     renderNavbar()
     expect(screen.getByText('customer')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Xem thông tin' })).toHaveAttribute('href', '/user/info/2')
+    expect(screen.getByRole('link', { name: 'Xem thông tin' })).toHaveAttribute(
+      'href',
+      '/user/info/2',
+    )
   })
 
   it('logout clears the user session and redirects to login', async () => {

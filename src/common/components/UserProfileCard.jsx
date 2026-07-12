@@ -4,7 +4,11 @@ import { DEFAULT_AVATAR_URL } from '../constants'
 
 const UserProfileCard = ({ user = {}, editHref }) => (
   <>
-    {editHref && <Link to={editHref} className="info-edit">Edit</Link>}
+    {editHref && (
+      <Link to={editHref} className="info-edit">
+        Edit
+      </Link>
+    )}
     <div className="title">Thông tin cá nhân</div>
     <div className="item row" style={{ margin: 0 }}>
       <img src={DEFAULT_AVATAR_URL} className="l-4 itemImg" alt="" />

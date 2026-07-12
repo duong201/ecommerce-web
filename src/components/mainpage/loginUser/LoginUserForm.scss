@@ -17,7 +17,7 @@
 
       &.active {
         display: block;
-        color: #E0144C;
+        color: #e0144c;
       }
     }
   }
@@ -37,12 +37,14 @@
       position: relative;
       z-index: 1;
       background: var(--white-color);
-      border-radius: .2rem;
+      border-radius: 0.2rem;
       max-width: 360px;
       margin: 0 auto 100px;
       padding: 45px;
       text-align: center;
-      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+      box-shadow:
+        0 0 20px 0 rgba(0, 0, 0, 0.2),
+        0 5px 5px 0 rgba(0, 0, 0, 0.24);
 
       input {
         background: var(--background-color);
@@ -52,7 +54,7 @@
         margin: 0 0 15px;
         padding: 15px;
         box-sizing: border-box;
-        border-radius: .2rem;
+        border-radius: 0.2rem;
         font-size: 14px;
       }
 
@@ -60,20 +62,19 @@
         text-transform: uppercase;
         background: var(--white-color);
         width: 100%;
-        border: .1rem solid var(--primary-color);
+        border: 0.1rem solid var(--primary-color);
         outline: none;
         padding: 15px;
         color: var(--primary-color);
         font-size: 14px;
         font-weight: 500;
         cursor: pointer;
-        border-radius: .2rem;
-
+        border-radius: 0.2rem;
 
         &:hover {
           background: var(--primary-color);
           color: var(--white-color);
-          transition: .2s;
+          transition: 0.2s;
         }
       }
 
@@ -89,7 +90,7 @@
 
           &:hover {
             text-decoration: underline;
-            transition: .2s;
+            transition: 0.2s;
           }
         }
       }

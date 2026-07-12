@@ -1,6 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
-import Slider from "react-slick";
+import { Link } from 'react-router-dom'
+import Slider from 'react-slick'
 import { useFetch } from '../../../common/hooks/useFetch'
 import { getProducts } from '../../../common/api'
 import { formatCurrency, getDiscountedPrice } from '../../../common/utils/format'
@@ -49,25 +49,28 @@ const FlashCard = () => {
     <>
       <div className="flash-card">
         <Slider {...settings}>
-          {
-            products.map((product) => {
-              return (
-                <div className="box" key={product.id}>
-                  <Link to={`/product-detail/${product.id}`} className="product">
-                    <span className="discount">- {product.discount} %</span>
-                    <div className="img" style={{ backgroundImage: `url(${product.imgPrimary})` }}></div>
-                    <div className="product-details">
-                      <span className='name'>{product.name}</span>
-                      <div className="price">
-                        <span className='old-price'>{formatCurrency(product.price)}</span>
-                        <span className='new-price'>{formatCurrency(getDiscountedPrice(product.price, product.discount))}</span>
-                      </div>
+          {products.map((product) => {
+            return (
+              <div className="box" key={product.id}>
+                <Link to={`/product-detail/${product.id}`} className="product">
+                  <span className="discount">- {product.discount} %</span>
+                  <div
+                    className="img"
+                    style={{ backgroundImage: `url(${product.imgPrimary})` }}
+                  ></div>
+                  <div className="product-details">
+                    <span className="name">{product.name}</span>
+                    <div className="price">
+                      <span className="old-price">{formatCurrency(product.price)}</span>
+                      <span className="new-price">
+                        {formatCurrency(getDiscountedPrice(product.price, product.discount))}
+                      </span>
                     </div>
-                  </Link>
-                </div>
-              )
-            })
-          }
+                  </div>
+                </Link>
+              </div>
+            )
+          })}
         </Slider>
       </div>
     </>

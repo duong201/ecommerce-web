@@ -3,12 +3,12 @@
 :root {
   --white-color: #fff;
   --black-color: #000;
-  --red-color: #FF1E00;
-  --primary-color: #1C6758;
+  --red-color: #ff1e00;
+  --primary-color: #1c6758;
   --black: #130f40;
-  --background-color: #EEF2E6;
+  --background-color: #eef2e6;
   --text-color: #333;
-  --primary-box-shadow: 0 .4rem 1.6rem rgb(43 52 69 / 10%);
+  --primary-box-shadow: 0 0.4rem 1.6rem rgb(43 52 69 / 10%);
   --header-height: 12rem;
   --navbar-height: 3rem;
   --header-with-search-height: calc(var(--header-height) - var(--navbar-height));
@@ -35,7 +35,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: .8rem;
+  width: 0.8rem;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -45,20 +45,19 @@ body {
 
 .btn {
   background: var(--primary-color);
-  padding: .8rem 1.2rem;
+  padding: 0.8rem 1.2rem;
   border: none;
   outline: none;
   color: var(--white-color);
   font-weight: 500;
   font-size: 1.6rem;
-  border-radius: .3rem;
-  transition: .5s;
+  border-radius: 0.3rem;
+  transition: 0.5s;
 }
 
 .btn:hover {
   cursor: pointer;
 }
-
 
 .primary-text {
   color: var(--text-color);

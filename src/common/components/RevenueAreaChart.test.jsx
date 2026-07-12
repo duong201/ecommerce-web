@@ -1,17 +1,20 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import RevenueAreaChart, { MOCK_REVENUE_DATA } from './RevenueAreaChart'
 
 describe('RevenueAreaChart', () => {
   it('renders a responsive chart container without crashing', () => {
-    const { container } = render(<RevenueAreaChart />)
-    expect(container.querySelector('.recharts-responsive-container')).toBeInTheDocument()
+    render(<RevenueAreaChart />)
+    expect(screen.getByTestId('revenue-area-chart')).toBeInTheDocument()
   })
 
   it('accepts custom data without crashing', () => {
-    const data = [{ name: 'A', total: 10 }, { name: 'B', total: 20 }]
-    const { container } = render(<RevenueAreaChart data={data} />)
-    expect(container.querySelector('.recharts-responsive-container')).toBeInTheDocument()
+    const data = [
+      { name: 'A', total: 10 },
+      { name: 'B', total: 20 },
+    ]
+    render(<RevenueAreaChart data={data} />)
+    expect(screen.getByTestId('revenue-area-chart')).toBeInTheDocument()
   })
 
   it('exports mock revenue data with 7 entries', () => {

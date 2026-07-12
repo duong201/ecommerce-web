@@ -17,27 +17,33 @@ const renderPage = () =>
 describe('EditingUser', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    getUser.mockReturnValue(mockApiResponse({
-      fullname: 'Nguyễn Văn A',
-      phone: '912345678',
-      address: 'Huế',
-      username: 'customer',
-      email: 'a@b.com',
-      country: 'VIE',
-    }))
+    getUser.mockReturnValue(
+      mockApiResponse({
+        fullname: 'Nguyễn Văn A',
+        phone: '912345678',
+        address: 'Huế',
+        username: 'customer',
+        email: 'a@b.com',
+        country: 'VIE',
+      }),
+    )
   })
 
   it('pre-fills the form fields from the fetched user (the original bug: fields were never bound)', async () => {
-    const { container } = renderPage()
-    await waitFor(() => expect(screen.getByPlaceholderText('Họ và tên')).toHaveValue('Nguyễn Văn A'))
+    renderPage()
+    await waitFor(() =>
+      expect(screen.getByPlaceholderText('Họ và tên')).toHaveValue('Nguyễn Văn A'),
+    )
     expect(screen.getByPlaceholderText('Số điện thoại')).toHaveValue('912345678')
     expect(screen.getByPlaceholderText('duong2010')).toHaveValue('customer')
-    expect(container.querySelector('input[type="email"]')).toHaveValue('a@b.com')
+    expect(screen.getByPlaceholderText('duong@gmail.com')).toHaveValue('a@b.com')
   })
 
   it('typing updates the corresponding field', async () => {
     renderPage()
-    await waitFor(() => expect(screen.getByPlaceholderText('Họ và tên')).toHaveValue('Nguyễn Văn A'))
+    await waitFor(() =>
+      expect(screen.getByPlaceholderText('Họ và tên')).toHaveValue('Nguyễn Văn A'),
+    )
 
     const fullnameInput = screen.getByPlaceholderText('Họ và tên')
     await userEvent.clear(fullnameInput)
@@ -49,7 +55,9 @@ describe('EditingUser', () => {
   it('submitting calls updateUser with the current form state and navigates back (the original bug: no submit handler existed)', async () => {
     updateUser.mockReturnValue(mockApiResponse({ status: 'success' }))
     renderPage()
-    await waitFor(() => expect(screen.getByPlaceholderText('Họ và tên')).toHaveValue('Nguyễn Văn A'))
+    await waitFor(() =>
+      expect(screen.getByPlaceholderText('Họ và tên')).toHaveValue('Nguyễn Văn A'),
+    )
 
     await userEvent.click(screen.getByRole('button', { name: 'Send' }))
 
@@ -57,8 +65,8 @@ describe('EditingUser', () => {
       expect(updateUser).toHaveBeenCalledWith(
         '2',
         expect.objectContaining({ fullname: 'Nguyễn Văn A' }),
-        { silentError: true }
-      )
+        { silentError: true },
+      ),
     )
   })
 })

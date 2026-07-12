@@ -1,3 +1,6 @@
+import apiClient from './client'
+import { getProductReviews, addReview, deleteReview } from './reviews'
+
 jest.mock('./client', () => ({
   __esModule: true,
   default: {
@@ -6,9 +9,6 @@ jest.mock('./client', () => ({
     delete: jest.fn(),
   },
 }))
-
-import apiClient from './client'
-import { getProductReviews, addReview, deleteReview } from './reviews'
 
 describe('reviews api', () => {
   beforeEach(() => {

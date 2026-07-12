@@ -11,6 +11,6 @@ export const renderWithRouter = (ui, { route = '/', path = '/', ...renderOptions
     <MemoryRouter initialEntries={[route]}>
       <Route path={path}>{ui}</Route>
     </MemoryRouter>,
-    renderOptions
+    renderOptions,
   )
 }

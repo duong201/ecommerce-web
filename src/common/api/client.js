@@ -17,7 +17,7 @@ apiClient.interceptors.response.use(
       toast.error(error.friendlyMessage)
     }
     return Promise.reject(error)
-  }
+  },
 )
 
 export default apiClient

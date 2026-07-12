@@ -19,9 +19,15 @@ describe('handleCart reducer', () => {
   })
 
   it('leaves other items untouched when adding one item', () => {
-    const initial = [{ id: 1, name: 'A', qty: 1 }, { id: 2, name: 'B', qty: 3 }]
+    const initial = [
+      { id: 1, name: 'A', qty: 1 },
+      { id: 2, name: 'B', qty: 3 },
+    ]
     const state = handleCart(initial, ADDCART({ id: 2, name: 'B' }))
-    expect(state).toEqual([{ id: 1, name: 'A', qty: 1 }, { id: 2, name: 'B', qty: 4 }])
+    expect(state).toEqual([
+      { id: 1, name: 'A', qty: 1 },
+      { id: 2, name: 'B', qty: 4 },
+    ])
   })
 
   it('decrements qty when deleting one of multiple', () => {
