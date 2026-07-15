@@ -65,15 +65,19 @@ You don't have to ever use `eject`. The curated feature set is suitable for smal
 
 - **Prettier** (`.prettierrc.json`, `.prettierignore`) — shared formatting rules: no semicolons, single quotes, 2-space indent, `printWidth: 100`.
 - **ESLint** — uses `react-scripts`'s built-in config (`react-app`, `react-app/jest`) plus `eslint-config-prettier` to disable formatting rules that conflict with Prettier. ESLint only handles correctness/best practices, Prettier handles formatting — `eslint-plugin-prettier` is intentionally not used, to keep linting fast.
-- **Husky + lint-staged** — on every `git commit`, the `.husky/pre-commit` hook runs `eslint --fix` + `prettier --write` on staged `src/**/*.{js,jsx}` files (and `prettier --write` for `*.{json,css,scss,md}`). The commit is blocked if any ESLint error can't be auto-fixed.
+- **Husky + lint-staged** — on every `git commit`, the `.husky/pre-commit` hook runs `eslint --fix` + `prettier --write` on staged `src/**/*.{ts,tsx}` files (and `prettier --write` for `*.{json,css,scss,md}`). The commit is blocked if any ESLint error can't be auto-fixed.
   - The hook is installed automatically via the `"prepare": "husky"` script on every `npm install`.
+
+## TypeScript
+
+The codebase is TypeScript (`.ts`/`.tsx`) with `strict` mode on. Shared domain types (`Product`, `Order`, `User`, `Cart`, `Coupon`, `Review`, etc.) live in `src/interface/` as declaration files, one per concept, re-exported from `src/interface/index.d.ts`.
 
 ## Error Handling & Toasts
 
-- `src/common/constants/errorCodes.js` — maps backend error `code`s to the Vietnamese text shown to users.
-- `src/common/utils/errorMessage.js` — `getErrorMessage(error)` (used in axios `.catch` blocks) and `getErrorMessageFromCode(code, fallback)` (used when the error comes back in a 200 response shaped like `{ status: 'error', code, message }`).
-- `src/common/utils/toast.js` — `toast.success/error/warning/info` wrapper around `antd/lib/message`.
-- `src/common/api/client.js` — axios response interceptor: **every failed request automatically shows a toast**, unless the request is called with `{ silentError: true }` (used by forms that display the error inline below the relevant input instead, e.g. `LoginUserForm`, `RegisterUser`, `Checkout`, `EditingUser`).
+- `src/common/constants/errorCodes.ts` — maps backend error `code`s to the Vietnamese text shown to users.
+- `src/common/utils/errorMessage.ts` — `getErrorMessage(error)` (used in axios `.catch` blocks) and `getErrorMessageFromCode(code, fallback)` (used when the error comes back in a 200 response shaped like `{ status: 'error', code, message }`).
+- `src/common/utils/toast.ts` — `toast.success/error/warning/info` wrapper around `antd/lib/message`.
+- `src/common/api/client.ts` — axios response interceptor: **every failed request automatically shows a toast**, unless the request is called with `{ silentError: true }` (used by forms that display the error inline below the relevant input instead, e.g. `LoginUserForm`, `RegisterUser`, `Checkout`, `EditingUser`).
 
 ## Learn More
 
