@@ -1,0 +1,268 @@
+@use '../../../styles' as *;
+
+.cart {
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: $space-3;
+    margin-bottom: $space-6;
+
+    h1 {
+      font-size: $text-3xl;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      color: var(--text-muted);
+    }
+  }
+
+  &__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 36rem;
+    gap: $space-6;
+    align-items: start;
+
+    @include down(lg) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__lines {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+  }
+
+  &__lines-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    margin-top: $space-3;
+  }
+
+  &__summary {
+    position: sticky;
+    top: 12rem;
+
+    @include down(lg) {
+      position: static;
+    }
+  }
+}
+
+// --- one cart line -----------------------------------------------------------
+.cart-line {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-4;
+  background: var(--surface);
+  border: 0.1rem solid var(--border-subtle);
+  border-radius: $radius-lg;
+  transition: border-color $duration-fast $ease-out;
+
+  &:hover {
+    border-color: var(--border);
+  }
+
+  &__image {
+    width: 8rem;
+    height: 8rem;
+    object-fit: cover;
+    border-radius: $radius-md;
+    background: var(--surface-sunken);
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: $text-base;
+    font-weight: $weight-semibold;
+    color: var(--text-strong);
+    @include line-clamp(2);
+
+    &:hover {
+      color: var(--brand-contrast);
+    }
+  }
+
+  &__variant {
+    font-size: $text-md;
+    color: var(--text-muted);
+  }
+
+  &__sku {
+    font-family: $font-mono;
+    font-size: $text-sm;
+  }
+
+  &__total {
+    min-width: 11rem;
+    font-size: $text-lg;
+    font-weight: $weight-semibold;
+    color: var(--text-strong);
+    text-align: right;
+  }
+
+  // Phones: image left, everything else stacked to its right, actions on a
+  // final row. The five-column desktop grid is unusable under ~640px.
+  @include down(md) {
+    grid-template-columns: 7rem minmax(0, 1fr);
+    grid-template-areas:
+      'image info'
+      'stepper stepper'
+      'total remove';
+    gap: $space-3;
+
+    &__image {
+      grid-area: image;
+      width: 7rem;
+      height: 7rem;
+    }
+    &__info {
+      grid-area: info;
+    }
+    &__stepper {
+      grid-area: stepper;
+      justify-self: start;
+    }
+    &__total {
+      grid-area: total;
+      text-align: left;
+      min-width: 0;
+    }
+    &__remove {
+      grid-area: remove;
+      justify-self: end;
+    }
+  }
+}
+
+// --- summary panel -----------------------------------------------------------
+.cart-summary {
+  gap: $space-5;
+
+  h2 {
+    font-size: $text-xl;
+  }
+
+  &__coupon {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+    padding-bottom: $space-4;
+    border-bottom: 0.1rem solid var(--border-subtle);
+  }
+
+  &__coupon-form {
+    display: flex;
+    align-items: flex-start;
+    gap: $space-2;
+
+    .ui-field {
+      flex: 1;
+    }
+  }
+
+  &__coupon-applied {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+  }
+
+  &__coupon-message {
+    font-size: $text-sm;
+    color: var(--danger-text);
+  }
+
+  &__lines {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+
+    > div {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: $space-4;
+    }
+
+    dt {
+      color: var(--text-muted);
+    }
+
+    dd {
+      font-weight: $weight-medium;
+      color: var(--text-strong);
+    }
+
+    .is-discount dd {
+      color: var(--success-text);
+    }
+
+    .is-total {
+      padding-top: $space-3;
+      border-top: 0.1rem solid var(--border-subtle);
+
+      dt {
+        font-size: $text-lg;
+        font-weight: $weight-semibold;
+        color: var(--text-strong);
+      }
+
+      dd {
+        font-size: $text-2xl;
+        font-weight: $weight-bold;
+        color: var(--brand-contrast);
+      }
+    }
+  }
+
+  // Progress toward the free-delivery threshold. Showing how close the shopper
+  // is converts better than only stating the rule.
+  &__free-delivery {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+    padding: $space-3;
+    background: var(--accent-soft);
+    border-radius: $radius-md;
+    font-size: $text-md;
+    color: var(--accent-text);
+
+    strong {
+      font-weight: $weight-bold;
+    }
+  }
+
+  &__bar {
+    height: 0.6rem;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: $radius-pill;
+    overflow: hidden;
+
+    span {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      border-radius: inherit;
+      transition: width $duration-slow $ease-out;
+    }
+  }
+
+  &__issues {
+    margin-top: -$space-2;
+  }
+}

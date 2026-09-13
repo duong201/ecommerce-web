@@ -1,421 +1,346 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import './ProductDetail.scss'
-import { useParams } from 'react-router-dom'
-import { useFetch } from '../../../common/hooks/useFetch'
+import { useTranslation } from 'react-i18next'
+import React, { useCallback, useEffect, useState } from 'react'
+import { translateLabel } from '../../../common/utils/labels'
 import {
-  getProduct,
-  getProducts,
-  getCarts,
-  addToCart as postAddToCart,
-  updateCartAmount,
-  getProductReviews,
-  addReview,
-  getUserWishlist,
-  addToWishlist,
-  removeFromWishlist,
-} from '../../../common/api'
-import { getCurrentUserId, getCurrentUserName } from '../../../common/utils/session'
-import { formatCurrency, getDiscountedPrice } from '../../../common/utils/format'
-import { getErrorMessage } from '../../../common/utils/errorMessage'
-import ProductGridCard from '../../../common/components/ProductGridCard'
-import type { AxiosResponse } from 'axios'
-import type { Product as ProductModel, CartItem, Review, WishlistItem } from '../../../interface'
+  AcUnitOutlinedIcon,
+  PlaceOutlinedIcon,
+  ScaleOutlinedIcon,
+  ShoppingCartOutlinedIcon,
+} from '../../../common/components/ui/icons'
+import { Link, useParams } from 'react-router-dom'
+import './ProductDetail.scss'
+import { useFetch } from '../../../common/hooks/useFetch'
+import { cartService, productService, reviewService } from '../../../services'
+import { NO_IMAGE_URL } from '../../../common/constants'
+import {
+  discountPercent,
+  formatPrice,
+  formatQuantity,
+  formatQuantityWithUnit,
+  formatUnit,
+} from '../../../common/utils/format'
+import { toast } from '../../../common/utils/toast'
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  EmptyState,
+  LoadingState,
+  Rating,
+  Stepper,
+} from '../../../common/components/ui'
+import type { Paginated, Product, ProductVariant, Review } from '../../../interface'
 
-const COLORS = ['Đen', 'Trắng', 'Xám']
-const SIZES = ['28', '29', '30']
-
-const showLoginPrompt = () => {
-  document.getElementById('notiCart')?.classList.add('active')
-  setTimeout(() => document.getElementById('notiCart')?.classList.remove('active'), 2000)
+const EMPTY_REVIEWS: Paginated<Review> = {
+  data: [],
+  meta: { total: 0, page: 1, limit: 10, totalPages: 0 },
 }
 
-const Product = () => {
-  const { id } = useParams<{ id: string }>()
-  const idUser = getCurrentUserId()
-  const userName = getCurrentUserName()
+/**
+ * Product page: gallery, variant picker, quantity stepper and reviews.
+ *
+ * Fruit is sold per variant (500g punnet, 1kg bag, a tray), and each variant
+ * carries its own price, step size and stock - so the price, the stepper bounds
+ * and the add-to-cart button all follow the selected variant rather than the
+ * product.
+ */
+const ProductDetail = () => {
+  const { t } = useTranslation()
+  const { idOrSlug } = useParams<{ idOrSlug: string }>()
 
-  const { data: product } = useFetch<Partial<ProductModel>>(() => getProduct(id), [id], {})
-  const { data: products } = useFetch<ProductModel[]>(getProducts, [], [])
-  const { data: cartItem, setData: setCartItem } = useFetch<CartItem[]>(getCarts, [], [])
-  const { data: reviews, setData: setReviews } = useFetch<Review[]>(
-    () => getProductReviews(id),
-    [id],
-    [],
-  )
-  const { data: wishlist, setData: setWishlist } = useFetch<WishlistItem[]>(
-    () =>
-      idUser
-        ? getUserWishlist(idUser)
-        : (Promise.resolve({ data: [] }) as unknown as Promise<AxiosResponse<WishlistItem[]>>),
-    [id, idUser],
-    [],
-  )
+  const fetchProduct = useCallback(() => productService.get(idOrSlug), [idOrSlug])
+  const { data: product, loading, error } = useFetch<Product | null>(fetchProduct, [idOrSlug], null)
 
-  const [selectedColor, setSelectedColor] = useState(COLORS[0])
-  const [selectedSize, setSelectedSize] = useState(SIZES[0])
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null)
+  const [quantity, setQuantity] = useState(1)
+  const [activeImage, setActiveImage] = useState(0)
+  const [adding, setAdding] = useState(false)
 
-  const isWishlisted = useMemo(
-    () => wishlist.some((item) => String(item.idproduct) === String(product.id)),
-    [wishlist, product.id],
-  )
-
-  const averageRating = useMemo(() => {
-    if (reviews.length === 0) return 0
-    return reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
-  }, [reviews])
-
-  const addToCart = (product: Partial<ProductModel>) => {
-    if (!idUser) {
-      showLoginPrompt()
-      return
-    }
-
-    const findCart = cartItem.find(
-      (data) =>
-        data.idproduct === product.id &&
-        String(data.iduser) === String(idUser) &&
-        (data.color || '') === selectedColor &&
-        (data.size || '') === selectedSize,
-    )
-
-    if (findCart) {
-      const nextAmount = findCart.amount + 1
-      updateCartAmount({ amount: nextAmount, id: findCart.id }).then(() => {
-        setCartItem((current) =>
-          current.map((data) => (data.id === findCart.id ? { ...data, amount: nextAmount } : data)),
-        )
-      })
-    } else {
-      postAddToCart({
-        iduser: idUser,
-        idproduct: product.id as number,
-        name: product.name as string,
-        imgPrimary: product.imgPrimary as string,
-        price: product.price as number,
-        discount: product.discount as number,
-        amount: 1,
-        color: selectedColor,
-        size: selectedSize,
-      }).then((response) => {
-        if (response.data.status === 'success') {
-          setCartItem((current) => [...current, response.data.cart])
-        }
-      })
-    }
-  }
-
-  const toggleWishlist = () => {
-    if (!idUser) {
-      showLoginPrompt()
-      return
-    }
-
-    if (isWishlisted) {
-      removeFromWishlist(idUser, product.id as number).then(() => {
-        setWishlist((current) =>
-          current.filter((item) => String(item.idproduct) !== String(product.id)),
-        )
-      })
-    } else {
-      addToWishlist({
-        iduser: idUser,
-        idproduct: product.id as number,
-        name: product.name as string,
-        imgPrimary: product.imgPrimary as string,
-        price: product.price as number,
-        discount: product.discount as number,
-      }).then((response) => {
-        if (response.data.wishlistItem) {
-          setWishlist((current) => [...current, response.data.wishlistItem])
-        }
-      })
-    }
-  }
-
-  const submitReview = ({ rating, comment }: { rating: number; comment: string }) => {
-    return addReview(
-      {
-        idproduct: product.id as number,
-        iduser: idUser as string,
-        userName: userName || 'Khách hàng',
-        rating,
-        comment,
-      },
-      { silentError: true },
-    ).then((response) => {
-      setReviews((current) => [...current, response.data.review])
-    })
-  }
-
-  return (
-    <>
-      <div className="grid wide">
-        <div className="row mgt-32">
-          <ShowProduct
-            product={product}
-            addToCart={addToCart}
-            colors={COLORS}
-            sizes={SIZES}
-            selectedColor={selectedColor}
-            setSelectedColor={setSelectedColor}
-            selectedSize={selectedSize}
-            setSelectedSize={setSelectedSize}
-            isWishlisted={isWishlisted}
-            toggleWishlist={toggleWishlist}
-            averageRating={averageRating}
-            reviewCount={reviews.length}
-          />
-        </div>
-
-        <ReviewsSection reviews={reviews} canReview={Boolean(idUser)} onSubmit={submitReview} />
-
-        <div className="grid wide">
-          <div className="row">
-            <div className="l-12 suggest-header mgt-32 ">
-              <span className="l-2 active">Gợi ý hôm nay</span>
-            </div>
-          </div>
-
-          <div className="row box-product">
-            {products.map((item) => (
-              <ProductGridCard key={item.id} product={item} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
-
-const Stars = ({ value }: { value: number }) => {
-  const rounded = Math.round(value)
-  return (
-    <div className="rate">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <i key={star} className={star <= rounded ? 'fa-solid fa-star' : 'fa-regular fa-star'}></i>
-      ))}
-    </div>
-  )
-}
-
-interface ShowProductProps {
-  product: Partial<ProductModel>
-  addToCart: (product: Partial<ProductModel>) => void
-  colors: string[]
-  sizes: string[]
-  selectedColor: string
-  setSelectedColor: (color: string) => void
-  selectedSize: string
-  setSelectedSize: (size: string) => void
-  isWishlisted: boolean
-  toggleWishlist: () => void
-  averageRating: number
-  reviewCount: number
-}
-
-const ShowProduct = ({
-  product,
-  addToCart,
-  colors,
-  sizes,
-  selectedColor,
-  setSelectedColor,
-  selectedSize,
-  setSelectedSize,
-  isWishlisted,
-  toggleWishlist,
-  averageRating,
-  reviewCount,
-}: ShowProductProps) => {
-  return (
-    <>
-      <div className="row box-details">
-        <div className="c-12 m-12 l-5">
-          <div className="img-main" style={{ backgroundImage: `url(${product.imgPrimary})` }}></div>
-          <div className="img-list">
-            <div
-              className="l-2 img-item"
-              style={{ backgroundImage: `url(${product.productImage})` }}
-            ></div>
-            <div
-              className="l-2 img-item"
-              style={{ backgroundImage: `url(${product.productImage})` }}
-            ></div>
-            <div
-              className="l-2 img-item"
-              style={{ backgroundImage: `url(${product.productImage})` }}
-            ></div>
-            <div
-              className="l-2 img-item"
-              style={{ backgroundImage: `url(${product.productImage})` }}
-            ></div>
-            <div
-              className="l-2 img-item"
-              style={{ backgroundImage: `url(${product.productImage})` }}
-            ></div>
-          </div>
-        </div>
-
-        <div className="c-12 m-12 l-7 describe">
-          <span className="name">{product.name}</span>
-          <button
-            type="button"
-            className={`wishlist-toggle ${isWishlisted ? 'active' : ''}`}
-            aria-label="Yêu thích"
-            onClick={toggleWishlist}
-          >
-            <i className={isWishlisted ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}></i>
-          </button>
-
-          <ul className="list-reviews">
-            <li className="item-reviews separate">
-              <span>{averageRating.toFixed(1)}</span>
-              <Stars value={averageRating} />
-            </li>
-            <li className="item-reviews separate">
-              <span>{reviewCount}</span>
-              Đánh giá
-            </li>
-            <li className="item-reviews">
-              <span>{product.sold}</span>
-              Đã bán
-            </li>
-          </ul>
-
-          <div className="price">
-            <span>{formatCurrency(product.price || 0)}</span>
-            <span>
-              {formatCurrency(getDiscountedPrice(product.price || 0, product.discount || 0))}
-              <i>đ</i>
-            </span>
-            <span className="discountPrice">{product.discount}% Giảm</span>
-          </div>
-
-          <div className="clotherColor">
-            <div className="clotherColor-item">Màu:</div>
-            {colors.map((color) => (
-              <div
-                key={color}
-                className={`clotherColor-item ${selectedColor === color ? 'active' : ''}`}
-                onClick={() => setSelectedColor(color)}
-              >
-                {color}
-              </div>
-            ))}
-          </div>
-
-          <div className="clotherSize">
-            <div className="clotherSize-item">Size:</div>
-            {sizes.map((size) => (
-              <div
-                key={size}
-                className={`clotherSize-item ${selectedSize === size ? 'active' : ''}`}
-                onClick={() => setSelectedSize(size)}
-              >
-                {size}
-              </div>
-            ))}
-          </div>
-
-          <button className="btn" onClick={() => addToCart(product)}>
-            <i className="fa-solid fa-cart-plus"></i>
-            Thêm vào giỏ hàng
-          </button>
-
-          <span id="notiCart" className="notiCart">
-            Bạn cần đăng nhập để thực hiện thao tác này.
-          </span>
-        </div>
-      </div>
-    </>
-  )
-}
-
-interface ReviewsSectionProps {
-  reviews: Review[]
-  canReview: boolean
-  onSubmit: (payload: { rating: number; comment: string }) => Promise<void>
-}
-
-const ReviewsSection = ({ reviews, canReview, onSubmit }: ReviewsSectionProps) => {
-  const [rating, setRating] = useState(5)
-  const [comment, setComment] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
+  const variants = product?.variants ?? []
+  const selectedVariant: ProductVariant | undefined =
+    variants.find((variant) => variant.id === selectedVariantId) ?? variants[0]
 
   useEffect(() => {
-    setRating(5)
-  }, [canReview])
+    if (!selectedVariant) return
+    setSelectedVariantId(selectedVariant.id)
+    setQuantity(Number(selectedVariant.stepQuantity))
+  }, [selectedVariant?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setError('')
-    setSubmitting(true)
-    onSubmit({ rating, comment })
-      .then(() => {
-        setComment('')
-      })
-      .catch((err) => {
-        setError(getErrorMessage(err))
-      })
-      .finally(() => {
-        setSubmitting(false)
-      })
+  const fetchReviews = useCallback(
+    () =>
+      product
+        ? reviewService.listForProduct(product.id, { limit: 10 })
+        : Promise.resolve(EMPTY_REVIEWS),
+    [product?.id], // eslint-disable-line react-hooks/exhaustive-deps
+  )
+  const { data: reviews } = useFetch<Paginated<Review>>(fetchReviews, [product?.id], EMPTY_REVIEWS)
+
+  if (loading) {
+    return (
+      <div className="grid wide">
+        <LoadingState variant="page" label={t('product.loading')} />
+      </div>
+    )
+  }
+
+  if (error || !product) {
+    return (
+      <div className="grid wide">
+        <EmptyState
+          variant="page"
+          tone="danger"
+          title={t('product.notFoundTitle')}
+          description={t('product.notFoundDescription')}
+          action={
+            <Link to="/san-pham" className="ui-btn ui-btn--primary">
+              {t('common.browseFruit')}
+            </Link>
+          }
+        />
+      </div>
+    )
+  }
+
+  const available = selectedVariant?.inventoryLevel?.availableQuantity ?? 0
+  const step = Number(selectedVariant?.stepQuantity ?? 1)
+  const percentOff = discountPercent(selectedVariant?.priceAmount, selectedVariant?.compareAtAmount)
+  const images = product.images ?? []
+  const unit = formatUnit(selectedVariant?.unitType)
+
+  const changeQuantity = (delta: number) => {
+    const next = Number((quantity + delta * step).toFixed(3))
+    if (next < step) return
+    if (next > available) {
+      toast.warning(`Only ${formatQuantity(available)} ${unit} left`)
+      return
+    }
+    setQuantity(next)
+  }
+
+  const handleAddToCart = async () => {
+    if (!selectedVariant) return
+    setAdding(true)
+    try {
+      await cartService.addItem(selectedVariant.id, quantity)
+      toast.success(
+        t('product.addedToCart', {
+          quantity: formatQuantityWithUnit(quantity, selectedVariant.unitType),
+        }),
+      )
+    } catch (err) {
+      toast.error((err as Error).message || t('product.addFailed'))
+    } finally {
+      setAdding(false)
+    }
   }
 
   return (
-    <div className="row reviews-section">
-      <div className="l-12">
-        <h3>Đánh giá sản phẩm ({reviews.length})</h3>
+    <div className="grid wide product-page">
+      <nav className="product-page__crumbs" aria-label={t('product.breadcrumb')}>
+        <Link to="/">{t('product.home')}</Link>
+        <span aria-hidden="true">/</span>
+        <Link to="/san-pham">{t('product.fruit')}</Link>
+        {product.category && (
+          <>
+            <span aria-hidden="true">/</span>
+            <Link to={`/san-pham?categoryId=${product.category.id}`}>{product.category.name}</Link>
+          </>
+        )}
+      </nav>
 
-        {canReview ? (
-          <form className="review-form" onSubmit={handleSubmit}>
-            <div className="review-form-rating">
-              {[1, 2, 3, 4, 5].map((star) => (
+      <div className="product-page__top">
+        <section className="product-gallery">
+          <div className="product-gallery__main">
+            <img
+              src={images[activeImage]?.url ?? product.coverImageUrl ?? NO_IMAGE_URL}
+              alt={product.name}
+            />
+            {percentOff > 0 && <span className="product-gallery__discount">−{percentOff}%</span>}
+          </div>
+
+          {images.length > 1 && (
+            <div className="product-gallery__thumbs">
+              {images.map((image, index) => (
                 <button
                   type="button"
-                  key={star}
-                  aria-label={`${star} sao`}
-                  onClick={() => setRating(star)}
+                  key={image.id}
+                  className={index === activeImage ? 'is-active' : ''}
+                  onClick={() => setActiveImage(index)}
+                  aria-label={`Show image ${index + 1}`}
+                  aria-current={index === activeImage}
                 >
-                  <i className={star <= rating ? 'fa-solid fa-star' : 'fa-regular fa-star'}></i>
+                  <img src={image.url} alt="" loading="lazy" />
                 </button>
               ))}
             </div>
-            <textarea
-              placeholder="Chia sẻ cảm nhận của bạn về sản phẩm này"
-              value={comment}
-              onChange={(event) => setComment(event.target.value)}
+          )}
+        </section>
+
+        <section className="product-info">
+          <h1>{product.name}</h1>
+
+          <div className="product-info__meta">
+            <Rating value={Number(product.ratingAvg)} count={product.ratingCount} size="sm" />
+            {product.origin && (
+              <span className="product-info__chip">
+                <PlaceOutlinedIcon />
+                {product.origin}
+              </span>
+            )}
+            <span className="product-info__chip">
+              <AcUnitOutlinedIcon />
+              {translateLabel('storageType', product.storageType)}
+            </span>
+            {product.isOrganic && <Badge tone="success">{t('product.organic')}</Badge>}
+          </div>
+
+          {product.shortDescription && (
+            <p className="product-info__lead">{product.shortDescription}</p>
+          )}
+
+          <div className="product-info__price">
+            <strong className="numeric" data-testid="headline-price">
+              {formatPrice(selectedVariant?.priceAmount)}
+            </strong>
+            {unit && <span className="product-info__unit">/ {unit}</span>}
+            {percentOff > 0 && (
+              <>
+                <del className="numeric">{formatPrice(selectedVariant?.compareAtAmount)}</del>
+                <Badge tone="danger" variant="solid">
+                  Save {percentOff}%
+                </Badge>
+              </>
+            )}
+          </div>
+
+          <div className="product-info__variants">
+            <h2>{t('product.chooseSize')}</h2>
+            <div className="variant-list">
+              {variants.map((variant) => {
+                const variantAvailable = variant.inventoryLevel?.availableQuantity ?? 0
+                const isSelected = variant.id === selectedVariant?.id
+
+                return (
+                  <button
+                    type="button"
+                    key={variant.id}
+                    disabled={variantAvailable <= 0}
+                    className={['variant-option', isSelected ? 'is-selected' : '']
+                      .filter(Boolean)
+                      .join(' ')}
+                    aria-pressed={isSelected}
+                    onClick={() => setSelectedVariantId(variant.id)}
+                  >
+                    <span className="variant-option__name">{variant.name}</span>
+                    <span className="variant-option__price numeric">
+                      {formatPrice(variant.priceAmount)}
+                    </span>
+                    <span className="variant-option__stock">
+                      {variantAvailable > 0
+                        ? t('product.left', {
+                            quantity: formatQuantityWithUnit(variantAvailable, variant.unitType),
+                          })
+                        : t('product.outOfStock')}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {selectedVariant?.isWeighted && (
+            <Alert tone="info" icon={<ScaleOutlinedIcon />} title={t('product.soldByWeight')}>
+              The shop reweighs this at picking and charges the measured weight. Any difference
+              appears on your order.
+            </Alert>
+          )}
+
+          <div className="product-info__actions">
+            <Stepper
+              value={`${formatQuantity(quantity)} ${unit}`}
+              onDecrease={() => changeQuantity(-1)}
+              onIncrease={() => changeQuantity(1)}
+              decreaseDisabled={quantity <= step}
+              increaseDisabled={quantity >= available}
+              disabled={available <= 0}
             />
-            {error && <p className="form-error">{error}</p>}
-            <button type="submit" className="btn" disabled={submitting}>
-              Gửi đánh giá
-            </button>
-          </form>
-        ) : (
-          <p className="review-login-hint">Đăng nhập để đánh giá sản phẩm này.</p>
+
+            <Button
+              size="lg"
+              loading={adding}
+              disabled={available <= 0}
+              iconLeft={<ShoppingCartOutlinedIcon />}
+              onClick={handleAddToCart}
+            >
+              {available <= 0 ? t('product.outOfStock') : t('product.addToCart')}
+            </Button>
+          </div>
+
+          {product.supplier && (
+            <p className="product-info__supplier">
+              Supplied by <strong>{product.supplier.name}</strong>
+              {product.supplier.certification && product.supplier.certification !== 'none' && (
+                <Badge tone="info" size="sm">
+                  {product.supplier.certification.toUpperCase()}
+                </Badge>
+              )}
+            </p>
+          )}
+        </section>
+      </div>
+
+      <div className="product-page__bottom">
+        {product.description && (
+          <Card className="product-description" padding="lg">
+            <h2>{t('product.about')}</h2>
+            <p>{product.description}</p>
+          </Card>
         )}
 
-        <ul className="review-list">
-          {reviews.length === 0 && (
-            <li className="no-items">Chưa có đánh giá nào cho sản phẩm này.</li>
+        <Card className="product-reviews" padding="lg">
+          <h2>Reviews ({reviews.meta.total})</h2>
+
+          {reviews.data.length === 0 ? (
+            <EmptyState
+              title={t('product.noReviewsTitle')}
+              description={t('product.noReviewsDescription')}
+            />
+          ) : (
+            <ul className="product-reviews__list">
+              {reviews.data.map((review) => (
+                <li className="review-item" key={review.id}>
+                  <div className="review-item__head">
+                    <strong>{review.user?.fullName ?? t('product.customer')}</strong>
+                    {review.orderItemId && (
+                      <Badge tone="info" size="sm">
+                        Verified purchase
+                      </Badge>
+                    )}
+                    <Rating value={review.rating} size="sm" compact />
+                  </div>
+
+                  {review.freshnessRating && (
+                    <p className="review-item__freshness">
+                      Freshness on arrival: <strong>{review.freshnessRating} / 5</strong>
+                    </p>
+                  )}
+
+                  {review.content && <p className="review-item__body">{review.content}</p>}
+
+                  {review.adminReply && (
+                    <p className="review-item__reply">
+                      <strong>{t('product.shopReply')}</strong> {review.adminReply}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
           )}
-          {reviews.map((review) => (
-            <li key={review.id} className="review-item">
-              <div className="review-item-header">
-                <strong>{review.userName}</strong>
-                <Stars value={review.rating} />
-                <span className="review-date">
-                  {new Date(review.createdAt).toLocaleDateString('vi-VN')}
-                </span>
-              </div>
-              {review.comment && <p>{review.comment}</p>}
-            </li>
-          ))}
-        </ul>
+        </Card>
       </div>
     </div>
   )
 }
 
-export default Product
+export default ProductDetail

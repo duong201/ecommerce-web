@@ -1,0 +1,139 @@
+@use '../../../styles' as *;
+
+.ui-stat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  height: 100%;
+  padding: $space-5;
+  background: var(--surface);
+  border: 0.1rem solid var(--border-subtle);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+  transition:
+    box-shadow $duration-normal $ease-out,
+    transform $duration-normal $ease-out;
+
+  // A hairline of the metric's own colour along the top edge - enough to tell
+  // the six tiles apart at a glance without six coloured cards shouting.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 0.3rem;
+    background: var(--stat-accent);
+  }
+
+  &:hover {
+    transform: translateY(-0.2rem);
+    box-shadow: $shadow-lg;
+  }
+
+  &__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $space-3;
+  }
+
+  &__label {
+    font-size: $text-sm;
+    font-weight: $weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: $radius-md;
+    background: var(--stat-soft);
+    color: var(--stat-accent);
+
+    svg {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  &__value {
+    font-size: $text-3xl;
+    font-weight: $weight-bold;
+    line-height: 1.15;
+    color: var(--text-strong);
+    overflow-wrap: anywhere;
+  }
+
+  &__placeholder {
+    display: block;
+    width: 8rem;
+    height: 2.4rem;
+    border-radius: $radius-xs;
+    @include shimmer;
+  }
+
+  &__caption {
+    font-size: $text-sm;
+    color: var(--text-muted);
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding-top: $space-2;
+    font-size: $text-sm;
+    font-weight: $weight-semibold;
+    color: var(--stat-accent);
+
+    svg {
+      width: 1.4rem;
+      height: 1.4rem;
+      transition: transform $duration-fast $ease-out;
+    }
+
+    &:hover svg {
+      transform: translateX(0.2rem);
+    }
+  }
+
+  &--brand {
+    --stat-accent: var(--brand);
+    --stat-soft: var(--brand-soft);
+  }
+  &--info {
+    --stat-accent: var(--info);
+    --stat-soft: var(--info-soft);
+  }
+  &--success {
+    --stat-accent: var(--success);
+    --stat-soft: var(--success-soft);
+  }
+  &--warning {
+    --stat-accent: var(--warning);
+    --stat-soft: var(--warning-soft);
+  }
+  &--danger {
+    --stat-accent: var(--danger);
+    --stat-soft: var(--danger-soft);
+  }
+  &--accent {
+    --stat-accent: var(--accent);
+    --stat-soft: var(--accent-soft);
+  }
+
+  &.is-alert {
+    border-color: var(--stat-accent);
+
+    .ui-stat__value {
+      color: var(--stat-accent);
+    }
+  }
+}

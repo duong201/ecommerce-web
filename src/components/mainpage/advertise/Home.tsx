@@ -1,18 +1,15 @@
 import React from 'react'
-import Categories from './Categories'
-import Slider from './Slider'
+import './Home.scss'
+import CategoryBar from './CategoryBar'
+import SlideCard from './SlideCard'
 
-const Home = () => {
-  return (
-    <>
-      <div className="c-12 m-12 l-2">
-        <Categories />
-      </div>
-      <div className="c-12 m-12 l-10">
-        <Slider />
-      </div>
-    </>
-  )
-}
+const Hero = () => (
+  <section className="hero">
+    <div className="grid wide">
+      <SlideCard />
+      <CategoryBar />
+    </div>
+  </section>
+)
 
-export default Home
+export default Hero

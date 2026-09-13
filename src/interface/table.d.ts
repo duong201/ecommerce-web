@@ -1,14 +1,3 @@
-import type { ReactNode } from 'react'
-
-export interface Column<T> {
-  key: string
-  header: string
-  className?: string
-  render?: (row: T) => ReactNode
-}
-
-export interface DataTableProps<T> {
-  columns: Column<T>[]
-  rows: T[]
-  getRowKey?: (row: T) => string | number
-}
+// The table contract now lives with the <Table /> component in the UI kit, so
+// the column type and the component that consumes it cannot drift apart.
+export type { TableColumn, TableColumn as Column } from '../common/components/ui/Table'

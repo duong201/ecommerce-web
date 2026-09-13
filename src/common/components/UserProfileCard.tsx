@@ -1,6 +1,8 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { translateLabel } from '../utils/labels'
 import { Link } from 'react-router-dom'
-import { DEFAULT_AVATAR_URL } from '../constants'
+import { Avatar, Badge } from './ui'
 import type { User } from '../../interface'
 
 interface UserProfileCardProps {
@@ -8,26 +10,44 @@ interface UserProfileCardProps {
   editHref?: string
 }
 
-const UserProfileCard = ({ user = {}, editHref }: UserProfileCardProps) => (
-  <>
-    {editHref && (
-      <Link to={editHref} className="info-edit">
-        Edit
-      </Link>
-    )}
-    <div className="title">Thông tin cá nhân</div>
-    <div className="item row" style={{ margin: 0 }}>
-      <img src={DEFAULT_AVATAR_URL} className="l-4 itemImg" alt="" />
-      <div className="information l-8">
-        <div className="info-country">{user.country}</div>
-        <div className="info-fullname">{user.fullname}</div>
-        <div className="info-age">Tuổi: {user.age}</div>
-        <div className="info-phone">Sđt: {user.phone ? `0${user.phone}` : ''}</div>
-        <div className="info-email">Email: {user.email}</div>
-        <div className="info-address">Địa chỉ: {user.address}</div>
+const UserProfileCard = ({ user = {}, editHref }: UserProfileCardProps) => {
+  const { t } = useTranslation()
+
+  return (
+    <div className="profile-card">
+      <Avatar name={user.fullName} size="xl" />
+
+      <div>
+        <p className="profile-card__name">{user.fullName ?? '—'}</p>
+        {user.roleId && <Badge tone="brand">{translateLabel('role', user.roleId)}</Badge>}
       </div>
+
+      <dl className="profile-card__rows">
+        <div>
+          <dt>{t('account.phone')}</dt>
+          <dd>{user.phone ?? '—'}</dd>
+        </div>
+        <div>
+          <dt>{t('account.email')}</dt>
+          <dd>{user.email ?? '—'}</dd>
+        </div>
+        <div>
+          <dt>{t('account.status')}</dt>
+          <dd>
+            <Badge tone={user.isActive === false ? 'danger' : 'success'} size="sm" dot>
+              {user.isActive === false ? t('admin.badge.disabled') : t('admin.badge.active')}
+            </Badge>
+          </dd>
+        </div>
+      </dl>
+
+      {editHref && (
+        <Link to={editHref} className="ui-btn ui-btn--secondary ui-btn--sm profile-card__edit">
+          Edit profile
+        </Link>
+      )}
     </div>
-  </>
-)
+  )
+}
 
 export default UserProfileCard

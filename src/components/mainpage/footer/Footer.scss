@@ -1,0 +1,213 @@
+@use '../../../styles' as *;
+
+.site-footer {
+  margin-top: $space-16;
+  padding-top: $space-10;
+  background: var(--surface);
+  border-top: 0.1rem solid var(--border-subtle);
+  font-size: $text-md;
+  color: var(--text-muted);
+
+  // --- trust strip ---
+  &__promises {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    gap: $space-5;
+    padding-bottom: $space-8;
+    border-bottom: 0.1rem solid var(--border-subtle);
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: $space-3;
+    }
+
+    strong {
+      display: block;
+      color: var(--text-strong);
+      font-size: $text-base;
+      font-weight: $weight-semibold;
+    }
+
+    em {
+      font-style: normal;
+      font-size: $text-sm;
+    }
+  }
+
+  &__promise-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: $radius-md;
+    background: var(--brand-soft);
+    color: var(--brand-contrast);
+
+    svg {
+      width: 2.2rem;
+      height: 2.2rem;
+    }
+  }
+
+  // --- link columns ---
+  &__columns {
+    display: grid;
+    grid-template-columns: 1.6fr repeat(3, 1fr);
+    gap: $space-8;
+    padding: $space-8 0;
+
+    @include down(lg) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $space-6;
+    }
+
+    @include down(sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+    max-width: 36rem;
+  }
+
+  &__logo {
+    font-size: $text-2xl;
+    font-weight: $weight-bold;
+    color: var(--text-strong);
+    letter-spacing: -0.02em;
+
+    em {
+      color: var(--brand);
+      font-style: normal;
+    }
+  }
+
+  &__socials {
+    display: flex;
+    gap: $space-2;
+    margin-top: $space-1;
+
+    button {
+      @include bare-button;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 3.6rem;
+      height: 3.6rem;
+      border-radius: $radius-sm;
+      background: var(--surface-sunken);
+      color: var(--text-muted);
+      transition:
+        background-color $duration-fast $ease-out,
+        color $duration-fast $ease-out;
+      @include focus-ring(var(--ring));
+
+      svg {
+        width: 2rem;
+        height: 2rem;
+      }
+
+      &:hover {
+        background: var(--brand);
+        color: var(--text-on-brand);
+      }
+    }
+  }
+
+  &__column {
+    h3 {
+      margin-bottom: $space-3;
+      font-size: $text-base;
+      font-weight: $weight-semibold;
+      color: var(--text-strong);
+    }
+
+    li + li {
+      margin-top: $space-1;
+    }
+
+    button {
+      @include bare-button;
+      padding: 0.3rem 0;
+      color: var(--text-muted);
+      font-size: $text-md;
+      transition: color $duration-fast $ease-out;
+      @include focus-ring(var(--ring));
+
+      &:hover {
+        color: var(--brand-contrast);
+      }
+    }
+  }
+
+  &__app {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+
+    // The QR code and the store badges are printed artwork with a white
+    // ground; they need a white plate in the dark theme too, so this literal
+    // is deliberate rather than a missing token.
+    button {
+      @include bare-button;
+      display: block;
+      border: 0.1rem solid var(--border-subtle);
+      background: #fff;
+      transition:
+        border-color $duration-fast $ease-out,
+        transform $duration-fast $ease-out;
+      @include focus-ring(var(--ring));
+
+      &:hover {
+        border-color: var(--brand);
+        transform: translateY(-0.2rem);
+      }
+
+      img {
+        display: block;
+      }
+    }
+  }
+
+  &__app-qr {
+    border-radius: $radius-sm;
+
+    img {
+      width: 8rem;
+      height: 8rem;
+    }
+  }
+
+  &__app-stores {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+
+    button {
+      border-radius: $radius-xs;
+      padding: 0.4rem 0.8rem;
+    }
+
+    img {
+      width: 9rem;
+    }
+  }
+
+  // --- legal line ---
+  &__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    padding: $space-5 0;
+    border-top: 0.1rem solid var(--border-subtle);
+    font-size: $text-sm;
+  }
+}

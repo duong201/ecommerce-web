@@ -1,0 +1,127 @@
+@use '../../../styles' as *;
+
+.ui-modal {
+  position: fixed;
+  inset: 0;
+  z-index: $z-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-5;
+  background: var(--backdrop);
+  backdrop-filter: blur(0.3rem);
+  animation: ui-fade-in $duration-fast $ease-out;
+  overflow-y: auto;
+  @include thin-scrollbar;
+
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: calc(100vh - #{$space-10});
+    background: var(--surface);
+    border: 0.1rem solid var(--border-subtle);
+    border-radius: $radius-lg;
+    box-shadow: $shadow-2xl;
+    animation: ui-pop-in $duration-normal $ease-out;
+    outline: none;
+
+    &--sm {
+      max-width: 40rem;
+    }
+    &--md {
+      max-width: 56rem;
+    }
+    &--lg {
+      max-width: 80rem;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $space-4;
+    padding: $space-5 $space-5 $space-4;
+    border-bottom: 0.1rem solid var(--border-subtle);
+  }
+
+  &__title {
+    font-size: $text-xl;
+    font-weight: $weight-semibold;
+    color: var(--text-strong);
+  }
+
+  &__description {
+    margin-top: $space-1;
+    font-size: $text-md;
+    color: var(--text-muted);
+  }
+
+  &__close {
+    @include bare-button;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: $radius-sm;
+    color: var(--text-muted);
+    transition:
+      background-color $duration-fast $ease-out,
+      color $duration-fast $ease-out;
+    @include focus-ring(var(--ring));
+
+    svg {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
+
+    &:hover {
+      background: var(--surface-sunken);
+      color: var(--text-strong);
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-height: 0;
+    padding: $space-5;
+    overflow-y: auto;
+    font-size: $text-base;
+    color: var(--text);
+    @include thin-scrollbar;
+  }
+
+  &__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: $space-3;
+    padding: $space-4 $space-5;
+    border-top: 0.1rem solid var(--border-subtle);
+    background: var(--surface-sunken);
+    border-radius: 0 0 $radius-lg $radius-lg;
+  }
+
+  @include down(sm) {
+    padding: 0;
+    align-items: flex-end;
+
+    &__panel {
+      max-width: none;
+      max-height: 92vh;
+      border-radius: $radius-lg $radius-lg 0 0;
+    }
+
+    &__footer {
+      border-radius: 0;
+
+      .ui-btn {
+        flex: 1;
+      }
+    }
+  }
+}

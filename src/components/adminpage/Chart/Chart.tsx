@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import './Chart.scss'
 import {
   AreaChart,
@@ -9,53 +10,97 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
+import { useFetch } from '../../../common/hooks/useFetch'
+import { reportService } from '../../../services'
+import { formatPrice } from '../../../common/utils/format'
+import { Card, EmptyState, LoadingState } from '../../../common/components/ui'
+import type { RevenuePoint } from '../../../interface'
 
-const data = [
-  { name: '0', total: 0 },
-  { name: 'Tháng 1', total: 4000 },
-  { name: 'Tháng 2', total: 2100 },
-  { name: 'Tháng 3', total: 1200 },
-  { name: 'Tháng 4', total: 1600 },
-  { name: 'Tháng 5', total: 800 },
-  { name: 'Tháng 6', total: 2700 },
-]
+/** Axis labels: full amounts do not fit, so millions and thousands are abbreviated. */
+const compactAmount = (value: number): string => {
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`
+  if (value >= 1_000) return `${Math.round(value / 1_000)}k`
+  return String(value)
+}
 
-const Chart = () => {
+const RevenueChart = () => {
+  const { t } = useTranslation()
+  const fetchRevenue = useCallback(() => reportService.revenue(30), [])
+  const { data: series, loading } = useFetch<RevenuePoint[]>(fetchRevenue, [], [])
+
+  const data = series.map((point) => ({
+    name: point.date.slice(5),
+    total: point.revenue,
+    orders: point.orders,
+  }))
+
   return (
-    <>
-      <div className="chart">
-        <span className="chart-header">Last 6 months (income)</span>
-        <div className="chart-body" data-testid="chart-body">
+    <Card padding="lg" className="revenue-chart">
+      <h2>{t('admin.dashboard.revenue30')}</h2>
+
+      <div className="revenue-chart__body" data-testid="chart-body">
+        {loading && <LoadingState label={t('admin.dashboard.chartLoading')} />}
+
+        {!loading && data.length === 0 && (
+          <EmptyState
+            title={t('admin.dashboard.noRevenueTitle')}
+            description={t('admin.dashboard.noRevenueDescription')}
+          />
+        )}
+
+        {!loading && data.length > 0 && (
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              width={730}
-              height={250}
-              data={data}
-              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-            >
+            <AreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <defs>
-                <linearGradient id="total" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                {/* Fades to transparent so the card surface shows through in both themes. */}
+                <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--brand)" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="var(--brand)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
+
+              <CartesianGrid stroke="var(--border-subtle)" strokeDasharray="4 4" vertical={false} />
+              <XAxis
+                dataKey="name"
+                minTickGap={28}
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: 'var(--text-muted)', fontSize: 12 }}
+              />
+              <YAxis
+                width={52}
+                tickFormatter={compactAmount}
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: 'var(--text-muted)', fontSize: 12 }}
+              />
+              <Tooltip
+                cursor={{ stroke: 'var(--border-strong)', strokeDasharray: '4 4' }}
+                formatter={(value) => [formatPrice(Number(value)), t('admin.dashboard.revenue')]}
+                contentStyle={{
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: '10px',
+                  boxShadow: '0 12px 16px -4px rgba(16,24,40,.08)',
+                  color: 'var(--text-strong)',
+                  fontSize: '13px',
+                }}
+                labelStyle={{ color: 'var(--text-muted)' }}
+              />
               <Area
                 type="monotone"
                 dataKey="total"
-                stroke="#8884d8"
-                fillOpacity={1}
-                fill="url(#total)"
+                name={t('admin.dashboard.revenue')}
+                stroke="var(--brand)"
+                strokeWidth={2}
+                fill="url(#revenueFill)"
               />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
+        )}
       </div>
-    </>
+    </Card>
   )
 }
 
-export default Chart
+export default RevenueChart

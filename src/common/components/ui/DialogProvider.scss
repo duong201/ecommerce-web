@@ -1,0 +1,7 @@
+@use '../../../styles' as *;
+
+.ui-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}

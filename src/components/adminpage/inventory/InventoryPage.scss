@@ -1,0 +1,13 @@
+@use '../../../styles' as *;
+
+.inventory__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-4;
+  margin-bottom: $space-4;
+  padding: $space-3 $space-4;
+  background: var(--surface);
+  border: 0.1rem solid var(--border-subtle);
+  border-radius: $radius-md;
+}

@@ -1,18 +1,11 @@
-import {
-  DEFAULT_ERROR_MESSAGE,
-  ERROR_CODE_MESSAGES,
-  HTTP_STATUS_MESSAGES,
-} from '../constants/errorCodes'
-
-type ErrorCode = keyof typeof ERROR_CODE_MESSAGES
+import i18n from '../../i18n'
+import { HTTP_STATUS_KEYS, isErrorCode } from '../constants/errorCodes'
 
 interface ErrorResponseData {
   code?: string
   message?: string
 }
 
-// Deliberately loose (not `AxiosError`) so it also accepts the plain-object
-// fixtures tests use and any other thrown value a `.catch` might receive.
 interface ErrorLike {
   response?: {
     status?: number
@@ -22,38 +15,27 @@ interface ErrorLike {
   message?: string
 }
 
-/**
- * Maps a backend error `code` to its Vietnamese display text.
- * Falls back to `fallbackMessage` (e.g. a raw message from the API), then to the generic default.
- */
+const fallback = (): string => i18n.t('errors.default')
+
 export const getErrorMessageFromCode = (
   code?: string | null,
   fallbackMessage?: string | null,
 ): string => {
-  if (code && code in ERROR_CODE_MESSAGES) return ERROR_CODE_MESSAGES[code as ErrorCode]
-  return fallbackMessage || DEFAULT_ERROR_MESSAGE
+  if (isErrorCode(code)) return i18n.t(`errors.codes.${code}`)
+  return fallbackMessage || fallback()
 }
 
-/**
- * Resolves a display message for a failed axios request (network error, HTTP error, ...).
- * Priority: known error `code` from the response body > raw `message` from the response body >
- * a message for the HTTP status > network-error message > generic default.
- */
 export const getErrorMessage = (error?: ErrorLike | null): string => {
-  if (!error) return DEFAULT_ERROR_MESSAGE
+  if (!error) return fallback()
 
   const responseData = error.response?.data as ErrorResponseData | undefined
-  if (responseData?.code && responseData.code in ERROR_CODE_MESSAGES) {
-    return ERROR_CODE_MESSAGES[responseData.code as ErrorCode]
-  }
+  if (isErrorCode(responseData?.code)) return i18n.t(`errors.codes.${responseData!.code}`)
   if (responseData?.message) return responseData.message
 
   const status = error.response?.status
-  if (status && status in HTTP_STATUS_MESSAGES) {
-    return HTTP_STATUS_MESSAGES[status as keyof typeof HTTP_STATUS_MESSAGES]
-  }
+  if (status && status in HTTP_STATUS_KEYS) return i18n.t(HTTP_STATUS_KEYS[status])
 
-  if (error.request && !error.response) return ERROR_CODE_MESSAGES.NETWORK_ERROR
+  if (error.request && !error.response) return i18n.t('errors.codes.NETWORK_ERROR')
 
-  return DEFAULT_ERROR_MESSAGE
+  return fallback()
 }

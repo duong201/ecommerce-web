@@ -1,0 +1,367 @@
+@use '../../../styles' as *;
+
+.catalogue-page {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+// --- search bar --------------------------------------------------------------
+.catalogue-hero {
+  padding: $space-7 $space-6;
+  border-radius: $radius-lg;
+  border: 0.1rem solid var(--border-subtle);
+  background:
+    radial-gradient(80% 120% at 0% 0%, var(--brand-soft) 0%, transparent 60%),
+    linear-gradient(140deg, var(--surface) 0%, var(--canvas-alt) 100%);
+
+  h1 {
+    font-size: $text-3xl;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin-top: $space-2;
+    color: var(--text-muted);
+  }
+
+  &__form {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    max-width: 72rem;
+    margin-top: $space-5;
+    padding: 0 $space-3;
+    height: 5.6rem;
+    background: var(--surface);
+    border: 0.1rem solid var(--border);
+    border-radius: $radius-pill;
+    box-shadow: $shadow-sm;
+    transition:
+      border-color $duration-fast $ease-out,
+      box-shadow $duration-fast $ease-out;
+
+    &:focus-within {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 0.3rem var(--ring);
+    }
+  }
+
+  &__icon {
+    flex: 0 0 auto;
+    width: 2.2rem;
+    height: 2.2rem;
+    margin-left: $space-2;
+    color: var(--text-subtle);
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    background: none;
+    outline: none;
+    color: var(--text-strong);
+    font-size: $text-lg;
+
+    &::-webkit-search-cancel-button {
+      appearance: none;
+    }
+  }
+
+  @include down(md) {
+    padding: $space-5 $space-4;
+
+    h1 {
+      font-size: $text-2xl;
+    }
+
+    &__form {
+      height: 4.8rem;
+    }
+
+    &__input {
+      font-size: $text-base;
+    }
+  }
+}
+
+// --- two-column body ---------------------------------------------------------
+.catalogue-layout {
+  display: grid;
+  grid-template-columns: 28rem 1fr;
+  gap: $space-6;
+  align-items: start;
+
+  @include down(lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// --- left: filters -----------------------------------------------------------
+.catalogue-filters {
+  position: sticky;
+  top: calc(var(--header-h) + #{$space-4});
+  padding: $space-5;
+  background: var(--surface);
+  border: 0.1rem solid var(--border-subtle);
+  border-radius: $radius-lg;
+
+  &__head {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    margin-bottom: $space-4;
+    padding-bottom: $space-3;
+    border-bottom: 0.1rem solid var(--border-subtle);
+
+    h2 {
+      font-size: $text-xl;
+    }
+  }
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    gap: $space-5;
+  }
+
+  &__group {
+    h3 {
+      margin-bottom: $space-3;
+      font-size: $text-sm;
+      font-weight: $weight-bold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+  }
+
+  &__price {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: $space-2;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      min-width: 0;
+
+      span {
+        font-size: $text-sm;
+        color: var(--text-muted);
+      }
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      height: 4rem;
+      padding: 0 $space-3;
+      border: 0.1rem solid var(--border);
+      border-radius: $radius-sm;
+      background: var(--surface);
+      color: var(--text-strong);
+      font-size: $text-base;
+      font-variant-numeric: tabular-nums;
+
+      &:focus {
+        outline: none;
+        border-color: var(--brand);
+        box-shadow: 0 0 0 0.3rem var(--ring);
+      }
+    }
+
+    .ui-btn {
+      grid-column: 1 / -1;
+      margin-top: $space-2;
+    }
+  }
+
+  &__price-sep {
+    padding-bottom: 1.2rem;
+    color: var(--text-subtle);
+  }
+
+  &__error {
+    margin-top: $space-2;
+    color: var(--danger-text);
+    font-size: $text-sm;
+  }
+
+  &__presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    margin-top: $space-3;
+
+    button {
+      @include bare-button;
+      padding: 0.5rem $space-3;
+      border: 0.1rem solid var(--border);
+      border-radius: $radius-pill;
+      color: var(--text-muted);
+      font-size: $text-sm;
+      transition:
+        border-color $duration-fast $ease-out,
+        background-color $duration-fast $ease-out,
+        color $duration-fast $ease-out;
+      @include focus-ring(var(--ring));
+
+      &:hover {
+        border-color: var(--brand);
+        color: var(--brand-contrast);
+      }
+
+      &.is-active {
+        background: var(--brand);
+        border-color: var(--brand);
+        color: var(--text-on-brand);
+      }
+    }
+  }
+
+  &__categories {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    button {
+      @include bare-button;
+      width: 100%;
+      padding: $space-2 $space-3;
+      border-radius: $radius-sm;
+      color: var(--text);
+      font-size: $text-base;
+      transition:
+        background-color $duration-fast $ease-out,
+        color $duration-fast $ease-out;
+      @include focus-ring(var(--ring));
+      @include truncate;
+
+      &:hover {
+        background: var(--brand-soft);
+        color: var(--brand-contrast);
+      }
+
+      &.is-active {
+        background: var(--brand-soft);
+        color: var(--brand-contrast);
+        font-weight: $weight-semibold;
+      }
+    }
+
+    .is-child button {
+      padding-left: $space-6;
+      font-size: $text-md;
+      color: var(--text-muted);
+    }
+  }
+
+  &__checks {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+  }
+
+  &__close {
+    display: none;
+  }
+
+  &__backdrop {
+    display: none;
+  }
+
+  // Below lg the panel becomes a slide-over so the results keep the full width.
+  @include down(lg) {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: $z-modal;
+    width: min(32rem, 88vw);
+    border-radius: 0;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform $duration-normal $ease-out;
+    box-shadow: $shadow-2xl;
+    @include thin-scrollbar;
+
+    &.is-open {
+      transform: translateX(0);
+    }
+
+    &__head,
+    &__close {
+      display: flex;
+    }
+  }
+}
+
+.catalogue-filters__backdrop {
+  @include down(lg) {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: $z-backdrop;
+    border: 0;
+    background: var(--backdrop);
+    animation: ui-fade-in $duration-fast $ease-out;
+  }
+}
+
+// --- right: results ----------------------------------------------------------
+.catalogue-results {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  min-width: 0;
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+  }
+
+  &__count {
+    font-size: $text-lg;
+    font-weight: $weight-semibold;
+    color: var(--text-strong);
+
+    span {
+      font-weight: $weight-regular;
+      color: var(--text-muted);
+    }
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+  }
+
+  &__filter-toggle {
+    display: none;
+
+    @include down(lg) {
+      display: inline-flex;
+    }
+  }
+
+  &__chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-2;
+  }
+
+  &__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+}

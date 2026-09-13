@@ -1,0 +1,45 @@
+@use '../../../styles' as *;
+
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  min-width: 0;
+
+  &__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: $text-md;
+    font-weight: $weight-medium;
+    color: var(--text-strong);
+  }
+
+  &__required {
+    color: var(--danger);
+  }
+
+  &__hint {
+    font-size: $text-sm;
+    color: var(--text-muted);
+  }
+
+  &__error {
+    font-size: $text-sm;
+    font-weight: $weight-medium;
+    color: var(--danger-text);
+  }
+
+  // An invalid field recolours whichever control it wraps.
+  &.is-invalid {
+    .ui-input__control,
+    .ui-textarea,
+    .ui-select__control {
+      border-color: var(--danger);
+
+      &:focus {
+        box-shadow: 0 0 0 0.3rem #{rgba($danger-500, 0.2)};
+      }
+    }
+  }
+}

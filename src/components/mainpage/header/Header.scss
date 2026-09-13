@@ -1,0 +1,419 @@
+@use '../../../styles' as *;
+
+// =============================================================================
+// Storefront header: promo strip, main bar, section nav, mobile drawer.
+// =============================================================================
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  background: var(--surface);
+  border-bottom: 0.1rem solid var(--border-subtle);
+  transition: box-shadow $duration-normal $ease-out;
+
+  &.is-scrolled {
+    box-shadow: $shadow-md;
+  }
+
+  &__main {
+    background: var(--surface);
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    gap: $space-4;
+    min-height: 7.2rem;
+
+    @include down(md) {
+      min-height: 6rem;
+      gap: $space-3;
+    }
+  }
+
+  &__search-link {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    height: 4.4rem;
+    margin-left: auto;
+    padding: 0 $space-4;
+    border: 0.1rem solid var(--border);
+    border-radius: $radius-pill;
+    background: var(--surface-sunken);
+    color: var(--text-muted);
+    font-size: $text-base;
+    transition:
+      border-color $duration-fast $ease-out,
+      background-color $duration-fast $ease-out,
+      color $duration-fast $ease-out;
+    @include focus-ring(var(--ring));
+
+    svg {
+      flex: 0 0 auto;
+      width: 2rem;
+      height: 2rem;
+    }
+
+    &:hover {
+      border-color: var(--brand);
+      background: var(--brand-soft);
+      color: var(--brand-contrast);
+    }
+
+    @include down(md) {
+      width: 4.4rem;
+      padding: 0;
+      justify-content: center;
+
+      span {
+        @include visually-hidden;
+      }
+    }
+  }
+
+  &__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    flex: 0 0 auto;
+    color: var(--text-strong);
+
+    &:hover {
+      color: var(--brand);
+    }
+  }
+
+  &__logo-mark {
+    font-size: 2.6rem;
+    line-height: 1;
+  }
+
+  &__logo-text {
+    font-size: $text-2xl;
+    font-weight: $weight-bold;
+    letter-spacing: -0.02em;
+
+    em {
+      color: var(--brand);
+      font-style: normal;
+    }
+
+    @include down(lg) {
+      font-size: $text-xl;
+    }
+  }
+
+  &__burger {
+    display: none;
+
+    @include down(lg) {
+      display: inline-flex;
+    }
+  }
+
+  &__account {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+}
+
+.site-header__cart {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: $radius-md;
+  background: var(--brand-soft);
+  color: var(--brand-contrast);
+  transition:
+    background-color $duration-fast $ease-out,
+    color $duration-fast $ease-out;
+
+  svg {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  &:hover {
+    background: var(--brand);
+    color: var(--text-on-brand);
+  }
+}
+
+.site-header__cart-count {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.4rem;
+  border-radius: $radius-pill;
+  border: 0.2rem solid var(--surface);
+  background: var(--accent);
+  color: #23180a;
+  font-size: $text-xs;
+  font-weight: $weight-bold;
+  line-height: 1.6rem;
+  text-align: center;
+}
+
+.site-header__nav {
+  border-top: 0.1rem solid var(--border-subtle);
+  background: var(--surface);
+
+  @include down(lg) {
+    display: none;
+  }
+}
+
+.site-header__nav-inner {
+  display: flex;
+  align-items: center;
+  gap: $space-6;
+  height: 4.4rem;
+}
+
+.site-header__nav-link {
+  position: relative;
+  font-size: $text-base;
+  font-weight: $weight-medium;
+  color: var(--text-muted);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1.2rem;
+    height: 0.2rem;
+    background: var(--brand);
+    border-radius: $radius-pill;
+    transform: scaleX(0);
+    transition: transform $duration-fast $ease-out;
+  }
+
+  &:hover,
+  &.active {
+    color: var(--brand-contrast);
+  }
+
+  &.active::after {
+    transform: scaleX(1);
+  }
+}
+
+// --- promo strip -------------------------------------------------------------
+.site-topbar {
+  background: var(--brand);
+  color: var(--text-on-brand);
+  font-size: $text-sm;
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-4;
+    min-height: 3.4rem;
+  }
+
+  &__promise {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    min-width: 0;
+
+    svg {
+      flex: 0 0 auto;
+      width: 1.7rem;
+      height: 1.7rem;
+    }
+
+    @include down(md) {
+      @include truncate;
+    }
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+    gap: $space-4;
+    flex: 0 0 auto;
+
+    .ui-icon-btn {
+      color: var(--text-on-brand);
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.12);
+        color: var(--text-on-brand);
+      }
+    }
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: inherit;
+    font-weight: $weight-medium;
+    white-space: nowrap;
+
+    svg {
+      width: 1.7rem;
+      height: 1.7rem;
+    }
+
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 0.3rem;
+    }
+
+    @include down(sm) {
+      display: none;
+    }
+  }
+}
+
+// --- account dropdown --------------------------------------------------------
+.account-menu {
+  position: relative;
+
+  &__trigger {
+    @include bare-button;
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    padding: 0.4rem 0.8rem 0.4rem 0.4rem;
+    border-radius: $radius-pill;
+    border: 0.1rem solid transparent;
+    transition:
+      background-color $duration-fast $ease-out,
+      border-color $duration-fast $ease-out;
+    @include focus-ring(var(--ring));
+
+    &:hover {
+      background: var(--surface-sunken);
+      border-color: var(--border-subtle);
+    }
+  }
+
+  &__name {
+    max-width: 14rem;
+    font-size: $text-md;
+    font-weight: $weight-medium;
+    color: var(--text-strong);
+    @include truncate;
+
+    @include down(lg) {
+      display: none;
+    }
+  }
+
+  &__panel {
+    position: absolute;
+    top: calc(100% + 0.8rem);
+    right: 0;
+    z-index: $z-dropdown;
+    min-width: 20rem;
+    padding: $space-2;
+    background: var(--surface);
+    border: 0.1rem solid var(--border-subtle);
+    border-radius: $radius-md;
+    box-shadow: $shadow-xl;
+    animation: ui-pop-in $duration-fast $ease-out;
+
+    a,
+    button {
+      @include bare-button;
+      display: flex;
+      align-items: center;
+      gap: $space-3;
+      width: 100%;
+      padding: $space-2 $space-3;
+      border-radius: $radius-sm;
+      color: var(--text);
+      font-size: $text-base;
+      transition:
+        background-color $duration-fast $ease-out,
+        color $duration-fast $ease-out;
+
+      svg {
+        width: 1.8rem;
+        height: 1.8rem;
+        color: var(--text-subtle);
+      }
+
+      &:hover {
+        background: var(--brand-soft);
+        color: var(--brand-contrast);
+
+        svg {
+          color: inherit;
+        }
+      }
+    }
+  }
+}
+
+// --- mobile drawer -----------------------------------------------------------
+.site-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: $z-modal;
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: var(--backdrop);
+    animation: ui-fade-in $duration-fast $ease-out;
+  }
+
+  &__panel {
+    position: absolute;
+    inset: 0 auto 0 0;
+    display: flex;
+    flex-direction: column;
+    width: min(30rem, 84vw);
+    padding: $space-5;
+    background: var(--surface);
+    box-shadow: $shadow-2xl;
+    animation: ui-fade-in $duration-normal $ease-out;
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    padding-bottom: $space-4;
+    border-bottom: 0.1rem solid var(--border-subtle);
+  }
+
+  &__links {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    margin-top: $space-4;
+
+    a {
+      padding: $space-3;
+      border-radius: $radius-sm;
+      color: var(--text);
+      font-size: $text-lg;
+      font-weight: $weight-medium;
+
+      &:hover,
+      &.active {
+        background: var(--brand-soft);
+        color: var(--brand-contrast);
+      }
+    }
+  }
+}

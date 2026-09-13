@@ -1,33 +1,77 @@
-export interface User {
-  id: number
-  fullname: string
-  age?: number
-  phone: string
-  email: string
-  address: string
-  username: string
-  password: string
-  country: string
-  level: number
+import type { PaginationQuery, RoleId, UUID } from './common'
+
+export interface Role {
+  id: RoleId
+  code: string
+  name: string
 }
 
-export type UserPayload = Partial<Omit<User, 'id'>>
+export interface User {
+  id: UUID
+  roleId: RoleId
+  email: string | null
+  phone: string | null
+  fullName: string
+  isActive: boolean
+  createdAt?: string
+  role?: Role
+}
+
+export interface Address {
+  id: UUID
+  userId: UUID
+  recipientName: string
+  phone: string
+  line1: string
+  ward: string | null
+  district: string
+  province: string
+  deliveryNote: string | null
+  isDefault: boolean
+}
+
+export type AddressPayload = Omit<Address, 'id' | 'userId' | 'isDefault'> & {
+  isDefault?: boolean
+}
 
 export interface LoginPayload {
-  username: string
+  identifier: string
   password: string
 }
 
-export interface LoginResponse {
-  status: string
-  message?: string
-  code?: string
-  result: User[]
+export interface RegisterPayload {
+  email?: string
+  phone?: string
+  fullName: string
+  password: string
 }
 
-// `status` is `'success'` or `'error'`; `code`/`message` are only present on the error path.
-export interface UserMutationResponse {
-  status: string
-  code?: string
-  message?: string
+export interface AuthSession {
+  accessToken: string
+  refreshToken: string
+  expiresIn: number
+  user: Pick<User, 'id' | 'fullName' | 'email' | 'phone' | 'roleId'>
+}
+
+export interface UserPayload {
+  email?: string | null
+  phone?: string | null
+  fullName?: string
+  password?: string
+  roleId?: RoleId
+  isActive?: boolean
+}
+
+export interface CreateStaffPayload {
+  email?: string
+  phone?: string
+  fullName: string
+  password: string
+  roleId: RoleId
+}
+
+export interface UserQuery extends PaginationQuery {
+  q?: string
+  roleId?: RoleId
+  isActive?: boolean
 }

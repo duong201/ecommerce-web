@@ -1,0 +1,105 @@
+@use '../../../styles' as *;
+
+.ui-toaster {
+  position: fixed;
+  top: $space-5;
+  right: $space-5;
+  z-index: $z-toast;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  width: min(38rem, calc(100vw - #{$space-8}));
+  pointer-events: none;
+
+  @include down(sm) {
+    top: auto;
+    bottom: $space-4;
+    right: $space-4;
+    left: $space-4;
+    width: auto;
+  }
+}
+
+.ui-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  background: var(--surface);
+  border: 0.1rem solid var(--border-subtle);
+  border-left: 0.4rem solid var(--toast-accent);
+  border-radius: $radius-md;
+  box-shadow: $shadow-xl;
+  font-size: $text-base;
+  color: var(--text-strong);
+  pointer-events: auto;
+  animation: ui-slide-in-right $duration-normal $ease-out;
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--toast-soft);
+    color: var(--toast-accent);
+
+    svg {
+      width: 1.4rem;
+      height: 1.4rem;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+    padding-top: 0.1rem;
+    line-height: $leading-snug;
+    overflow-wrap: anywhere;
+  }
+
+  &__close {
+    @include bare-button;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: $radius-xs;
+    color: var(--text-subtle);
+    transition:
+      color $duration-fast $ease-out,
+      background-color $duration-fast $ease-out;
+    @include focus-ring(var(--ring));
+
+    svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    &:hover {
+      background: var(--surface-sunken);
+      color: var(--text-strong);
+    }
+  }
+
+  &--success {
+    --toast-accent: var(--success);
+    --toast-soft: var(--success-soft);
+  }
+  &--error {
+    --toast-accent: var(--danger);
+    --toast-soft: var(--danger-soft);
+  }
+  &--warning {
+    --toast-accent: var(--warning);
+    --toast-soft: var(--warning-soft);
+  }
+  &--info {
+    --toast-accent: var(--info);
+    --toast-soft: var(--info-soft);
+  }
+}

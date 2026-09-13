@@ -1,0 +1,243 @@
+@use '../../../styles' as *;
+
+// =============================================================================
+// Hero band: full-width promo carousel, category bar beneath it.
+// =============================================================================
+
+.hero {
+  &__promo {
+    min-width: 0;
+  }
+}
+
+// --- category bar ------------------------------------------------------------
+.category-bar {
+  margin-top: $space-5;
+  padding: $space-4 0 $space-2;
+  border-top: 0.1rem solid var(--border-subtle);
+
+  &__title {
+    margin-bottom: $space-3;
+    font-size: $text-sm;
+    font-weight: $weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  &__scroller {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include down(md) {
+      margin-inline: -$space-4;
+      padding-inline: $space-4;
+    }
+  }
+
+  &__list {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    width: max-content;
+    min-width: 100%;
+    padding-bottom: 0.2rem;
+  }
+
+  &__skeleton {
+    width: 16rem;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    height: 4.4rem;
+    padding: 0 $space-4;
+    border: 0.1rem solid var(--border);
+    border-radius: $radius-pill;
+    background: var(--surface);
+    color: var(--text);
+    font-size: $text-md;
+    font-weight: $weight-medium;
+    white-space: nowrap;
+    transition:
+      border-color $duration-fast $ease-out,
+      background-color $duration-fast $ease-out,
+      color $duration-fast $ease-out;
+
+    &:hover {
+      border-color: var(--brand);
+      background: var(--brand-soft);
+      color: var(--brand-contrast);
+    }
+
+    @include focus-ring(var(--ring));
+
+    img {
+      width: 3.2rem;
+      height: 3.2rem;
+      margin-left: -$space-3;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--surface-sunken);
+    }
+  }
+
+  &__chip--all {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: var(--text-on-brand);
+    font-weight: $weight-semibold;
+
+    &:hover {
+      background: var(--brand-hover);
+      border-color: var(--brand-hover);
+      color: var(--text-on-brand);
+    }
+  }
+
+  &__chip--child {
+    height: 3.8rem;
+    padding: 0 $space-3;
+    border-style: dashed;
+    background: none;
+    color: var(--text-muted);
+    font-size: $text-sm;
+  }
+}
+
+// --- promo slide -------------------------------------------------------------
+.promo-slide {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: $space-8;
+  height: 100%;
+  min-height: 38rem;
+  padding: $space-8 8.4rem;
+  border-radius: $radius-lg;
+  border: 0.1rem solid var(--border-subtle);
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+
+  --slide-tint: var(--brand-soft);
+
+  background:
+    radial-gradient(90% 120% at 100% 0%, var(--slide-tint) 0%, transparent 62%),
+    linear-gradient(140deg, var(--surface) 0%, var(--canvas-alt) 100%);
+
+  &--lime {
+    --slide-tint: var(--brand-soft);
+  }
+  &--amber {
+    --slide-tint: var(--accent-soft);
+  }
+  &--rose {
+    --slide-tint: var(--danger-soft);
+  }
+  &--indigo {
+    --slide-tint: var(--info-soft);
+  }
+
+  &__text {
+    min-width: 0;
+  }
+
+  &__eyebrow {
+    display: inline-block;
+    margin-bottom: $space-3;
+    padding: 0.4rem $space-3;
+    border-radius: $radius-pill;
+    background: var(--surface);
+    border: 0.1rem solid var(--border-subtle);
+    font-size: $text-sm;
+    font-weight: $weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-strong);
+  }
+
+  h2 {
+    font-size: $text-4xl;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  &__body {
+    margin: $space-3 0 $space-6;
+    max-width: 46ch;
+    font-size: $text-lg;
+    color: var(--text-muted);
+  }
+
+  &__media {
+    height: 100%;
+    min-height: 0;
+    border-radius: $radius-md;
+    overflow: hidden;
+    box-shadow: $shadow-lg;
+
+    img {
+      width: 100%;
+      height: 100%;
+      min-height: 26rem;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  @include down(lg) {
+    gap: $space-6;
+    padding: $space-6 7.2rem;
+    min-height: 32rem;
+
+    h2 {
+      font-size: $text-3xl;
+    }
+
+    &__media img {
+      min-height: 20rem;
+    }
+  }
+
+  @include down(md) {
+    grid-template-columns: 1fr;
+    gap: $space-5;
+    padding: $space-5;
+
+    h2 {
+      font-size: $text-2xl;
+    }
+
+    &__body {
+      margin-bottom: $space-5;
+      font-size: $text-base;
+    }
+
+    &__media {
+      order: -1;
+
+      img {
+        min-height: 0;
+        aspect-ratio: 16 / 9;
+      }
+    }
+  }
+}
+
+// --- landing page rhythm -----------------------------------------------------
+.home-page {
+  display: flex;
+  flex-direction: column;
+  gap: $space-12;
+
+  @include down(md) {
+    gap: $space-8;
+  }
+}

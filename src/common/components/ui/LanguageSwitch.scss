@@ -1,0 +1,33 @@
+@use '../../../styles' as *;
+
+.ui-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  border-radius: $radius-pill;
+  background: rgba(0, 0, 0, 0.12);
+
+  button {
+    @include bare-button;
+    min-width: 3rem;
+    height: 2.4rem;
+    padding: 0 0.6rem;
+    border-radius: $radius-pill;
+    color: inherit;
+    font-size: $text-xs;
+    font-weight: $weight-bold;
+    letter-spacing: 0.04em;
+    transition: background-color $duration-fast $ease-out;
+    @include focus-ring(var(--ring));
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    &.is-active {
+      background: var(--surface);
+      color: var(--text-strong);
+    }
+  }
+}

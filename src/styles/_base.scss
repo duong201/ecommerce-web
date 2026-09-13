@@ -1,0 +1,336 @@
+// Global element defaults plus the runtime theme contract.
+//
+// Everything visual in the app resolves through the custom properties declared
+// here, which is what makes the dark theme a ~30-line override instead of a
+// second stylesheet.
+@use 'tokens' as *;
+@use 'breakpoints' as *;
+@use 'mixins' as *;
+
+:root {
+  // --- surfaces ---
+  --canvas: #{$grey-50};
+  --canvas-alt: #{$brand-50};
+  --surface: #{$grey-0};
+  --surface-raised: #{$grey-0};
+  --surface-sunken: #{$grey-50};
+  --surface-inverse: #{$grey-900};
+
+  // --- text ---
+  --text-strong: #{$grey-900};
+  --text: #{$grey-700};
+  --text-muted: #{$grey-500};
+  --text-subtle: #{$grey-400};
+  --text-inverse: #{$grey-0};
+  --text-on-brand: #{$grey-0};
+  // Ink for text sitting on a saturated fill (danger, accent, a solid badge).
+  // Unlike --text-on-brand it stays white in the dark theme, because those
+  // fills stay saturated there too.
+  --on-solid: #ffffff;
+
+  // --- lines ---
+  --border-subtle: #{$grey-200};
+  --border: #{$grey-300};
+  --border-strong: #{$grey-400};
+
+  // --- brand ---
+  --brand: #{$brand-600};
+  --brand-hover: #{$brand-700};
+  --brand-active: #{$brand-800};
+  --brand-soft: #{$brand-50};
+  --brand-soft-line: #{$brand-200};
+  --brand-contrast: #{$brand-700};
+
+  --accent: #{$accent-500};
+  --accent-soft: #{$accent-50};
+  --accent-text: #{$accent-700};
+
+  // --- semantic ---
+  --success: #{$success-500};
+  --success-soft: #{$success-50};
+  --success-text: #{$success-700};
+  --warning: #{$warning-500};
+  --warning-soft: #{$warning-50};
+  --warning-text: #{$warning-700};
+  --danger: #{$danger-500};
+  --danger-soft: #{$danger-50};
+  --danger-text: #{$danger-700};
+  --info: #{$info-500};
+  --info-soft: #{$info-50};
+  --info-text: #{$info-700};
+
+  // --- misc ---
+  --skeleton-base: #{$grey-100};
+  --skeleton-highlight: #{$grey-200};
+  --backdrop: rgba(#{$grey-900}, 0.45);
+  --overlay-blur: saturate(180%) blur(1.2rem);
+  --ring: #{rgba($brand-600, 0.25)};
+
+  --header-h: #{$storefront-header-h};
+  --topbar-h: #{$storefront-topbar-h};
+  --admin-header-h: #{$admin-header-h};
+  --admin-sidebar-w: #{$admin-sidebar-w};
+
+  color-scheme: light;
+}
+
+// Dark theme. Opt-in via [data-theme] so the toggle wins in both directions,
+// with the system preference as the default when nothing has been chosen.
+@mixin dark-tokens {
+  --canvas: #101613;
+  --canvas-alt: #131b18;
+  --surface: #18201d;
+  --surface-raised: #1e2724;
+  --surface-sunken: #131a17;
+  --surface-inverse: #{$grey-50};
+
+  --text-strong: #eef2ef;
+  --text: #c7d0cb;
+  --text-muted: #93a09a;
+  --text-subtle: #6f7c76;
+  --text-inverse: #101613;
+  --text-on-brand: #0b1310;
+  --on-solid: #ffffff;
+
+  --border-subtle: #26302c;
+  --border: #313d38;
+  --border-strong: #45534d;
+
+  --brand: #{$brand-400};
+  --brand-hover: #{$brand-300};
+  --brand-active: #{$brand-200};
+  --brand-soft: #16241f;
+  --brand-soft-line: #245043;
+  --brand-contrast: #{$brand-300};
+
+  --accent: #{$accent-300};
+  --accent-soft: #2a2113;
+  --accent-text: #{$accent-300};
+
+  --success: #3ddc8a;
+  --success-soft: #10261b;
+  --success-text: #6ee7a8;
+  --warning: #fbbf46;
+  --warning-soft: #2a2113;
+  --warning-text: #fbc65a;
+  --danger: #ff6b60;
+  --danger-soft: #2c1614;
+  --danger-text: #ff9b93;
+  --info: #6bb0ff;
+  --info-soft: #12203a;
+  --info-text: #9ecbff;
+
+  --skeleton-base: #202a26;
+  --skeleton-highlight: #2b3733;
+  --backdrop: rgba(0, 0, 0, 0.62);
+  --ring: #{rgba($brand-300, 0.32)};
+
+  color-scheme: dark;
+}
+
+:root[data-theme='dark'] {
+  @include dark-tokens;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark-tokens;
+  }
+}
+
+// --- element defaults --------------------------------------------------------
+
+html {
+  // 62.5% keeps 1rem = 10px, which is the unit every token above is written in.
+  font-size: 62.5%;
+  box-sizing: border-box;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--canvas);
+  color: var(--text);
+  font-family: $font-sans;
+  font-size: $text-base;
+  line-height: $leading-normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color $duration-normal $ease-out,
+    color $duration-normal $ease-out;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  color: var(--text-strong);
+  font-weight: $weight-semibold;
+  line-height: $leading-tight;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: $text-4xl;
+}
+h2 {
+  font-size: $text-3xl;
+}
+h3 {
+  font-size: $text-2xl;
+}
+h4 {
+  font-size: $text-xl;
+}
+h5 {
+  font-size: $text-lg;
+}
+h6 {
+  font-size: $text-base;
+}
+
+p,
+dl,
+dd,
+figure,
+blockquote {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: var(--brand-contrast);
+  text-decoration: none;
+  transition: color $duration-fast $ease-out;
+  border-radius: $radius-xs;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--brand-hover);
+  }
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:disabled {
+  cursor: not-allowed;
+}
+
+hr {
+  height: 0.1rem;
+  margin: $space-5 0;
+  border: 0;
+  background: var(--border-subtle);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: $font-mono;
+  font-size: 0.92em;
+}
+
+::selection {
+  background: var(--brand-soft-line);
+  color: var(--text-strong);
+}
+
+// Page-level scrollbar, kept subtle rather than brand-coloured and 8px wide.
+* {
+  box-sizing: border-box;
+}
+
+body {
+  @include thin-scrollbar(var(--border));
+}
+
+@keyframes ui-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ui-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ui-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.8rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ui-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(1.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,37 @@
+@use '../../../styles' as *;
+
+.suggest {
+  &__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-4;
+    margin-bottom: $space-5;
+
+    h2 {
+      font-size: $text-3xl;
+      letter-spacing: -0.02em;
+
+      @include down(md) {
+        font-size: $text-2xl;
+      }
+    }
+  }
+
+  &__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+    padding: $space-3;
+    background: var(--surface);
+    border: 0.1rem solid var(--border-subtle);
+    border-radius: $radius-lg;
+  }
+
+  &__more {
+    display: flex;
+    justify-content: center;
+    margin-top: $space-8;
+  }
+}

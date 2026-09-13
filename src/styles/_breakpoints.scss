@@ -1,0 +1,39 @@
+// Breakpoints and the single mixin used to reach them.
+// Mobile-first: `@include up(lg) { ... }` widens, `@include down(md) { ... }`
+// narrows. Having one map stops the "max-width: 1112px" style magic numbers
+// that were scattered through the old stylesheets.
+@use 'sass:map';
+
+$breakpoints: (
+  xs: 480px,
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+  xxl: 1440px,
+);
+
+@function bp($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error 'Unknown breakpoint `#{$name}`. Known: #{map.keys($breakpoints)}.';
+  }
+  @return map.get($breakpoints, $name);
+}
+
+@mixin up($name) {
+  @media (min-width: bp($name)) {
+    @content;
+  }
+}
+
+@mixin down($name) {
+  @media (max-width: bp($name) - 0.02px) {
+    @content;
+  }
+}
+
+@mixin between($from, $to) {
+  @media (min-width: bp($from)) and (max-width: bp($to) - 0.02px) {
+    @content;
+  }
+}

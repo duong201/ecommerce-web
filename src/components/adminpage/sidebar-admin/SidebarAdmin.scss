@@ -1,108 +1,86 @@
-.sidebar-admin {
-  height: calc(100vh - 5.4rem);
-  width: 26rem;
-  padding: 2rem 1rem;
-  margin-top: 5.4rem;
-  border-right: 0.1rem solid #ccc;
-  background: var(--white-color);
-  flex-shrink: 0;
+@use '../../../styles' as *;
 
-  .sidebar-list {
-    list-style-type: none;
+.admin-sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+  height: calc(100vh - var(--admin-header-h));
+  padding: $space-5 $space-3;
+  background: var(--surface);
+  border-right: 0.1rem solid var(--border-subtle);
+  overflow-y: auto;
+  @include thin-scrollbar;
 
-    .sidebar-item {
-      color: #999;
-      font-size: 1.2rem;
-      text-transform: uppercase;
-      padding: 0.8rem 0;
-      height: 3.6rem;
-      display: flex;
-      align-items: center;
+  &__title {
+    padding-inline: $space-3;
+    margin-bottom: $space-2;
+    font-size: $text-xs;
+    font-weight: $weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-subtle);
+  }
 
-      .sidebar-link {
-        padding: 0.8rem 2rem;
-        font-size: 1.6rem;
-        color: var(--text-color);
-        text-decoration: none;
-        text-transform: capitalize;
-        display: flex;
-        align-items: center;
+  &__section ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
 
-        &:hover {
-          color: var(--primary-color);
-          font-weight: 600;
-          transform: translateY(-0.1rem);
-        }
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    padding: $space-3;
+    border-radius: $radius-sm;
+    color: var(--text);
+    font-size: $text-base;
+    font-weight: $weight-medium;
+    transition:
+      background-color $duration-fast $ease-out,
+      color $duration-fast $ease-out;
 
-        .sidebar-icon {
-          width: 2.6rem;
-          height: 2.2rem;
-          padding-right: 0.4rem;
-          color: var(--primary-color);
-        }
-      }
+    &:hover {
+      background: var(--surface-sunken);
+      color: var(--text-strong);
+    }
 
-      .color-option {
-        display: flex;
-        align-items: center;
-        margin-left: 2rem;
-        width: 3rem;
-        height: 3rem;
-        border: 0.1rem solid var(--primary-color);
-        border-radius: 0.5rem;
-
-        &:nth-child(1) {
-          background: #fff;
-        }
-
-        &:nth-child(2) {
-          background: #000;
-        }
-
-        &:hover {
-          transform: translateY(-0.1rem);
-          cursor: pointer;
-        }
-      }
+    // The active row is a filled pill rather than a bolder font, so it stays
+    // legible at a glance without the list reflowing as you navigate.
+    &.is-active {
+      background: var(--brand-soft);
+      color: var(--brand-contrast);
+      font-weight: $weight-semibold;
     }
   }
-}
 
-.sidebar-backdrop {
-  display: none;
-}
+  &__icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 2rem;
+    color: var(--text-subtle);
 
-/* =====Responsive===== */
-@media (max-width: 1024px) {
-  .sidebar-admin {
+    .admin-sidebar__link:hover &,
+    .admin-sidebar__link.is-active & {
+      color: var(--brand);
+    }
+  }
+
+  // --- off-canvas below the large breakpoint ---
+  @include down(lg) {
     position: fixed;
-    top: 5.4rem;
+    top: var(--admin-header-h);
     left: 0;
-    z-index: 200;
+    bottom: 0;
+    z-index: $z-modal;
+    width: var(--admin-sidebar-w);
     transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    box-shadow: 0.2rem 0 1rem rgba(0, 0, 0, 0.15);
+    transition: transform $duration-normal $ease-out;
+    box-shadow: $shadow-2xl;
 
-    &.open {
-      transform: translateX(0);
+    &.is-open {
+      transform: none;
     }
-  }
-
-  .sidebar-backdrop {
-    display: block;
-    position: fixed;
-    inset: 5.4rem 0 0 26rem;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 150;
-  }
-}
-
-@media (max-width: 480px) {
-  .sidebar-admin {
-    width: 22rem;
-  }
-
-  .sidebar-backdrop {
-    left: 22rem;
   }
 }

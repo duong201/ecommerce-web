@@ -1,0 +1,61 @@
+@use '../../../styles' as *;
+
+.admin {
+  display: grid;
+  grid-template-columns: var(--admin-sidebar-w) minmax(0, 1fr);
+  grid-template-rows: var(--admin-header-h) minmax(0, 1fr);
+  grid-template-areas:
+    'topbar topbar'
+    'sidebar content';
+  min-height: 100vh;
+  background: var(--canvas);
+
+  @include down(lg) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'topbar'
+      'content';
+  }
+
+  &__content {
+    grid-area: content;
+    min-width: 0;
+    // The column scrolls, not the document, so the topbar and sidebar stay put
+    // without needing position: fixed and the magic offsets that came with it.
+    height: calc(100vh - var(--admin-header-h));
+    overflow-y: auto;
+    @include thin-scrollbar;
+  }
+
+  &__content-inner {
+    padding: $space-6;
+
+    @include down(md) {
+      padding: $space-4;
+    }
+  }
+
+  &__backdrop {
+    position: fixed;
+    inset: var(--admin-header-h) 0 0 0;
+    z-index: $z-dropdown;
+    border: 0;
+    background: var(--backdrop);
+    animation: ui-fade-in $duration-fast $ease-out;
+
+    @include up(lg) {
+      display: none;
+    }
+  }
+}
+
+// Search box in an admin page toolbar. Wide enough for an email address, and
+// full width once the toolbar wraps on a phone.
+.admin-search {
+  width: 32rem;
+  max-width: 100%;
+
+  @include down(sm) {
+    width: 100%;
+  }
+}

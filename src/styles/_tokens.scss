@@ -1,0 +1,159 @@
+// =============================================================================
+// Design tokens
+// -----------------------------------------------------------------------------
+// One place for every colour, space, radius, shadow and type step in the app.
+// Sass variables are used at author time (maths, colour functions); the same
+// values are re-published as CSS custom properties in `_base.scss` so a running
+// page can be re-themed without a rebuild.
+//
+// The brand green (#1c6758) is unchanged from the previous UI - everything else
+// is a tonal scale derived around it.
+// =============================================================================
+
+// --- brand -------------------------------------------------------------------
+$brand-50: #f0f8f5;
+$brand-100: #d9ede6;
+$brand-200: #b3dbcd;
+$brand-300: #82c2ae;
+$brand-400: #4fa38c;
+$brand-500: #2b8570;
+$brand-600: #1c6758; // the house colour
+$brand-700: #175247;
+$brand-800: #123f37;
+$brand-900: #0d2d28;
+
+// --- accent (ripe citrus, used for deals and highlights) ----------------------
+$accent-50: #fff8ea;
+$accent-100: #ffecc7;
+$accent-300: #fbc65a;
+$accent-500: #f4a318;
+$accent-600: #d9860a;
+$accent-700: #a96407;
+
+// --- neutrals (very slightly warm so they sit next to the green) -------------
+$grey-0: #ffffff;
+$grey-25: #fbfcfb;
+$grey-50: #f6f8f6;
+$grey-100: #eef1ee;
+$grey-200: #e2e7e3;
+$grey-300: #cbd3cd;
+$grey-400: #9aa69e;
+$grey-500: #71807a;
+$grey-600: #55625c;
+$grey-700: #3f4a45;
+$grey-800: #2a322e;
+$grey-900: #1a201d;
+
+// --- semantic ----------------------------------------------------------------
+$success-50: #e7f7ee;
+$success-500: #12b76a;
+$success-700: #05803c;
+
+$warning-50: #fff6e5;
+$warning-500: #f79009;
+$warning-700: #b54708;
+
+$danger-50: #fdeceb;
+$danger-500: #e5342a;
+$danger-700: #b42318;
+
+$info-50: #e8f2fe;
+$info-500: #2e90fa;
+$info-700: #175cd3;
+
+// --- spacing (root font-size is 62.5%, so 1rem = 10px) ------------------------
+$space-0: 0;
+$space-1: 0.4rem; //  4px
+$space-2: 0.8rem; //  8px
+$space-3: 1.2rem; // 12px
+$space-4: 1.6rem; // 16px
+$space-5: 2rem; // 20px
+$space-6: 2.4rem; // 24px
+$space-7: 2.8rem; // 28px
+$space-8: 3.2rem; // 32px
+$space-10: 4rem; // 40px
+$space-12: 4.8rem; // 48px
+$space-16: 6.4rem; // 64px
+$space-20: 8rem; // 80px
+
+// --- radii -------------------------------------------------------------------
+$radius-xs: 0.4rem;
+$radius-sm: 0.6rem;
+$radius-md: 1rem;
+$radius-lg: 1.4rem;
+$radius-xl: 2rem;
+$radius-pill: 999rem;
+
+// --- elevation ---------------------------------------------------------------
+// Two-layer shadows: a tight contact shadow plus a wider ambient one. Reads as
+// depth without the muddy grey haze a single large blur gives you.
+$shadow-xs: 0 0.1rem 0.2rem rgba(16, 24, 40, 0.05);
+$shadow-sm:
+  0 0.1rem 0.3rem rgba(16, 24, 40, 0.1),
+  0 0.1rem 0.2rem rgba(16, 24, 40, 0.06);
+$shadow-md:
+  0 0.4rem 0.8rem -0.2rem rgba(16, 24, 40, 0.1),
+  0 0.2rem 0.4rem -0.2rem rgba(16, 24, 40, 0.06);
+$shadow-lg:
+  0 1.2rem 1.6rem -0.4rem rgba(16, 24, 40, 0.08),
+  0 0.4rem 0.6rem -0.2rem rgba(16, 24, 40, 0.03);
+$shadow-xl:
+  0 2rem 2.4rem -0.4rem rgba(16, 24, 40, 0.1),
+  0 0.8rem 0.8rem -0.4rem rgba(16, 24, 40, 0.04);
+$shadow-2xl: 0 2.4rem 4.8rem -1.2rem rgba(16, 24, 40, 0.18);
+
+// --- typography --------------------------------------------------------------
+$font-sans:
+  'Poppins',
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  Roboto,
+  'Helvetica Neue',
+  Arial,
+  sans-serif;
+$font-mono: 'SFMono-Regular', ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace;
+
+$text-2xs: 1rem;
+$text-xs: 1.1rem;
+$text-sm: 1.2rem;
+$text-md: 1.3rem;
+$text-base: 1.4rem;
+$text-lg: 1.6rem;
+$text-xl: 1.8rem;
+$text-2xl: 2.2rem;
+$text-3xl: 2.6rem;
+$text-4xl: 3.2rem;
+$text-5xl: 4rem;
+
+$weight-regular: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+
+$leading-tight: 1.2;
+$leading-snug: 1.35;
+$leading-normal: 1.55;
+$leading-relaxed: 1.7;
+
+// --- layout ------------------------------------------------------------------
+$container-max: 132rem; // 1320px
+$storefront-header-h: 11.6rem;
+$storefront-topbar-h: 3.4rem;
+$admin-header-h: 6.4rem;
+$admin-sidebar-w: 26rem;
+
+// --- motion ------------------------------------------------------------------
+$ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+$duration-fast: 120ms;
+$duration-normal: 200ms;
+$duration-slow: 320ms;
+
+// --- z-index -----------------------------------------------------------------
+$z-base: 1;
+$z-sticky: 100;
+$z-dropdown: 300;
+$z-backdrop: 800;
+$z-modal: 900;
+$z-toast: 1000;

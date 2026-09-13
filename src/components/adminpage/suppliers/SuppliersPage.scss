@@ -1,0 +1,6 @@
+@use '../../../styles' as *;
+
+// The certificate-lapse banner sits between the page header and the table.
+.suppliers__alert {
+  margin-bottom: $space-4;
+}

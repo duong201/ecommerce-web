@@ -1,251 +1,370 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import './Checkout.css'
+import { Trans, useTranslation } from 'react-i18next'
+import React, { useCallback, useMemo, useState } from 'react'
+import { translateLabel } from '../../../common/utils/labels'
+import {
+  AccountBalanceOutlinedIcon,
+  PaymentsOutlinedIcon,
+  QrCode2OutlinedIcon,
+  ScaleOutlinedIcon,
+  WalletOutlinedIcon,
+} from '../../../common/components/ui/icons'
+import { useHistory } from 'react-router-dom'
+import './Checkout.scss'
 import { useFetch } from '../../../common/hooks/useFetch'
-import { getCarts, getUser, addOrder, clearUserCart, applyCoupon } from '../../../common/api'
-import { formatCurrency, getDiscountedPrice } from '../../../common/utils/format'
-import { getCurrentUserId } from '../../../common/utils/session'
-import { getErrorMessage } from '../../../common/utils/errorMessage'
-import type { CartItem, User } from '../../../interface'
+import { cartService, deliveryService, orderService } from '../../../services'
+import { DELIVERY_FEE_AMOUNT, FREE_DELIVERY_THRESHOLD } from '../../../common/constants'
+import { formatDate, formatPrice, formatQuantity, formatUnit } from '../../../common/utils/format'
+import { getCurrentUser } from '../../../common/utils/session'
+import { toast } from '../../../common/utils/toast'
+import {
+  Alert,
+  Button,
+  Card,
+  EmptyState,
+  Input,
+  LoadingState,
+  RadioGroup,
+  Textarea,
+} from '../../../common/components/ui'
+import type { Cart, DeliverySlot, PaymentProvider } from '../../../interface'
 
-const PAYMENT_METHODS = ['Thanh toán khi nhận hàng', 'Chuyển khoản ngân hàng', 'Ví điện tử']
-
-const DEFAULT_ORDER_STATUS = 'Đang chuẩn bị hàng'
-
-const buildDescription = (item: CartItem) =>
-  [item.color, item.size ? `size ${item.size}` : null].filter(Boolean).join(', ')
-
-interface AppliedCoupon {
-  code: string
-  discount: number
+const EMPTY_CART: Cart = {
+  id: '',
+  status: 'active',
+  couponCode: null,
+  items: [],
+  subtotalAmount: 0,
+  discountAmount: 0,
+  couponMessage: null,
+  itemCount: 0,
+  hasIssues: false,
 }
 
+const PAYMENT_VALUES: PaymentProvider[] = ['cod', 'vnpay', 'momo', 'bank_transfer']
+
+const PAYMENT_ICONS: Record<PaymentProvider, React.ReactNode> = {
+  cod: <PaymentsOutlinedIcon />,
+  vnpay: <QrCode2OutlinedIcon />,
+  momo: <WalletOutlinedIcon />,
+  bank_transfer: <AccountBalanceOutlinedIcon />,
+}
+
+/**
+ * Checkout: contact, address, delivery slot, payment, then the order summary.
+ *
+ * The summary is sticky on desktop so the total is always in view while the
+ * form is filled in - the previous layout pushed it below a seven-field address
+ * block where nobody saw it.
+ */
 const Checkout = () => {
-  const idUser = getCurrentUserId()
+  const { t } = useTranslation()
   const history = useHistory()
+  const currentUser = getCurrentUser()
 
-  const { data: dataCart } = useFetch<CartItem[]>(getCarts, [], [])
-  const { data: user } = useFetch<Partial<User>>(() => getUser(idUser as string), [idUser], {})
+  const fetchCart = useCallback(() => cartService.get(), [])
+  const { data: cart, loading: cartLoading } = useFetch<Cart>(fetchCart, [], EMPTY_CART)
 
-  const cartItem = useMemo(
-    () => dataCart.filter((data) => String(data.iduser) === String(idUser)),
-    [dataCart, idUser],
-  )
+  const fetchSlots = useCallback(() => deliveryService.listAvailable(7), [])
+  const { data: slots } = useFetch<DeliverySlot[]>(fetchSlots, [], [])
 
-  const [address, setAddress] = useState('')
-  const [phone, setPhone] = useState('')
-  const [payment, setPayment] = useState(PAYMENT_METHODS[0])
-  const [couponCode, setCouponCode] = useState('')
-  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null)
-  const [couponError, setCouponError] = useState('')
+  const [form, setForm] = useState({
+    customerName: currentUser?.fullName ?? '',
+    customerPhone: currentUser?.phone ?? '',
+    recipientName: currentUser?.fullName ?? '',
+    phone: currentUser?.phone ?? '',
+    line1: '',
+    ward: '',
+    district: '',
+    province: 'Ho Chi Minh City',
+    deliveryNote: '',
+    customerNote: '',
+  })
+  const [slotId, setSlotId] = useState('')
+  const [provider, setProvider] = useState<PaymentProvider>('cod')
   const [submitting, setSubmitting] = useState(false)
-  const [formError, setFormError] = useState('')
 
-  useEffect(() => {
-    if (user.address) setAddress((current) => current || user.address || '')
-    if (user.phone) setPhone((current) => current || user.phone || '')
-  }, [user])
-
-  const subtotal = cartItem.reduce(
-    (total, item) => total + item.amount * getDiscountedPrice(item.price, item.discount),
-    0,
+  const slotsByDate = useMemo(
+    () =>
+      slots.reduce<Record<string, DeliverySlot[]>>((acc, slot) => {
+        acc[slot.slotDate] = [...(acc[slot.slotDate] ?? []), slot]
+        return acc
+      }, {}),
+    [slots],
   )
-  const discount = appliedCoupon ? Math.min(appliedCoupon.discount, subtotal) : 0
-  const total = subtotal - discount
 
-  const handleApplyCoupon = () => {
-    setCouponError('')
-    if (!couponCode.trim()) return
-    applyCoupon({ code: couponCode.trim(), subtotal }, { silentError: true })
-      .then((response) => {
-        setAppliedCoupon({ code: response.data.coupon.code, discount: response.data.discount })
-      })
-      .catch((error) => {
-        setAppliedCoupon(null)
-        setCouponError(getErrorMessage(error))
-      })
-  }
+  const selectedSlot = slots.find((slot) => slot.id === slotId)
+  const deliveryFee = cart.subtotalAmount >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE_AMOUNT
+  const grandTotal = cart.subtotalAmount - cart.discountAmount + deliveryFee
+  const hasWeighted = cart.items.some((line) => line.isWeighted)
 
-  const removeCoupon = () => {
-    setAppliedCoupon(null)
-    setCouponCode('')
-    setCouponError('')
-  }
+  const setField =
+    (field: keyof typeof form) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setForm((prev) => ({ ...prev, [field]: event.target.value }))
 
-  const placeOrder = () => {
-    if (!address.trim()) {
-      setFormError('Vui lòng nhập địa chỉ giao hàng')
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+
+    if (!selectedSlot) {
+      toast.error(t('checkout.chooseSlotFirst'))
       return
     }
-    setFormError('')
+
     setSubmitting(true)
-
-    const orderRequests = cartItem.map((item) => {
-      const itemSubtotal = item.amount * getDiscountedPrice(item.price, item.discount)
-      const itemDiscount = subtotal > 0 ? Math.round((discount * itemSubtotal) / subtotal) : 0
-      const idorder = Math.floor(Math.random() * (1000000 - 1)) + 1
-
-      return addOrder(
-        {
-          iduser: idUser as string,
-          idorder,
-          name: item.name,
-          imgPrimary: item.imgPrimary,
-          price: itemSubtotal - itemDiscount,
-          description: buildDescription(item),
-          status: DEFAULT_ORDER_STATUS,
-          address: `${address.trim()}${phone.trim() ? ` - SĐT: ${phone.trim()}` : ''}`,
-          payment,
-          amount: item.amount,
-          couponCode: appliedCoupon ? appliedCoupon.code : '',
-          discountAmount: itemDiscount,
+    try {
+      const order = await orderService.checkout({
+        customerName: form.customerName,
+        customerPhone: form.customerPhone,
+        address: {
+          recipientName: form.recipientName,
+          phone: form.phone,
+          line1: form.line1,
+          ward: form.ward || null,
+          district: form.district,
+          province: form.province,
+          deliveryNote: form.deliveryNote || null,
         },
-        { silentError: true },
-      )
-    })
+        deliveryDate: selectedSlot.slotDate,
+        deliverySlotId: selectedSlot.id,
+        paymentProvider: provider,
+        customerNote: form.customerNote || undefined,
+      })
 
-    Promise.all(orderRequests)
-      .then((responses) => {
-        const allSucceeded = responses.every((response) => response.data.status === 'success')
-        if (!allSucceeded) {
-          setFormError('Đặt hàng thất bại, vui lòng thử lại')
-          setSubmitting(false)
-          return
-        }
-        return clearUserCart(idUser as string).then(() => {
-          history.push('/order-success', { orderCount: cartItem.length, total })
-        })
-      })
-      .catch((error) => {
-        setFormError(getErrorMessage(error))
-        setSubmitting(false)
-      })
+      history.push(`/dat-hang-thanh-cong/${order.id}`)
+    } catch (error) {
+      toast.error((error as Error).message || t('checkout.placeFailed'))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
-  if (cartItem.length === 0) {
+  if (cartLoading) {
     return (
-      <div className="mgt-32">
-        <div className="grid wide">
-          <h1 className="no-items product">Giỏ hàng trống</h1>
-          <Link to="/products">Tiếp tục mua sắm</Link>
-        </div>
+      <div className="grid wide">
+        <LoadingState variant="page" />
+      </div>
+    )
+  }
+
+  if (cart.items.length === 0) {
+    return (
+      <div className="grid wide">
+        <EmptyState
+          variant="page"
+          title={t('checkout.emptyTitle')}
+          description={t('checkout.emptyDescription')}
+          action={
+            <Button onClick={() => history.push('/san-pham')}>{t('common.browseFruit')}</Button>
+          }
+        />
       </div>
     )
   }
 
   return (
-    <div className="mgt-32">
-      <div className="grid wide">
-        <div className="row container">
-          <div className="c-12 m-12 l-8">
-            <div className="checkout-section">
-              <h3>Thông tin giao hàng</h3>
-              <label className="checkout-field">
-                Địa chỉ nhận hàng
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(event) => setAddress(event.target.value)}
-                  placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"
-                />
-              </label>
-              <label className="checkout-field">
-                Số điện thoại
-                <input
-                  type="text"
-                  value={phone}
-                  onChange={(event) => setPhone(event.target.value)}
-                  placeholder="Số điện thoại liên hệ"
-                />
-              </label>
-            </div>
+    <form className="grid wide checkout" onSubmit={handleSubmit}>
+      <h1 className="checkout__title">{t('checkout.title')}</h1>
 
-            <div className="checkout-section">
-              <h3>Phương thức thanh toán</h3>
-              {PAYMENT_METHODS.map((method) => (
-                <label key={method} className="checkout-radio">
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={payment === method}
-                    onChange={() => setPayment(method)}
-                  />
-                  {method}
-                </label>
-              ))}
+      <div className="checkout__layout">
+        <div className="checkout__form">
+          <Card padding="lg" className="checkout__section">
+            <h2>{t('checkout.whoIsOrdering')}</h2>
+            <div className="checkout__fields checkout__fields--two">
+              <Input
+                label={t('address.fullName')}
+                required
+                value={form.customerName}
+                onChange={setField('customerName')}
+              />
+              <Input
+                label={t('address.phone')}
+                required
+                type="tel"
+                value={form.customerPhone}
+                onChange={setField('customerPhone')}
+              />
             </div>
+          </Card>
 
-            <div className="checkout-section">
-              <h3>Sản phẩm ({cartItem.length})</h3>
-              {cartItem.map((item) => (
-                <div className="checkout-item" key={item.id}>
-                  <img src={item.imgPrimary} alt="" />
-                  <div className="checkout-item-info">
-                    <span className="checkout-item-name">{item.name}</span>
-                    {buildDescription(item) && (
-                      <span className="checkout-item-variant">{buildDescription(item)}</span>
-                    )}
-                    <span className="checkout-item-qty">x{item.amount}</span>
+          <Card padding="lg" className="checkout__section">
+            <h2>{t('checkout.deliveryAddress')}</h2>
+            <div className="checkout__fields checkout__fields--two">
+              <Input
+                label={t('address.recipient')}
+                required
+                value={form.recipientName}
+                onChange={setField('recipientName')}
+              />
+              <Input
+                label={t('address.recipientPhone')}
+                required
+                type="tel"
+                value={form.phone}
+                onChange={setField('phone')}
+              />
+              <Input
+                className="is-wide"
+                label={t('address.line1')}
+                placeholder={t('address.line1Placeholder')}
+                required
+                value={form.line1}
+                onChange={setField('line1')}
+              />
+              <Input label={t('address.ward')} value={form.ward} onChange={setField('ward')} />
+              <Input
+                label={t('address.district')}
+                required
+                value={form.district}
+                onChange={setField('district')}
+              />
+              <Input
+                label={t('address.province')}
+                required
+                value={form.province}
+                onChange={setField('province')}
+              />
+              <Textarea
+                className="is-wide"
+                label={t('address.note')}
+                hint={t('address.noteHint')}
+                rows={2}
+                value={form.deliveryNote}
+                onChange={setField('deliveryNote')}
+              />
+            </div>
+          </Card>
+
+          <Card padding="lg" className="checkout__section">
+            <h2>{t('checkout.deliverySlot')}</h2>
+
+            {slots.length === 0 ? (
+              <Alert tone="warning">{t('checkout.noSlots')}</Alert>
+            ) : (
+              Object.entries(slotsByDate).map(([date, daySlots]) => (
+                <div className="slot-day" key={date}>
+                  <h3>{formatDate(date)}</h3>
+                  <div className="slot-day__list">
+                    {daySlots.map((slot) => (
+                      <button
+                        type="button"
+                        key={slot.id}
+                        className={['slot-option', slot.id === slotId ? 'is-selected' : '']
+                          .filter(Boolean)
+                          .join(' ')}
+                        aria-pressed={slot.id === slotId}
+                        disabled={slot.remaining <= 0}
+                        onClick={() => setSlotId(slot.id)}
+                      >
+                        <span className="slot-option__label">{slot.label}</span>
+                        <span className="slot-option__left">
+                          {slot.remaining > 0
+                            ? t('checkout.placesLeft', { count: slot.remaining })
+                            : t('checkout.slotFull')}
+                        </span>
+                      </button>
+                    ))}
                   </div>
-                  <span className="checkout-item-price">
-                    {formatCurrency(item.amount * getDiscountedPrice(item.price, item.discount))}
-                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
+              ))
+            )}
+          </Card>
 
-          <div className="c-12 m-12 l-4">
-            <div className="checkout-summary">
-              <h3>Mã giảm giá</h3>
-              <div className="checkout-coupon">
-                <input
-                  type="text"
-                  value={couponCode}
-                  onChange={(event) => setCouponCode(event.target.value)}
-                  placeholder="Nhập mã giảm giá"
-                  disabled={Boolean(appliedCoupon)}
-                />
-                {appliedCoupon ? (
-                  <button type="button" className="btn" onClick={removeCoupon}>
-                    Hủy
-                  </button>
-                ) : (
-                  <button type="button" className="btn" onClick={handleApplyCoupon}>
-                    Áp dụng
-                  </button>
-                )}
-              </div>
-              {couponError && <p className="checkout-error">{couponError}</p>}
-              {appliedCoupon && (
-                <p className="checkout-success">Đã áp dụng mã "{appliedCoupon.code}"</p>
-              )}
+          <Card padding="lg" className="checkout__section">
+            <h2>{t('checkout.howToPay')}</h2>
+            <RadioGroup
+              name="provider"
+              value={provider}
+              options={PAYMENT_VALUES.map((value) => ({
+                value,
+                label: translateLabel('paymentProvider', value),
+                description: t(`checkout.pay.${value}`),
+                icon: PAYMENT_ICONS[value],
+              }))}
+              onChange={setProvider}
+            />
+          </Card>
 
-              <div className="checkout-summary-row">
-                <span>Tạm tính</span>
-                <span>{formatCurrency(subtotal)} đ</span>
-              </div>
-              {discount > 0 && (
-                <div className="checkout-summary-row">
-                  <span>Giảm giá</span>
-                  <span>-{formatCurrency(discount)} đ</span>
-                </div>
-              )}
-              <div className="checkout-summary-row checkout-total">
-                <span>Tổng thanh toán</span>
-                <span>{formatCurrency(total)} đ</span>
-              </div>
-
-              {formError && <p className="checkout-error">{formError}</p>}
-
-              <button className="btn" disabled={submitting} onClick={placeOrder}>
-                {submitting ? 'Đang xử lý...' : 'Đặt hàng'}
-              </button>
-            </div>
-          </div>
+          <Card padding="lg" className="checkout__section">
+            <h2>{t('checkout.anythingElse')}</h2>
+            <Textarea
+              aria-label={t('checkout.noteAria')}
+              placeholder={t('checkout.notePlaceholder')}
+              value={form.customerNote}
+              onChange={setField('customerNote')}
+            />
+          </Card>
         </div>
+
+        <aside className="checkout__summary">
+          <Card padding="lg">
+            <h2>{t('checkout.yourOrder')}</h2>
+
+            <ul className="checkout-summary__items">
+              {cart.items.map((line) => (
+                <li key={line.variantId}>
+                  <span className="checkout-summary__name">
+                    {line.productName}
+                    <em>{line.variantName}</em>
+                  </span>
+                  <span className="checkout-summary__qty numeric">
+                    {formatQuantity(line.quantity)} {formatUnit(line.unitType)}
+                  </span>
+                  <strong className="numeric">{formatPrice(line.lineTotal)}</strong>
+                </li>
+              ))}
+            </ul>
+
+            <dl className="checkout-summary__totals">
+              <div>
+                <dt>{t('checkout.goodsTotal')}</dt>
+                <dd className="numeric">{formatPrice(cart.subtotalAmount)}</dd>
+              </div>
+              {cart.discountAmount > 0 && (
+                <div className="is-discount">
+                  <dt>
+                    {t('checkout.discount')}
+                    {cart.couponCode ? ` (${cart.couponCode})` : ''}
+                  </dt>
+                  <dd className="numeric">−{formatPrice(cart.discountAmount)}</dd>
+                </div>
+              )}
+              <div>
+                <dt>{t('checkout.delivery')}</dt>
+                <dd className="numeric">
+                  {deliveryFee === 0 ? t('common.free') : formatPrice(deliveryFee)}
+                </dd>
+              </div>
+              <div className="is-total">
+                <dt>{t('checkout.total')}</dt>
+                <dd className="numeric">{formatPrice(grandTotal)}</dd>
+              </div>
+            </dl>
+
+            {selectedSlot && (
+              <p className="checkout-summary__slot">
+                <Trans
+                  i18nKey="checkout.delivering"
+                  values={{ date: formatDate(selectedSlot.slotDate), slot: selectedSlot.label }}
+                  components={{ date: <strong /> }}
+                />
+              </p>
+            )}
+
+            {hasWeighted && (
+              <Alert tone="info" icon={<ScaleOutlinedIcon />}>
+                {t('checkout.weightedNotice')}
+              </Alert>
+            )}
+
+            <Button type="submit" block size="lg" loading={submitting} disabled={!selectedSlot}>
+              {t('checkout.placeOrder')}
+            </Button>
+
+            {!selectedSlot && <p className="checkout-summary__hint">{t('checkout.pickSlot')}</p>}
+          </Card>
+        </aside>
       </div>
-    </div>
+    </form>
   )
 }
 

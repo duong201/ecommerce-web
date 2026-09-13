@@ -1,26 +1,14 @@
-import React, { useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
-import HomePage from '../components/adminpage/homepage/HomePage'
-import AdminLayout from '../common/components/AdminLayout'
-import { getCurrentAdminId } from '../common/utils/session'
+import React from 'react'
+import AdminDashboard from '../components/adminpage/homepage/HomePage'
+import AdminLayout from '../common/components/layout/AdminLayout'
+import RequireStaff from './RequireStaff'
 
-const AdminPage = () => {
-  const idAdmin = getCurrentAdminId()
-  const history = useHistory()
-
-  useEffect(() => {
-    if (!idAdmin) {
-      history.push('/user/login')
-    }
-  }, [idAdmin, history])
-
-  if (!idAdmin) return null
-
-  return (
+const AdminPage = () => (
+  <RequireStaff>
     <AdminLayout>
-      <HomePage />
+      <AdminDashboard />
     </AdminLayout>
-  )
-}
+  </RequireStaff>
+)
 
 export default AdminPage

@@ -1,28 +1,38 @@
-export interface CartItem {
-  id: number
-  iduser: string
-  idproduct: number
-  name: string
-  imgPrimary: string
-  price: number
-  discount: number
-  amount: number
-  color?: string
-  size?: string
+import type { Amount, CartStatus, Quantity, UUID, UnitType } from './common'
+
+export interface CartLine {
+  variantId: UUID
+  sku: string
+  variantName: string
+  productId: UUID
+  productName: string
+  productSlug: string
+  imageUrl: string | null
+  unitType: UnitType
+  isWeighted: boolean
+  stepQuantity: Quantity
+  quantity: Quantity
+  unitPriceAmount: Amount
+  currentPriceAmount: Amount
+  priceChanged: boolean
+  lineTotal: Amount
+  availableQuantity: Quantity
+  stockIssue: string | null
 }
 
-export type AddToCartPayload = Omit<CartItem, 'id'>
-
-export interface AddToCartResponse {
-  status: string
-  cart: CartItem
+export interface Cart {
+  id: UUID | ''
+  status: CartStatus
+  couponCode: string | null
+  items: CartLine[]
+  subtotalAmount: Amount
+  discountAmount: Amount
+  couponMessage: string | null
+  itemCount: number
+  hasIssues: boolean
 }
 
-export interface UpdateCartAmountPayload {
-  id: number
-  amount: number
-}
-
-export interface UpdateCartAmountResponse {
-  status: string
+export interface AddCartItemPayload {
+  variantId: UUID
+  quantity: number
 }

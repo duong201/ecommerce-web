@@ -1,0 +1,178 @@
+@use '../../../styles' as *;
+
+.ui-carousel {
+  position: relative;
+  min-width: 0;
+
+  &__track {
+    display: flex;
+    gap: $space-4;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-block: $space-3;
+    margin-block: -$space-3;
+
+    // The native scrollbar is hidden because the arrows and dots already say
+    // there is more to the right.
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      scroll-behavior: auto;
+    }
+  }
+
+  &__slide {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+
+  // --- arrows ---
+  &__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    border-radius: 50%;
+    background: var(--surface);
+    box-shadow: $shadow-md;
+
+    &--prev {
+      left: -1.8rem;
+    }
+    &--next {
+      right: -1.8rem;
+    }
+
+    &:disabled {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @include down(lg) {
+      &--prev {
+        left: 0.4rem;
+      }
+      &--next {
+        right: 0.4rem;
+      }
+    }
+  }
+
+  &--hero &__arrow {
+    background: var(--surface);
+    border-color: var(--border-subtle);
+    color: var(--text-strong);
+    box-shadow: $shadow-lg;
+
+    &:hover:not(:disabled) {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: var(--text-on-brand);
+    }
+
+    &--prev {
+      left: $space-5;
+    }
+    &--next {
+      right: $space-5;
+    }
+
+    @include down(md) {
+      display: none;
+    }
+  }
+
+  &--hero &__dots {
+    @include down(md) {
+      gap: 0;
+
+      button {
+        width: 3.2rem;
+        height: 3.2rem;
+        background: none;
+        border-radius: $radius-sm;
+
+        &::after {
+          content: '';
+          display: block;
+          width: 0.8rem;
+          height: 0.8rem;
+          margin: 0 auto;
+          border-radius: $radius-pill;
+          background: var(--border);
+          transition:
+            width $duration-normal $ease-out,
+            background-color $duration-fast $ease-out;
+        }
+
+        &.is-active {
+          width: 3.2rem;
+
+          &::after {
+            width: 2rem;
+            background: var(--brand);
+          }
+        }
+      }
+    }
+  }
+
+  // --- dots ---
+  &__dots {
+    display: flex;
+    justify-content: center;
+    gap: $space-2;
+    margin-top: $space-4;
+
+    button {
+      @include bare-button;
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: $radius-pill;
+      background: var(--border);
+      transition:
+        width $duration-normal $ease-out,
+        background-color $duration-fast $ease-out;
+      @include focus-ring(var(--ring));
+
+      &.is-active {
+        width: 2.4rem;
+        background: var(--brand);
+      }
+    }
+  }
+
+  // --- hero: one slide fills the frame ---
+  &--hero &__slide {
+    width: 100%;
+  }
+
+  // --- rail: a row of cards, count driven by --rail-items ---
+  &--rail {
+    --rail-items: 5;
+
+    @include down(xl) {
+      --rail-items: 4;
+    }
+    @include down(lg) {
+      --rail-items: 3;
+    }
+    @include down(md) {
+      --rail-items: 2;
+    }
+    @include down(xs) {
+      --rail-items: 1;
+    }
+  }
+
+  &--rail &__slide {
+    width: calc((100% - (var(--rail-items) - 1) * #{$space-4}) / var(--rail-items));
+  }
+}

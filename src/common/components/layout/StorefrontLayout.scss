@@ -1,0 +1,18 @@
+@use '../../../styles' as *;
+
+.storefront {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--canvas);
+
+  &__main {
+    flex: 1;
+    padding-block: $space-6 $space-12;
+    outline: none;
+
+    @include down(md) {
+      padding-block: $space-4 $space-8;
+    }
+  }
+}

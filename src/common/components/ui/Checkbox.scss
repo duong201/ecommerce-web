@@ -1,0 +1,77 @@
+@use '../../../styles' as *;
+
+.ui-check {
+  position: relative;
+
+  &__input {
+    position: absolute;
+    width: 1.8rem;
+    height: 1.8rem;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  &__label {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: $space-3;
+    font-size: $text-base;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  &__box {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    margin-top: 0.2rem;
+    background: var(--surface);
+    border: 0.15rem solid var(--border-strong);
+    border-radius: $radius-xs;
+    color: transparent;
+    transition:
+      background-color $duration-fast $ease-out,
+      border-color $duration-fast $ease-out,
+      color $duration-fast $ease-out;
+
+    svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__hint {
+    font-size: $text-sm;
+    color: var(--text-muted);
+  }
+
+  &__input:hover:not(:disabled) + &__label &__box {
+    border-color: var(--brand);
+  }
+
+  &__input:checked + &__label &__box {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: var(--text-on-brand);
+  }
+
+  &__input:focus-visible + &__label &__box {
+    box-shadow: 0 0 0 0.3rem var(--ring);
+  }
+
+  &__input:disabled + &__label {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}

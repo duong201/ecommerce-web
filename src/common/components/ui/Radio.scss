@@ -1,0 +1,113 @@
+@use '../../../styles' as *;
+
+.ui-radio-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  &__legend {
+    padding: 0;
+    margin-bottom: $space-3;
+    font-size: $text-md;
+    font-weight: $weight-medium;
+    color: var(--text-strong);
+  }
+
+  &__options {
+    display: grid;
+    gap: $space-3;
+  }
+
+  &--card &__options {
+    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  }
+
+  &--inline &__options {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: $space-5;
+  }
+}
+
+.ui-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  background: var(--surface);
+  border: 0.1rem solid var(--border);
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition:
+    border-color $duration-fast $ease-out,
+    background-color $duration-fast $ease-out,
+    box-shadow $duration-fast $ease-out;
+
+  input {
+    @include visually-hidden;
+  }
+
+  &__marker {
+    flex: 0 0 auto;
+    width: 1.8rem;
+    height: 1.8rem;
+    margin-top: 0.2rem;
+    border: 0.15rem solid var(--border-strong);
+    border-radius: 50%;
+    transition:
+      border-color $duration-fast $ease-out,
+      border-width $duration-fast $ease-out;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  &__label {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    font-size: $text-base;
+    font-weight: $weight-medium;
+    color: var(--text-strong);
+  }
+
+  &__icon {
+    display: inline-flex;
+    color: var(--brand-contrast);
+  }
+
+  &__description {
+    font-size: $text-sm;
+    color: var(--text-muted);
+  }
+
+  &:hover {
+    border-color: var(--brand);
+  }
+
+  &.is-selected {
+    border-color: var(--brand);
+    background: var(--brand-soft);
+
+    .ui-radio__marker {
+      border-width: 0.5rem;
+      border-color: var(--brand);
+    }
+  }
+
+  &:focus-within {
+    box-shadow: 0 0 0 0.3rem var(--ring);
+  }
+}
+
+.ui-radio-group--inline .ui-radio {
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}

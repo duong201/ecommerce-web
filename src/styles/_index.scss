@@ -1,0 +1,7 @@
+// The single entry point component stylesheets pull in:
+//   @use '../../../styles' as *;
+// It forwards tokens, breakpoints and mixins - never any actual rules, so
+// importing it many times emits no CSS.
+@forward 'tokens';
+@forward 'breakpoints';
+@forward 'mixins';

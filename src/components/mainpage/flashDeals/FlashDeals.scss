@@ -1,0 +1,159 @@
+@use '../../../styles' as *;
+
+.flash-deals {
+  &__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: $space-4;
+    margin-bottom: $space-5;
+  }
+
+  &__title {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    font-size: $text-3xl;
+    letter-spacing: -0.02em;
+
+    svg {
+      width: 3rem;
+      height: 3rem;
+      padding: 0.4rem;
+      border-radius: $radius-sm;
+      background: var(--accent-soft);
+      color: var(--accent-text);
+    }
+
+    @include down(md) {
+      font-size: $text-2xl;
+    }
+  }
+
+  &__subtitle {
+    margin-top: $space-1;
+    color: var(--text-muted);
+  }
+
+  &__all {
+    font-size: $text-md;
+    font-weight: $weight-semibold;
+    color: var(--brand-contrast);
+    white-space: nowrap;
+  }
+}
+
+.flash-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--surface);
+  border: 0.1rem solid var(--border-subtle);
+  border-radius: $radius-lg;
+  overflow: hidden;
+  color: inherit;
+  transition:
+    transform $duration-normal $ease-out,
+    box-shadow $duration-normal $ease-out,
+    border-color $duration-normal $ease-out;
+
+  &:hover {
+    transform: translateY(-0.3rem);
+    border-color: var(--accent);
+    box-shadow: $shadow-lg;
+    color: inherit;
+  }
+
+  &--skeleton {
+    gap: $space-3;
+    padding: $space-3;
+
+    &:hover {
+      transform: none;
+      border-color: var(--border-subtle);
+      box-shadow: none;
+    }
+  }
+
+  &__media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: var(--surface-sunken);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  // A ribbon rather than a pill: at rail size the discount has to read first.
+  &__discount {
+    position: absolute;
+    top: $space-3;
+    left: 0;
+    padding: 0.3rem $space-3;
+    border-radius: 0 $radius-sm $radius-sm 0;
+    background: var(--danger);
+    color: var(--on-solid);
+    font-size: $text-md;
+    font-weight: $weight-bold;
+    box-shadow: $shadow-sm;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+    padding: $space-4;
+
+    h3 {
+      font-size: $text-base;
+      font-weight: $weight-medium;
+      line-height: $leading-snug;
+      min-height: calc(#{$text-base} * #{$leading-snug} * 2);
+      @include line-clamp(2);
+    }
+  }
+
+  &__sku {
+    font-size: $text-sm;
+    color: var(--text-subtle);
+    @include truncate;
+  }
+
+  &__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-top: $space-1;
+
+    strong {
+      font-size: $text-lg;
+      font-weight: $weight-bold;
+      color: var(--danger-text);
+    }
+
+    del {
+      font-size: $text-sm;
+      color: var(--text-subtle);
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-2;
+    margin-top: auto;
+    padding-top: $space-3;
+  }
+
+  &__stock {
+    font-size: $text-sm;
+    color: var(--text-muted);
+  }
+}

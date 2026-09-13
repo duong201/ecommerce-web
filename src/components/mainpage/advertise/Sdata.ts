@@ -1,38 +1,37 @@
+export type SlideTone = 'lime' | 'amber' | 'rose' | 'indigo'
+
 export interface SlideData {
-  id: number
-  title: string
-  description: string
+  id: string
+  href: string
   coverImg: string
+  tone: SlideTone
 }
 
 const Sdata: SlideData[] = [
   {
-    id: 1,
-    title: '50% Off For Your First Shopping',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis lobortis consequat eu, quam etiam at quis ut convallis.',
-    coverImg: './images/SlideCard/slide-1.png',
+    id: 'box',
+    href: '/san-pham',
+    coverImg: '/images/SlideCard/slide-1.jpg',
+    tone: 'lime',
   },
   {
-    id: 2,
-    title: '50% Off For Your First Shopping',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis lobortis consequat eu, quam etiam at quis ut convallis.',
-    coverImg: './images/SlideCard/slide-2.png',
+    id: 'mango',
+    href: '/tim-kiem?q=xo%C3%A0i',
+    coverImg: '/images/SlideCard/slide-2.jpg',
+    tone: 'amber',
   },
   {
-    id: 3,
-    title: '50% Off For Your First Shopping',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis lobortis consequat eu, quam etiam at quis ut convallis.',
-    coverImg: './images/SlideCard/slide-3.png',
+    id: 'organic',
+    href: '/tim-kiem?isOrganic=true',
+    coverImg: '/images/SlideCard/slide-3.jpg',
+    tone: 'rose',
   },
   {
-    id: 4,
-    title: '50% Off For Your First Shopping',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis lobortis consequat eu, quam etiam at quis ut convallis.',
-    coverImg: './images/SlideCard/slide-4.png',
+    id: 'delivery',
+    href: '/san-pham',
+    coverImg: '/images/SlideCard/slide-4.jpg',
+    tone: 'indigo',
   },
 ]
+
 export default Sdata

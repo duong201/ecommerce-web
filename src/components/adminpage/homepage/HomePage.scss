@@ -1,119 +1,210 @@
-.home-page {
-  height: calc(100vh - 5.4rem);
-  width: calc(100% - 26rem);
-  margin-top: 5.4rem;
-  padding: 1rem;
-  overflow-y: scroll;
+@use '../../../styles' as *;
 
-  @media (max-width: 1024px) {
-    width: 100%;
-  }
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
 
-  .box-widget {
-    width: 100%;
-    padding: 1rem;
-
-    &:nth-child(2) {
-      .widget-footer {
-        span {
-          .widget-icon {
-            color: #003865;
-          }
-        }
-
-        a {
-          &:hover {
-            color: #003865;
-          }
-        }
-      }
-
-      .widget-count {
-        span {
-          color: #003865;
-        }
-      }
+  &__header {
+    h1 {
+      font-size: $text-3xl;
+      letter-spacing: -0.02em;
     }
 
-    &:nth-child(3) {
-      .widget-footer {
-        span {
-          .widget-icon {
-            color: #3d8361;
-          }
-        }
-
-        a {
-          &:hover {
-            color: #3d8361;
-          }
-        }
-      }
-
-      .widget-count {
-        span {
-          color: #3d8361;
-        }
-      }
-    }
-
-    &:nth-child(4) {
-      .widget-footer {
-        span {
-          .widget-icon {
-            color: #80558c;
-          }
-        }
-
-        a {
-          &:hover {
-            color: #80558c;
-          }
-        }
-      }
-
-      .widget-count {
-        span {
-          color: #80558c;
-        }
-      }
+    p {
+      margin-top: $space-1;
+      color: var(--text-muted);
     }
   }
 
-  .box-chart {
-    width: 100%;
-    padding: 1rem;
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+    gap: $space-4;
   }
 
-  .box-featured {
-    width: 100%;
-    padding: 1rem;
+  &__charts {
+    display: grid;
+    grid-template-columns: 32rem minmax(0, 1fr);
+    gap: $space-4;
+    align-items: stretch;
+
+    @include down(xl) {
+      grid-template-columns: 1fr;
+    }
   }
 
-  .box-listContainer {
-    width: 100%;
-    padding: 1rem;
+  &__panel {
+    overflow: hidden;
+  }
+}
 
-    .listContainer {
+// --- monthly target ring -----------------------------------------------------
+.revenue-target {
+  align-items: center;
+  text-align: center;
+
+  h2 {
+    align-self: flex-start;
+    margin-bottom: $space-4;
+    font-size: $text-lg;
+  }
+
+  &__ring {
+    position: relative;
+    width: 17rem;
+    height: 17rem;
+
+    svg {
       width: 100%;
-      background-color: var(--white-color);
-      box-shadow:
-        rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
-        rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
-      border-radius: 1rem;
-      padding: 1rem 2rem;
-
-      .listContainer-header {
-        width: 100%;
-        height: 2.4rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: #999;
-        font-size: 1.6rem;
-        font-weight: 500;
-        margin-bottom: 1rem;
-      }
+      height: 100%;
+      // Start the arc at twelve o'clock rather than three.
+      transform: rotate(-90deg);
     }
+  }
+
+  &__track {
+    fill: none;
+    stroke: var(--surface-sunken);
+    stroke-width: 10;
+  }
+
+  &__value {
+    fill: none;
+    stroke: var(--brand);
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset $duration-slow $ease-out;
+  }
+
+  &__percent {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $text-3xl;
+    font-weight: $weight-bold;
+    color: var(--text-strong);
+  }
+
+  &__today {
+    margin-top: $space-5;
+    font-size: $text-sm;
+    font-weight: $weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  &__amount {
+    font-size: $text-2xl;
+    font-weight: $weight-bold;
+    color: var(--brand-contrast);
+  }
+
+  &__facts {
+    display: flex;
+    justify-content: space-between;
+    gap: $space-3;
+    width: 100%;
+    margin-top: $space-5;
+    padding-top: $space-4;
+    border-top: 0.1rem solid var(--border-subtle);
+
+    dt {
+      font-size: $text-sm;
+      color: var(--text-muted);
+    }
+
+    dd {
+      margin-top: 0.2rem;
+      font-size: $text-lg;
+      font-weight: $weight-semibold;
+      color: var(--text-strong);
+    }
+  }
+}
+
+// --- top sellers -------------------------------------------------------------
+.top-sellers {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  padding: 0 $space-5 $space-5;
+
+  &__row {
+    display: flex;
+    align-items: flex-start;
+    gap: $space-3;
+  }
+
+  &__rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: $radius-sm;
+    background: var(--surface-sunken);
+    font-size: $text-md;
+    font-weight: $weight-bold;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  // The first three get the brand colour: a podium without a separate legend.
+  &__row:nth-child(-n + 3) &__rank {
+    background: var(--brand-soft);
+    color: var(--brand-contrast);
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $space-3;
+  }
+
+  &__name {
+    font-weight: $weight-medium;
+    color: var(--text-strong);
+    @include truncate;
+  }
+
+  &__revenue {
+    flex: 0 0 auto;
+    font-weight: $weight-semibold;
+    color: var(--brand-contrast);
+  }
+
+  &__bar {
+    height: 0.6rem;
+    margin: 0.6rem 0 0.4rem;
+    border-radius: $radius-pill;
+    background: var(--surface-sunken);
+    overflow: hidden;
+
+    span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--brand) 0%, var(--brand-hover) 100%);
+      transition: width $duration-slow $ease-out;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: $space-3;
+    font-size: $text-sm;
+    color: var(--text-muted);
   }
 }

@@ -1,0 +1,140 @@
+@use '../../../styles' as *;
+
+.my-orders {
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: $space-3;
+    margin-bottom: $space-6;
+
+    h1 {
+      font-size: $text-3xl;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      color: var(--text-muted);
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+  }
+}
+
+.order-card {
+  background: var(--surface);
+  border: 0.1rem solid var(--border-subtle);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-xs;
+  overflow: hidden;
+
+  &__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    padding: $space-4 $space-5;
+    background: var(--surface-sunken);
+    border-bottom: 0.1rem solid var(--border-subtle);
+  }
+
+  &__id {
+    display: flex;
+    flex-direction: column;
+
+    strong {
+      font-family: $font-mono;
+      font-size: $text-base;
+      color: var(--text-strong);
+    }
+
+    time {
+      font-size: $text-sm;
+      color: var(--text-muted);
+    }
+  }
+
+  &__status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+  }
+
+  &__body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    padding: $space-4 $space-5;
+    color: var(--text-muted);
+
+    strong {
+      color: var(--text-strong);
+    }
+  }
+
+  &__total {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: $space-2;
+
+    strong {
+      font-size: $text-xl;
+      font-weight: $weight-bold;
+      color: var(--brand-contrast);
+    }
+
+    em {
+      font-style: normal;
+      font-size: $text-sm;
+    }
+  }
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+    padding: $space-4 $space-5;
+    background: var(--surface-sunken);
+    border-top: 0.1rem solid var(--border-subtle);
+    font-size: $text-md;
+
+    li {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: $space-3;
+      align-items: baseline;
+    }
+
+    em {
+      font-style: normal;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    strong {
+      color: var(--text-strong);
+      white-space: nowrap;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-5;
+    padding: $space-3 $space-5;
+    border-top: 0.1rem solid var(--border-subtle);
+
+    .is-danger {
+      color: var(--danger-text);
+    }
+  }
+}

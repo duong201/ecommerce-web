@@ -1,0 +1,72 @@
+@use '../../../styles' as *;
+
+.ui-stepper {
+  display: inline-flex;
+  align-items: stretch;
+  border: 0.1rem solid var(--border);
+  border-radius: $radius-sm;
+  background: var(--surface);
+  overflow: hidden;
+
+  button {
+    @include bare-button;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.6rem;
+    color: var(--text-muted);
+    transition:
+      background-color $duration-fast $ease-out,
+      color $duration-fast $ease-out;
+    @include focus-ring(var(--ring));
+
+    svg {
+      width: 1.4rem;
+      height: 1.4rem;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--brand-soft);
+      color: var(--brand-contrast);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+    }
+  }
+
+  &__value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 6.4rem;
+    padding: 0 $space-2;
+    border-inline: 0.1rem solid var(--border);
+    font-size: $text-base;
+    font-weight: $weight-semibold;
+    color: var(--text-strong);
+    white-space: nowrap;
+  }
+
+  &--sm {
+    button {
+      width: 3rem;
+    }
+
+    .ui-stepper__value {
+      min-width: 5rem;
+      height: 3.2rem;
+      font-size: $text-md;
+    }
+  }
+
+  &--md {
+    button {
+      height: 4rem;
+    }
+
+    .ui-stepper__value {
+      height: 4rem;
+    }
+  }
+}

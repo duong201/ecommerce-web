@@ -1,27 +1,26 @@
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
 import '@testing-library/jest-dom'
 
-// jsdom does not implement ResizeObserver, which recharts' ResponsiveContainer needs.
+// jsdom implements neither of these, and both are reached during a normal
+// render: recharts' ResponsiveContainer observes its box, and the theme hook
+// asks the platform for the colour-scheme preference.
 class ResizeObserverStub {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
 }
-window.ResizeObserver =
-  window.ResizeObserver || (ResizeObserverStub as unknown as typeof ResizeObserver)
 
-// jsdom does not implement matchMedia, which react-slick queries on mount.
-window.matchMedia =
-  window.matchMedia ||
-  function matchMedia(query: string): MediaQueryList {
-    return {
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => false,
-    } as unknown as MediaQueryList
-  }
+;(globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver = ResizeObserverStub
+
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }),
+})

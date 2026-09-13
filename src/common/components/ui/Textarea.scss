@@ -1,0 +1,14 @@
+@use '../../../styles' as *;
+
+.ui-textarea {
+  @include control-base;
+
+  & {
+    min-height: 9rem;
+    padding: $space-3;
+    resize: vertical;
+    font-family: inherit;
+  }
+
+  @include thin-scrollbar;
+}

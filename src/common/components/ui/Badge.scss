@@ -1,0 +1,94 @@
+@use '../../../styles' as *;
+
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  border: 0.1rem solid transparent;
+  border-radius: $radius-pill;
+  font-weight: $weight-semibold;
+  line-height: 1.4;
+  white-space: nowrap;
+  vertical-align: middle;
+
+  &--sm {
+    padding: 0.1rem $space-2;
+    font-size: $text-xs;
+  }
+
+  &--md {
+    padding: 0.3rem $space-3;
+    font-size: $text-sm;
+  }
+
+  &__dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  &__icon {
+    display: inline-flex;
+    font-size: 1.1em;
+
+    svg {
+      width: 1em;
+      height: 1em;
+    }
+  }
+
+  // Every tone reads the same two variables, so adding one is two lines below.
+  &--neutral {
+    --badge-soft: var(--surface-sunken);
+    --badge-strong: var(--text-muted);
+    --badge-solid: #{$grey-600};
+  }
+  &--brand {
+    --badge-soft: var(--brand-soft);
+    --badge-strong: var(--brand-contrast);
+    --badge-solid: var(--brand);
+  }
+  &--success {
+    --badge-soft: var(--success-soft);
+    --badge-strong: var(--success-text);
+    --badge-solid: var(--success);
+  }
+  &--warning {
+    --badge-soft: var(--warning-soft);
+    --badge-strong: var(--warning-text);
+    --badge-solid: var(--warning);
+  }
+  &--danger {
+    --badge-soft: var(--danger-soft);
+    --badge-strong: var(--danger-text);
+    --badge-solid: var(--danger);
+  }
+  &--info {
+    --badge-soft: var(--info-soft);
+    --badge-strong: var(--info-text);
+    --badge-solid: var(--info);
+  }
+  &--accent {
+    --badge-soft: var(--accent-soft);
+    --badge-strong: var(--accent-text);
+    --badge-solid: var(--accent);
+  }
+
+  &--soft {
+    background: var(--badge-soft);
+    color: var(--badge-strong);
+  }
+
+  &--outline {
+    border-color: currentColor;
+    color: var(--badge-strong);
+    background: transparent;
+  }
+
+  &--solid {
+    background: var(--badge-solid);
+    color: var(--on-solid);
+  }
+}

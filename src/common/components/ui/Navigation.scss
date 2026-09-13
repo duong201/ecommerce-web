@@ -1,0 +1,202 @@
+@use '../../../styles' as *;
+
+// --- Pagination --------------------------------------------------------------
+.ui-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: $space-3;
+  margin-top: $space-6;
+
+  &__pages {
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+
+    button {
+      @include bare-button;
+      min-width: 3.2rem;
+      height: 3.2rem;
+      padding: 0 $space-2;
+      border-radius: $radius-sm;
+      font-size: $text-md;
+      font-weight: $weight-medium;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      transition:
+        background-color $duration-fast $ease-out,
+        color $duration-fast $ease-out;
+      @include focus-ring(var(--ring));
+
+      &:hover {
+        background: var(--surface-sunken);
+        color: var(--text-strong);
+      }
+
+      &.is-current {
+        background: var(--brand);
+        color: var(--text-on-brand);
+      }
+    }
+  }
+
+  &__gap {
+    min-width: 2rem;
+    text-align: center;
+    color: var(--text-subtle);
+  }
+
+  &__total {
+    font-size: $text-sm;
+    color: var(--text-muted);
+  }
+}
+
+// --- Segmented ---------------------------------------------------------------
+.ui-segmented {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-2;
+  min-width: 0;
+
+  button {
+    @include bare-button;
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    white-space: nowrap;
+    transition:
+      background-color $duration-fast $ease-out,
+      border-color $duration-fast $ease-out,
+      color $duration-fast $ease-out;
+    @include focus-ring(var(--ring));
+  }
+
+  &__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    padding: 0 0.5rem;
+    border-radius: $radius-pill;
+    background: var(--surface-sunken);
+    font-size: $text-xs;
+    font-weight: $weight-semibold;
+  }
+
+  // Pills - used for status filters in the admin lists.
+  &--chips button {
+    padding: 0.6rem $space-4;
+    border: 0.1rem solid var(--border);
+    border-radius: $radius-pill;
+    background: var(--surface);
+    font-size: $text-md;
+    font-weight: $weight-medium;
+    color: var(--text-muted);
+
+    &:hover {
+      border-color: var(--brand);
+      color: var(--brand-contrast);
+    }
+
+    &.is-active {
+      background: var(--brand-soft);
+      border-color: var(--brand);
+      color: var(--brand-contrast);
+      font-weight: $weight-semibold;
+    }
+
+    &.is-active .ui-segmented__count {
+      background: var(--brand);
+      color: var(--text-on-brand);
+    }
+  }
+
+  // Underlined tabs - used where the control switches whole views.
+  &--tabs {
+    gap: 0;
+    border-bottom: 0.1rem solid var(--border-subtle);
+    overflow-x: auto;
+    @include thin-scrollbar;
+
+    button {
+      padding: $space-3 $space-4;
+      border-bottom: 0.2rem solid transparent;
+      font-size: $text-base;
+      font-weight: $weight-medium;
+      color: var(--text-muted);
+
+      &:hover {
+        color: var(--text-strong);
+      }
+
+      &.is-active {
+        border-bottom-color: var(--brand);
+        color: var(--brand-contrast);
+        font-weight: $weight-semibold;
+      }
+    }
+  }
+}
+
+// --- Page header -------------------------------------------------------------
+.ui-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  margin-bottom: $space-6;
+
+  &__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: $space-4;
+  }
+
+  &__heading {
+    min-width: 0;
+  }
+
+  &__eyebrow {
+    font-size: $text-sm;
+    font-weight: $weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brand-contrast);
+  }
+
+  &__title {
+    font-size: $text-3xl;
+    font-weight: $weight-semibold;
+    color: var(--text-strong);
+
+    @include down(md) {
+      font-size: $text-2xl;
+    }
+  }
+
+  &__description {
+    margin-top: $space-1;
+    max-width: 68ch;
+    font-size: $text-base;
+    color: var(--text-muted);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-2;
+  }
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+  }
+}

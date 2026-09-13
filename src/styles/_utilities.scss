@@ -1,0 +1,85 @@
+// A deliberately small utility layer: only classes the app actually renders.
+// Anything richer belongs in a component stylesheet, where it can be named for
+// what it is rather than for how it looks.
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+// Tabular figures stop prices and quantities jittering as rows re-render.
+.numeric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+// Keyboard users land on this before the header nav.
+.skip-link {
+  position: absolute;
+  top: $space-2;
+  left: $space-2;
+  z-index: $z-toast;
+  padding: $space-2 $space-4;
+  background: var(--surface);
+  color: var(--brand-contrast);
+  border-radius: $radius-sm;
+  box-shadow: $shadow-lg;
+  transform: translateY(-200%);
+  transition: transform $duration-fast $ease-out;
+
+  &:focus-visible {
+    transform: none;
+  }
+}
+
+// --- data-cell helpers -------------------------------------------------------
+// Used by the admin table column builders. They live here rather than in a page
+// stylesheet because the same tone has to mean the same thing on every screen.
+.tone-ok {
+  color: var(--success-text);
+  font-weight: $weight-medium;
+}
+.tone-bad {
+  color: var(--danger-text);
+  font-weight: $weight-medium;
+}
+
+.cell-mono {
+  font-family: $font-mono;
+  font-size: $text-md;
+  color: var(--text-strong);
+}
+
+.cell-clamp {
+  @include line-clamp(2);
+  color: var(--text-muted);
+}
+
+// Expiry is the number a fruit shop acts on, so it is colour-coded by days
+// remaining rather than rendered as plain text.
+.expiry {
+  white-space: nowrap;
+
+  em {
+    font-style: normal;
+    font-size: $text-sm;
+  }
+
+  &--danger {
+    color: var(--danger-text);
+    font-weight: $weight-semibold;
+  }
+  &--warning {
+    color: var(--warning-text);
+    font-weight: $weight-semibold;
+  }
+  &--ok {
+    color: inherit;
+  }
+}
+
+// A link-styled button that destroys something.
+.ui-btn--link.is-danger {
+  color: var(--danger-text);
+
+  &:hover:not(:disabled) {
+    color: var(--danger);
+  }
+}

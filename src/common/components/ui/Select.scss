@@ -1,0 +1,32 @@
+@use '../../../styles' as *;
+
+.ui-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &__control {
+    @include control-base;
+
+    & {
+      padding-right: 3.6rem;
+      appearance: none;
+      cursor: pointer;
+    }
+  }
+
+  &--sm &__control {
+    min-height: 3.4rem;
+    padding-block: $space-1;
+    font-size: $text-md;
+  }
+
+  &__chevron {
+    position: absolute;
+    right: $space-3;
+    width: 1.6rem;
+    height: 1.6rem;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+}

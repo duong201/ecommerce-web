@@ -1,0 +1,181 @@
+@use '../../../styles' as *;
+
+// --- Spinner -----------------------------------------------------------------
+.ui-spinner {
+  display: inline-flex;
+
+  &__ring {
+    display: block;
+    border: 0.2rem solid var(--border);
+    border-top-color: var(--brand);
+    border-radius: 50%;
+    animation: ui-spin 0.7s linear infinite;
+  }
+
+  &--sm &__ring {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+  &--md &__ring {
+    width: 2rem;
+    height: 2rem;
+  }
+  &--lg &__ring {
+    width: 3.2rem;
+    height: 3.2rem;
+    border-width: 0.3rem;
+  }
+}
+
+// --- Skeleton ----------------------------------------------------------------
+.ui-skeleton {
+  display: block;
+  width: 100%;
+  border-radius: $radius-xs;
+  @include shimmer;
+}
+
+.ui-skeleton-text {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+// --- Empty / loading state ---------------------------------------------------
+.ui-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-3;
+  text-align: center;
+
+  &--inline {
+    padding: $space-10 $space-5;
+  }
+
+  &--page {
+    min-height: 48vh;
+    padding: $space-16 $space-5;
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 5.6rem;
+    height: 5.6rem;
+    background: var(--brand-soft);
+    color: var(--brand-contrast);
+    border-radius: 50%;
+    font-size: $text-3xl;
+
+    svg {
+      width: 2.8rem;
+      height: 2.8rem;
+    }
+  }
+
+  &__title {
+    font-size: $text-lg;
+    font-weight: $weight-semibold;
+    color: var(--text-strong);
+  }
+
+  &__description {
+    max-width: 44rem;
+    font-size: $text-base;
+    color: var(--text-muted);
+  }
+
+  &__action {
+    margin-top: $space-2;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $space-3;
+  }
+
+  &--danger &__icon {
+    background: var(--danger-soft);
+    color: var(--danger-text);
+  }
+}
+
+// --- Alert -------------------------------------------------------------------
+.ui-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-4;
+  border: 0.1rem solid transparent;
+  border-left-width: 0.4rem;
+  border-radius: $radius-md;
+  font-size: $text-base;
+
+  &__icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    margin-top: 0.1rem;
+    color: var(--alert-accent);
+    font-size: $text-lg;
+
+    svg {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-weight: $weight-semibold;
+    color: var(--text-strong);
+  }
+
+  &__text {
+    color: var(--text);
+
+    .ui-alert__title + & {
+      margin-top: 0.2rem;
+    }
+  }
+
+  &__action {
+    flex: 0 0 auto;
+  }
+
+  &--info {
+    --alert-accent: var(--info);
+    background: var(--info-soft);
+    border-color: var(--info);
+  }
+  &--success {
+    --alert-accent: var(--success);
+    background: var(--success-soft);
+    border-color: var(--success);
+  }
+  &--warning {
+    --alert-accent: var(--warning);
+    background: var(--warning-soft);
+    border-color: var(--warning);
+  }
+  &--danger {
+    --alert-accent: var(--danger);
+    background: var(--danger-soft);
+    border-color: var(--danger);
+  }
+
+  // Only the left edge carries the accent; the other three stay hairline.
+  &--info,
+  &--success,
+  &--warning,
+  &--danger {
+    border-top-color: var(--border-subtle);
+    border-right-color: var(--border-subtle);
+    border-bottom-color: var(--border-subtle);
+  }
+}

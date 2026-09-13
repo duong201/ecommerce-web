@@ -1,101 +1,131 @@
 import React from 'react'
-import './Footer.css'
+import { useTranslation } from 'react-i18next'
+import {
+  AcUnitOutlinedIcon,
+  FacebookIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  LocalShippingOutlinedIcon,
+  ReplayOutlinedIcon,
+  VerifiedOutlinedIcon,
+} from '../../../common/components/ui/icons'
+import { Link } from 'react-router-dom'
+import { useDialog } from '../../../common/components/ui'
+import './Footer.scss'
 import qrCodeImg from './images/qr-code.png'
 import appStoreImg from './images/app-store.png'
 import googlePlayImg from './images/google-play.png'
 
-const footer = () => {
-  const dataCustomerCare = [
-    'Trung tâm trợ giúp',
-    'Hướng dẫn mua hàng',
-    'Hướng dẫn bán hàng',
-    'Chăm sóc khách hàng',
-    'Chính sách bảo hành',
-  ]
-  const dataAboutTipee = [
-    'Giới thiệu về Tipee',
-    'Điều khoản Tipee',
-    'Chính sách bảo mật',
-    'Kênh người bán',
-    'Liên hệ với truyền thông',
-  ]
+const PROMISES = [
+  { key: 'delivery', icon: <LocalShippingOutlinedIcon /> },
+  { key: 'coldChain', icon: <AcUnitOutlinedIcon /> },
+  { key: 'certified', icon: <VerifiedOutlinedIcon /> },
+  { key: 'freshness', icon: <ReplayOutlinedIcon /> },
+]
+
+const LINK_COLUMNS = [
+  {
+    heading: 'footer.customerCare',
+    links: ['helpCentre', 'howToOrder', 'deliveryInfo', 'returns', 'freshnessGuarantee'],
+  },
+  {
+    heading: 'footer.aboutUs',
+    links: ['about', 'terms', 'privacy', 'growers', 'press'],
+  },
+]
+
+const SOCIALS = [
+  { icon: <FacebookIcon />, label: 'Facebook' },
+  { icon: <InstagramIcon />, label: 'Instagram' },
+  { icon: <LinkedInIcon />, label: 'LinkedIn' },
+]
+
+const Footer = () => {
+  const { t } = useTranslation()
+  const { info } = useDialog()
+
+  const announceApp = () =>
+    info({
+      title: t('footer.appDialogTitle'),
+      description: t('footer.appDialogBody'),
+      confirmLabel: t('common.gotIt'),
+    })
+
   return (
-    <>
-      <footer className="footer">
-        <div className="grid wide">
-          <div className="row">
-            <div className="c-6 m-4 l-2-4">
-              <h3 className="footer__heading">Chăm sóc khách hàng</h3>
-              <ul className="footer__list">
-                {dataCustomerCare.map((value, index) => {
-                  return (
-                    <li className="footer__item" key={index}>
-                      <button type="button" className="footer__link">
-                        {value}
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-            <div className="c-6 m-4 l-2-4">
-              <h3 className="footer__heading">Về Tipee</h3>
-              <ul className="footer__list">
-                {dataAboutTipee.map((value, index) => {
-                  return (
-                    <li className="footer__item" key={index}>
-                      <button type="button" className="footer__link">
-                        {value}
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-            <div className="c-6 m-4 l-2-4">
-              <h3 className="footer__heading">Thanh toán</h3>
-            </div>
-            <div className="c-6 m-4 l-2-4">
-              <h3 className="footer__heading">Theo dõi chúng tôi trên</h3>
-              <ul className="footer__list">
-                <li className="footer__item">
-                  <button type="button" className="footer__link">
-                    <i className="fa-brands fa-square-facebook"></i>
-                    Facebook
+    <footer className="site-footer">
+      <div className="grid wide">
+        <ul className="site-footer__promises">
+          {PROMISES.map((promise) => (
+            <li key={promise.key}>
+              <span className="site-footer__promise-icon">{promise.icon}</span>
+              <span>
+                <strong>{t(`footer.promises.${promise.key}.title`)}</strong>
+                <em>{t(`footer.promises.${promise.key}.text`)}</em>
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="site-footer__columns">
+          <div className="site-footer__brand">
+            <Link to="/" className="site-footer__logo">
+              <span aria-hidden="true">🍇</span> Trái <em>Ngon</em>
+            </Link>
+            <p>{t('footer.blurb')}</p>
+            <ul className="site-footer__socials">
+              {SOCIALS.map((social) => (
+                <li key={social.label}>
+                  <button type="button" aria-label={social.label} title={social.label}>
+                    {social.icon}
                   </button>
                 </li>
-                <li className="footer__item">
-                  <button type="button" className="footer__link">
-                    <i className="fa-brands fa-square-instagram"></i>
-                    Instagram
-                  </button>
-                </li>
-                <li className="footer__item">
-                  <button type="button" className="footer__link">
-                    <i className="fa-brands fa-linkedin"></i>
-                    Linkedin
-                  </button>
-                </li>
+              ))}
+            </ul>
+          </div>
+
+          {LINK_COLUMNS.map((column) => (
+            <nav key={column.heading} className="site-footer__column">
+              <h3>{t(column.heading)}</h3>
+              <ul>
+                {column.links.map((link) => (
+                  <li key={link}>
+                    <button type="button">{t(`footer.links.${link}`)}</button>
+                  </li>
+                ))}
               </ul>
-            </div>
-            <div className="c-6 m-4 l-2-4">
-              <h3 className="footer__heading">Tải ứng dụng Tipee ngay thôi</h3>
-              <div className="footer__download">
-                <img src={qrCodeImg} alt="" className="footer__download-qr" />
-                <div className="footer__download-apps">
-                  <img src={appStoreImg} alt="" className="footer__download-app-img" />
-                  <img src={googlePlayImg} alt="" className="footer__download-app-img" />
-                </div>
+            </nav>
+          ))}
+
+          <div className="site-footer__column">
+            <h3>{t('footer.getTheApp')}</h3>
+            <div className="site-footer__app">
+              <button
+                type="button"
+                className="site-footer__app-qr"
+                aria-label={t('footer.appQrSoon')}
+                onClick={announceApp}
+              >
+                <img src={qrCodeImg} alt="" />
+              </button>
+              <div className="site-footer__app-stores">
+                <button type="button" aria-label={t('footer.appStoreSoon')} onClick={announceApp}>
+                  <img src={appStoreImg} alt="" />
+                </button>
+                <button type="button" aria-label={t('footer.googlePlaySoon')} onClick={announceApp}>
+                  <img src={googlePlayImg} alt="" />
+                </button>
               </div>
             </div>
           </div>
-          <div className="row">
-            <p className="footer__text">@2022 - Bản quyền thuộc về Công ty Tipee</p>
-          </div>
         </div>
-      </footer>
-    </>
+
+        <div className="site-footer__legal">
+          <p>{t('footer.rights')}</p>
+          <p>{t('footer.contact')}</p>
+        </div>
+      </div>
+    </footer>
   )
 }
 
-export default footer
+export default Footer
